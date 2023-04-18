@@ -1,10 +1,10 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
+import SplashScreen from 'react-native-splash-screen'
+import MainNavigator from './src/navigation/MainNavigator'
 
 export default function App() {
-  return (
-    <View>
-      <Text>App</Text>
-    </View>
-  )
+  useEffect(()=>{
+    SplashScreen.hide()
+  },[])
+  return (<MainNavigator/>)
 }
