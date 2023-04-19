@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: sizes.h2,
+        color: colors.black,
     },
     imageContainer: {
         width: 115,
@@ -82,6 +83,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: sizes.h3,
         fontWeight: 'bold',
+        color: colors.black,
     },
     price: {
         fontWeight: 'bold',

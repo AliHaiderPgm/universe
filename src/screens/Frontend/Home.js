@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, StyleSheet, View } from 'react-native'
+import { ScrollView, StatusBar, StyleSheet, View } from 'react-native'
 // import ImageCarousel from '../../components/shared/ImagesCarousel'
 import Navbar from '../../components/Frontend/Navbar'
 import ScreenHeader from '../../components/Frontend/HomeHeader'
@@ -12,6 +12,7 @@ import Features from '../../components/Frontend/Features'
 export default Home = () => {
     return (
         <View style={styles.container}>
+            <StatusBar backgroundColor={colors.light} />
             <Navbar />
             <ScrollView showsVerticalScrollIndicator={false}>
                 {/* <ImageCarousel data={data} /> */}

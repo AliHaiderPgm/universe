@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import { sizes, spacing } from '../constants/theme'
+import { colors, sizes, spacing } from '../constants/theme'
 
 export default function Counter({sendToParent,productPrice}) {
   const [count,setCount] = useState(1)
@@ -45,9 +45,11 @@ const styles = StyleSheet.create({
   },
   buttonText:{
     fontSize: sizes.h2,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    color: colors.black,
   },
   count:{
-    fontSize: sizes.h2 
+    fontSize: sizes.h2 ,
+    color: colors.black,
   },
 })

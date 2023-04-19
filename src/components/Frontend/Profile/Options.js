@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     container: {
         paddingHorizontal: spacing.m,
         gap: spacing.s,
-        backgroundColor: colors.light,
+        backgroundColor: colors.white,
         borderTopLeftRadius: sizes.radius,
         borderTopRightRadius: sizes.radius,
         elevation: 7,

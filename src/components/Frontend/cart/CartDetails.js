@@ -86,7 +86,7 @@ export default function CartDetails({ list }) {
 
                     <View style={styles.totalContainer}>
                         <Text style={styles.type}>Subtotal</Text>
-                        <Text style={{ fontSize: sizes.title, fontWeight: 700 }}>${subtotal}</Text>
+                        <Text style={{ fontSize: sizes.title, fontWeight: 700,color: colors.black, }}>${subtotal}</Text>
                     </View>
 
                 </View>
@@ -115,11 +115,12 @@ const styles = StyleSheet.create({
     type: {
         fontSize: sizes.h2 - 1,
         color: colors.lightGray,
-        fontWeight: 400
+        fontWeight: 400,
     },
     amount: {
         fontSize: sizes.h2 - 1,
-        fontWeight: 500
+        fontWeight: 500,
+        color: colors.black,
     },
     button: {
         height: 50,

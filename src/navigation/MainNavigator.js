@@ -6,17 +6,18 @@ import TabNavigator from './TabNavigator'
 import Cart from '../screens/Frontend/Cart/Cart'
 import ProductDetails from '../screens/Frontend/ProductDetails'
 import Auth from '../screens/Auth'
+import { colors } from '../components/constants/theme'
 
 export default function MainNavigator() {
     const Stack = createNativeStackNavigator()
 
     return (
         <NavigationContainer>
-           <Stack.Navigator>
+           <Stack.Navigator >
                 <Stack.Screen
                     name='Root'
                     component={TabNavigator}
-                    options={{ headerShown: false }} 
+                    options={{ headerShown: false,}} 
                 />
                 <Stack.Screen
                     name='search'
@@ -31,7 +32,7 @@ export default function MainNavigator() {
                 <Stack.Screen
                     name='productDetail'
                     component={ProductDetails}
-                    options={{ headerShown: false }} 
+                    options={{ headerShown: false, statusBarColor: colors.white,}} 
                 />
                 <Stack.Screen
                     name='auth'

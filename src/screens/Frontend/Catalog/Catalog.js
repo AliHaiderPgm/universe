@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native'
 import { CATEGORIES } from '../../../data'
 import ScreenHeader from '../../../components/shared/ScreenHeader'
 import CategoryCard from '../../../components/Frontend/Catalog/CategoryCard'
+import { colors } from '../../../components/constants/theme'
 
 export default function Catalog() {
   return (
@@ -13,5 +14,7 @@ export default function Catalog() {
   )
 }
 const styles =StyleSheet.create({
-  container: {},
+  container: {
+    backgroundColor: colors.light,
+  },
 })
