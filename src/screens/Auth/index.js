@@ -1,10 +1,17 @@
-import { View, Text } from 'react-native'
 import React from 'react'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import Login from './Login'
+import Register from './Register'
+import ForgotPassword from './ForgotPassword'
+import { colors } from '../../components/constants/theme'
 
 export default function Index() {
+  const AuthStack = createNativeStackNavigator()
   return (
-    <View>
-      <Text>index</Text>
-    </View>
+    <AuthStack.Navigator>
+      <AuthStack.Screen name="login" component={Login} options={{statusBarColor: 'black',headerTitle: '', headerTransparent: true,}}/>
+      <AuthStack.Screen name="register" component={Register} options={{headerShown: false,  statusBarColor: colors.gold}}/>
+      <AuthStack.Screen name="forgotPassword" component={ForgotPassword} options={{headerShown: false,  statusBarColor: colors.gold}}/>
+    </AuthStack.Navigator>
   )
 }
