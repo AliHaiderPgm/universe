@@ -9,9 +9,9 @@ export default function Index() {
   const AuthStack = createNativeStackNavigator()
   return (
     <AuthStack.Navigator>
-      <AuthStack.Screen name="login" component={Login} options={{statusBarColor: 'black',headerTitle: '', headerTransparent: true,}}/>
-      <AuthStack.Screen name="register" component={Register} options={{headerShown: false,  statusBarColor: colors.gold}}/>
-      <AuthStack.Screen name="forgotPassword" component={ForgotPassword} options={{headerShown: false,  statusBarColor: colors.gold}}/>
+      <AuthStack.Screen name="login" component={Login} options={{statusBarColor: colors.black,headerTitle: '', headerTransparent: true,}}/>
+      <AuthStack.Screen name="register" component={Register} options={{statusBarColor: colors.black, headerTitle:'',headerTransparent:true,}}/>
+      <AuthStack.Screen name="forgotPassword" component={ForgotPassword} options={{statusBarColor: colors.black, headerTitle:'',headerTransparent:true,}}/>
     </AuthStack.Navigator>
   )
 }

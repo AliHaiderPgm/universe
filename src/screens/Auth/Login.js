@@ -3,6 +3,7 @@ import { Image, ScrollView, StyleSheet, Text, View, KeyboardAvoidingView, Keyboa
 import { colors, sizes, spacing } from '../../components/constants/theme'
 import { Button, TextInput } from 'react-native-paper'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { useNavigation } from '@react-navigation/native'
 
 const initialState = {
   email: '',
@@ -10,6 +11,7 @@ const initialState = {
 }
 export default function Login() {
   const [state, setState] = useState(initialState)
+  const navigation = useNavigation()
   const handleChange = (name, value) => {
     setState(s => ({ ...s, [name]: value }))
   }
@@ -21,7 +23,7 @@ export default function Login() {
             <Image source={require('../../assets/appLogo.png')} style={styles.image} />
           </View>
           <View style={styles.formContainer}>
-            <Text style={styles.label}>Sign in</Text>
+            <Text style={styles.label}>Log in</Text>
             <TextInput
               mode='outlined' activeOutlineColor={colors.black} outlineColor={colors.black} textColor='black'
               label="Email"
@@ -42,10 +44,10 @@ export default function Login() {
               Login
             </Button>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between',marginTop: spacing.s }}>
-              <Button mode="text"  textColor={colors.black} style={styles.btn} onPress={() => console.log('Pressed')}>
+              <Button mode="text"  textColor={colors.black} style={styles.btn} onPress={() => navigation.navigate('register')}>
                 Don't have an account?
               </Button>
-              <Button mode="text" textColor={colors.black} style={styles.btn} onPress={() => console.log('Pressed')}>
+              <Button mode="text" textColor={colors.black} style={styles.btn} onPress={() => navigation.navigate('forgotPassword')}>
                 ForgotPassword?
               </Button>
             </View>
@@ -85,14 +87,16 @@ const styles = StyleSheet.create({
     fontSize: sizes.title,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginVertical: spacing.m,
+    marginTop: spacing.xl,
+    marginBottom: spacing.m,
   },
   formContainer: {
     borderTopLeftRadius: 85,
     paddingHorizontal: spacing.m,
-    justifyContent: 'center', 
+    paddingTop: spacing.xl,
+    // justifyContent: 'center', 
     backgroundColor: colors.light,
-    height: 640,
+    height: 645,
   },
   inputField: {
     backgroundColor: colors.white,
