@@ -14,6 +14,7 @@ export default function Login() {
   const [state, setState] = useState(initialState)
   const [emailValid, setEmailValid] = useState(true)
   const [passwordValid, setPasswordValid] = useState(true)
+  const [loading, setLoading] = useState(false)
   const navigation = useNavigation()
   const handleChange = (name, value) => {
     setState(s => ({ ...s, [name]: value }))
@@ -25,29 +26,28 @@ export default function Login() {
       setEmailValid(false)
       return
     }
+    setEmailValid(true)
     if (!validPassword.test(password)) {
       setPasswordValid(false)
       return
     }
-
-    setEmailValid(true)
     setPasswordValid(true)
 
+    setLoading(true)
     auth()
       .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        console.log('User account created & signed in!');
+      .then((user) => {
+        console.log(user);
+        setLoading(false)
       })
       .catch(error => {
-        if (error.code === 'auth/email-already-in-use') {
-          console.log('That email address is already in use!');
-        }
 
         if (error.code === 'auth/invalid-email') {
           console.log('That email address is invalid!');
         }
 
-        console.error(error);
+        console.error(error.code);
+        setLoading(false)
       });
   }
   return (
@@ -58,37 +58,52 @@ export default function Login() {
             <Image source={require('../../assets/appLogo.png')} style={styles.image} />
           </View>
           <View style={styles.formContainer}>
+
             <Text style={styles.label}>Log in</Text>
+            
             <TextInput
-              mode='outlined' activeOutlineColor={colors.black} outlineColor={colors.black} textColor='black'
               label="Email"
+              mode='outlined' activeOutlineColor={colors.black} outlineColor={colors.black} textColor='black'
               value={state.email}
               onChangeText={text => handleChange('email', text)}
               style={styles.inputField}
               keyboardType='email-address'
               error={!emailValid ? true : false}
             />
+
             <TextInput
-              mode='outlined' activeOutlineColor={colors.black} outlineColor={colors.black} textColor='black'
               label="Password"
+              mode='outlined' activeOutlineColor={colors.black} outlineColor={colors.black} textColor='black'
               value={state.password}
               onChangeText={text => handleChange('password', text)}
               style={styles.inputField}
               secureTextEntry={true}
               error={!passwordValid ? true : false}
             />
+
             <Button
               mode="contained" buttonColor={colors.black} textColor={colors.white}
               style={styles.btn}
               onPress={() => handleLogin()}
+              loading={loading}
             >
               Login
             </Button>
+
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: spacing.s }}>
-              <Button mode="text" textColor={colors.black} style={styles.btn} onPress={() => navigation.navigate('register')}>
+              <Button
+                mode="text"
+                textColor={colors.black}
+                style={styles.btn}
+                onPress={() => navigation.navigate('register')}>
                 Don't have an account?
               </Button>
-              <Button mode="text" textColor={colors.black} style={styles.btn} onPress={() => navigation.navigate('forgotPassword')}>
+
+              <Button
+                mode="text"
+                textColor={colors.black}
+                style={styles.btn}
+                onPress={() => navigation.navigate('forgotPassword')}>
                 ForgotPassword?
               </Button>
             </View>
@@ -135,7 +150,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 85,
     paddingHorizontal: spacing.m,
     paddingTop: spacing.xl,
-    // justifyContent: 'center', 
     backgroundColor: colors.light,
     height: 645,
   },

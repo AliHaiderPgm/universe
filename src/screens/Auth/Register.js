@@ -5,7 +5,7 @@ import { colors, sizes, spacing } from '../../components/constants/theme'
 import { Button, HelperText, TextInput } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import { validEmail, validPassword } from '../../components/Global'
-import auth from '@react-native-firebase/auth';
+import auth, { firebase } from '@react-native-firebase/auth';
 
 const initialState = {
   firstName: '',
@@ -28,7 +28,7 @@ export default function Register() {
   }
 
   const handleRegister = () => {
-    const { email, password, confirmPassword } = state
+    const { firstName, secondName, email, password, confirmPassword } = state
     // Checking validation
     if (!validEmail.test(email)) {
       setEmailValidation(false)
@@ -45,14 +45,16 @@ export default function Register() {
       return
     }
     setValidConfirmPassword(true)
-    
+    // Creating account
     setLoading(true)
     auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(() => {
-        console.log('User account created & signed in!');
+      .then(async() => {
+        const user = {
+          displayName: firstName + ' ' + secondName,
+        };
+        await firebase.auth().currentUser.updateProfile(user);
         setState(initialState)
-        setLoading(false)
       })
       .catch(error => {
         if (error.code === 'auth/email-already-in-use') {
@@ -64,8 +66,8 @@ export default function Register() {
         }
 
         console.error(error);
-        setLoading(false)
       });
+      setLoading(false)
   }
   return (
     <KeyboardAwareScrollView>
@@ -127,7 +129,7 @@ export default function Register() {
           />
           {
             !passwordValidation && <HelperText type="error" visible={true} style={{ marginTop: -20 }}>
-              Password must contain 'letters and numbers' and length should be greater than 6.
+              Password must contain 'alphabets and numbers' and length should be greater than 6.
             </HelperText>
           }
 
@@ -153,8 +155,8 @@ export default function Register() {
             buttonColor={colors.black} textColor={colors.white}
             style={styles.btn}
             onPress={() => handleRegister()}
-            loading ={loading}
-            >
+            loading={loading}
+          >
             Sign up
           </Button>
 
@@ -205,9 +207,6 @@ const styles = StyleSheet.create({
   inputField: {
     backgroundColor: colors.white,
     marginBottom: spacing.m,
-  },
-  helperText: {
-    // marginBottom: spacing.s,
   },
   btn: {
     fontSize: sizes.h3,

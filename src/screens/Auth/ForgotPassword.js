@@ -1,10 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { Button, TextInput } from 'react-native-paper'
+import { Button, HelperText, TextInput } from 'react-native-paper'
 import { colors, sizes, spacing } from '../../components/constants/theme'
+import { validEmail } from '../../components/Global'
 
 export default function ForgotPassword() {
+  const [emailVal, setEmailVal] = useState()
+  const [emailValidation, setEmailValidation] = useState(true)
+  const [loading,setLoading] = useState(false)
+
+  const handleOnChange = (e)=>{
+    setEmailVal(e)
+  }
+  const handleSubmit = () => {
+    setLoading(true)
+    checkValidation()
+    setEmailVal('')
+  }
+  const checkValidation =()=>{
+    validEmail.test(emailVal) ? setEmailValidation(true) : setEmailValidation(false)
+    setLoading(false)
+  }
   return (
     <KeyboardAwareScrollView>
       <View style={styles.container}>
@@ -22,13 +39,22 @@ export default function ForgotPassword() {
             style={styles.inputFeild}
             label="Email"
             placeholder="abc@example.com"
+            onChangeText={e => handleOnChange(e)}
+            value={emailVal}
+            error={!emailValidation}
+            loading={loading}
           />
+          {
+            !emailValidation && <HelperText type="error" visible={true} style={{ marginTop: -20 }}>
+              Email address is invalid!
+            </HelperText>
+          }
 
           <Button
             mode="contained"
             buttonColor={colors.black} textColor={colors.white}
             style={styles.btn}
-            onPress={() => console.log('Pressed')}>
+            onPress={() => handleSubmit()}>
             Send reset link
           </Button>
         </View>
@@ -57,7 +83,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 80,
     paddingTop: spacing.xl,
     paddingHorizontal: spacing.m,
-    height: sizes.height,
   },
   text: {
     fontSize: sizes.h2,
