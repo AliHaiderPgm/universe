@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "678430332045",
+    "project_id": "universe-190ba",
+    "storage_bucket": "universe-190ba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:678430332045:android:f3161b5c0ce4ba04233ec4",
+        "android_client_info": {
+          "package_name": "com.universe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "678430332045-e3gg71huffbqpj7g01hsv3k2kufq9feo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAB6rNUED3fqlB6xMJWF9_x8taryJh1lcs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "678430332045-e3gg71huffbqpj7g01hsv3k2kufq9feo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
