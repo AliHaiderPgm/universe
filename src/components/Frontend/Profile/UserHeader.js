@@ -2,12 +2,12 @@ import React from 'react'
 import { View, Text, Image, StyleSheet } from 'react-native'
 import { colors, sizes, spacing } from '../../constants/theme'
 
-export default function UserHeader({ data }) {
+export default function UserHeader({ data,userName }) {
     return (
         <View style={styles.mainContainer}>
             <View style={styles.container}>
                 <Image source={data.avatar} style={styles.avatar} />
-                <Text style={styles.userName}>{data.username}</Text>
+                <Text style={styles.userName}>{userName}</Text>
             </View>
         </View>
     )

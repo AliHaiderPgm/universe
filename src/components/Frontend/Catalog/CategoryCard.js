@@ -2,8 +2,10 @@ import React from 'react'
 import { View, Text, Pressable, Image, StyleSheet } from 'react-native'
 import { colors, sizes, spacing } from '../../constants/theme'
 import OptionCard from '../../shared/OptionCard'
+import { useNavigation } from '@react-navigation/native'
 
 export default function CategoryCard({ list }) {
+    const navigation = useNavigation()
     return (
         <View style={styles.containerWrapper}>
             {list.map((Category, index) => {
@@ -16,7 +18,7 @@ export default function CategoryCard({ list }) {
                                         <Image source={Category.image} style={styles.image}/>
                                         <View style={styles.wrapper}>
                                             <Text style={styles.categoryText}>{Category.title}</Text>
-                                            <Pressable style={styles.btn}>
+                                            <Pressable style={styles.btn} onPress={()=> navigation.navigate('catalogDetail',{name:Category.title, types: Category.categoryTypes})}>
                                                 <Text style={styles.btnText}>
                                                     View all
                                                 </Text>

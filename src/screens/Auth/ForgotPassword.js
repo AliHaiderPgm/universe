@@ -4,23 +4,46 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Button, HelperText, TextInput } from 'react-native-paper'
 import { colors, sizes, spacing } from '../../components/constants/theme'
 import { validEmail } from '../../components/Global'
+import auth from '@react-native-firebase/auth';
+import { useToast } from 'native-base'
 
 export default function ForgotPassword() {
   const [emailVal, setEmailVal] = useState()
   const [emailValidation, setEmailValidation] = useState(true)
-  const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const toast = useToast()
 
-  const handleOnChange = (e)=>{
+  const handleOnChange = (e) => {
     setEmailVal(e)
   }
   const handleSubmit = () => {
-    setLoading(true)
-    checkValidation()
-    setEmailVal('')
-  }
-  const checkValidation =()=>{
     validEmail.test(emailVal) ? setEmailValidation(true) : setEmailValidation(false)
-    setLoading(false)
+    if(!validEmail.test(emailVal)){
+      setEmailValidation(false)
+      return
+    }
+    setEmailValidation(true)
+    setLoading(true)
+    auth()
+      .sendPasswordResetEmail(emailVal)
+      .then(() => {
+        notify('Reset link sent!', 'green')
+        setLoading(false)
+      })
+      .catch(error => {
+        if (error.code === 'auth/user-not-found') {
+          notify('User not found!', 'red')
+        }
+        if (error.code === 'auth/network-request-failed') {
+          notify('Check your network!', 'red')
+        }
+        setLoading(false)
+        // console.error(error.code);
+      });
+    // setEmailVal('')
+  }
+  const notify = (msg, color) => {
+    toast.show({title:msg, placement: 'top', backgroundColor: `${color}.800`})
   }
   return (
     <KeyboardAwareScrollView>
@@ -54,8 +77,10 @@ export default function ForgotPassword() {
             mode="contained"
             buttonColor={colors.black} textColor={colors.white}
             style={styles.btn}
-            onPress={() => handleSubmit()}>
-            Send reset link
+            onPress={() => handleSubmit()}
+            loading={loading}
+            >
+            {loading ? 'Sending...' : 'Send reset link'}
           </Button>
         </View>
       </View>

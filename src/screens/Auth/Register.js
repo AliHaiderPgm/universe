@@ -6,6 +6,7 @@ import { Button, HelperText, TextInput } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import { validEmail, validPassword } from '../../components/Global'
 import auth, { firebase } from '@react-native-firebase/auth';
+import { useToast } from 'native-base'
 
 const initialState = {
   firstName: '',
@@ -14,14 +15,15 @@ const initialState = {
   password: '',
   confirmPassword: '',
 }
-
 export default function Register() {
   const [state, setState] = useState(initialState)
   const navigation = useNavigation()
   const [emailValidation, setEmailValidation] = useState(true)
   const [passwordValidation, setPasswordValidation] = useState(true)
   const [validConfirmPassword, setValidConfirmPassword] = useState(true)
+  const [firstNameValidation, setFirstNameValidation] = useState(true)
   const [loading, setLoading] = useState(false)
+  const toast = useToast()
 
   const handleChange = (name, value) => {
     setState(s => ({ ...s, [name]: value }))
@@ -30,6 +32,11 @@ export default function Register() {
   const handleRegister = () => {
     const { firstName, secondName, email, password, confirmPassword } = state
     // Checking validation
+    if (firstName.length <= 2) {
+      setFirstNameValidation(false)
+      return
+    }
+    setFirstNameValidation(true)    
     if (!validEmail.test(email)) {
       setEmailValidation(false)
       return
@@ -45,29 +52,36 @@ export default function Register() {
       return
     }
     setValidConfirmPassword(true)
+
     // Creating account
     setLoading(true)
     auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(async() => {
+      .then(async () => {
         const user = {
-          displayName: firstName + ' ' + secondName,
+          displayName: !secondName ? firstName : firstName + ' ' + secondName,
         };
         await firebase.auth().currentUser.updateProfile(user);
         setState(initialState)
+        notify('Account created!', 'green')
+        setLoading(false)
+        navigation.navigate('Profile')
       })
       .catch(error => {
         if (error.code === 'auth/email-already-in-use') {
-          console.log('That email address is already in use!');
+          notify('Email alredy in use!', 'red')
+        }
+        if (error.code === 'auth/network-request-failed') {
+          notify('Check your network!', 'red')
         }
 
-        if (error.code === 'auth/invalid-email') {
-          console.log('That email address is invalid!');
-        }
-
-        console.error(error);
+        // console.error(error.code);
+        setLoading(false)
       });
-      setLoading(false)
+  }
+
+  const notify = (message, color) => {
+    toast.show({ title: message, placement: 'top', duration: 2000, backgroundColor: `${color}.800` })
   }
   return (
     <KeyboardAwareScrollView>
@@ -87,7 +101,13 @@ export default function Register() {
             placeholder='Joe'
             value={state.firstName}
             onChangeText={val => handleChange("firstName", val)}
+            error={!firstNameValidation}
           />
+          {
+            !firstNameValidation && <HelperText type="error" visible={true} style={{ marginTop: -20,color:'red' }}>
+              Invalid Name!
+            </HelperText>
+          }
 
           <TextInput
             label="Second Name"
@@ -108,10 +128,10 @@ export default function Register() {
             keyboardType='email-address'
             value={state.email}
             onChangeText={val => handleChange("email", val)}
-            error={emailValidation ? false : true}
+            error={!emailValidation}
           />
           {
-            !emailValidation && <HelperText type="error" visible={true} style={{ marginTop: -20 }}>
+            !emailValidation && <HelperText type="error" visible={true} style={{ marginTop: -20,color:'red' }}>
               Email address is invalid!
             </HelperText>
           }
@@ -125,10 +145,10 @@ export default function Register() {
             secureTextEntry={true}
             value={state.password}
             onChangeText={val => handleChange("password", val)}
-            error={passwordValidation ? false : true}
+            error={!passwordValidation}
           />
           {
-            !passwordValidation && <HelperText type="error" visible={true} style={{ marginTop: -20 }}>
+            !passwordValidation && <HelperText type="error" visible={true} style={{ marginTop: -20,color:'red' }}>
               Password must contain 'alphabets and numbers' and length should be greater than 6.
             </HelperText>
           }
@@ -142,10 +162,10 @@ export default function Register() {
             secureTextEntry={true}
             value={state.confirmPassword}
             onChangeText={val => handleChange("confirmPassword", val)}
-            error={validConfirmPassword ? false : true}
+            error={!validConfirmPassword}
           />
           {
-            !validConfirmPassword && <HelperText type="error" visible={true} style={{ marginTop: -20 }}>
+            !validConfirmPassword && <HelperText type="error" visible={true} style={{ marginTop: -20,color:'red' }}>
               Password does not match.
             </HelperText>
           }

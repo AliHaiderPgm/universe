@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { Image, StyleSheet, Text, View, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback } from 'react-native'
 import { colors, sizes, spacing } from '../../components/constants/theme'
-import { Button, TextInput } from 'react-native-paper'
+import { Button, HelperText, TextInput } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import { validEmail, validPassword } from '../../components/Global'
 import auth from '@react-native-firebase/auth';
+import { useToast } from 'native-base'
 
 const initialState = {
   email: '',
@@ -15,6 +16,7 @@ export default function Login() {
   const [emailValid, setEmailValid] = useState(true)
   const [passwordValid, setPasswordValid] = useState(true)
   const [loading, setLoading] = useState(false)
+  const toast = useToast()
   const navigation = useNavigation()
   const handleChange = (name, value) => {
     setState(s => ({ ...s, [name]: value }))
@@ -27,7 +29,7 @@ export default function Login() {
       return
     }
     setEmailValid(true)
-    if (!validPassword.test(password)) {
+    if (password.length <= 6) {
       setPasswordValid(false)
       return
     }
@@ -39,28 +41,38 @@ export default function Login() {
       .then((user) => {
         console.log(user);
         setLoading(false)
+        navigation.navigate('Profile')
       })
       .catch(error => {
 
-        if (error.code === 'auth/invalid-email') {
-          console.log('That email address is invalid!');
+        if (error.code === 'auth/user-not-found') {
+          notify('Email or password is incorrect!', 'red')
+        }
+        if (error.code === 'auth/wrong-password') {
+          notify('Email or password is incorrect!', 'red')
+        }
+        if (error.code === 'auth/network-request-failed') {
+          notify('Check your network!', 'red')
         }
 
-        console.error(error.code);
+        // console.error(error.code);
         setLoading(false)
       });
+  }
+  const notify = (message,color) => {
+    toast.show({ description: message, placement: 'top', duration: 2000, backgroundColor: `${color}.800` })
   }
   return (
     <KeyboardAvoidingView behavior={"height"} enabled={true} style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.inner}>
           <View style={styles.imageContainer}>
-            <Image source={require('../../assets/appLogo.png')} style={styles.image} />
+            <Image source={require('../../assets/universe.png')} style={styles.image} />
           </View>
           <View style={styles.formContainer}>
 
             <Text style={styles.label}>Log in</Text>
-            
+
             <TextInput
               label="Email"
               mode='outlined' activeOutlineColor={colors.black} outlineColor={colors.black} textColor='black'
@@ -68,8 +80,13 @@ export default function Login() {
               onChangeText={text => handleChange('email', text)}
               style={styles.inputField}
               keyboardType='email-address'
-              error={!emailValid ? true : false}
+              error={!emailValid}
             />
+            {
+              !emailValid && <HelperText type="error" visible={true} style={{ marginTop: -20, color:'red' }}>
+                Invalid email address!
+              </HelperText>
+            }
 
             <TextInput
               label="Password"
@@ -78,8 +95,13 @@ export default function Login() {
               onChangeText={text => handleChange('password', text)}
               style={styles.inputField}
               secureTextEntry={true}
-              error={!passwordValid ? true : false}
+              error={!passwordValid}
             />
+            {
+              !passwordValid && <HelperText type="error" visible={true} style={{ marginTop: -20, color:'red' }}>
+                Invalid password!
+              </HelperText>
+            }
 
             <Button
               mode="contained" buttonColor={colors.black} textColor={colors.white}
@@ -130,13 +152,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    height: 50,
-    width: 50,
-    borderRadius: 15,
-    borderTopRightRadius: 3,
-    padding: 35,
+    height:30,
     resizeMode: 'contain',
-    backgroundColor: colors.white
   },
   label: {
     color: colors.black,

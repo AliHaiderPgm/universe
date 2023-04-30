@@ -1,20 +1,18 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { CATEGORIES } from '../../../data'
-import ScreenHeader from '../../../components/shared/ScreenHeader'
 import CategoryCard from '../../../components/Frontend/Catalog/CategoryCard'
-import { colors } from '../../../components/constants/theme'
+import { spacing } from '../../../components/constants/theme'
 
-export default function Catalog() {
+export default function Catalog() { 
   return (
     <View style={styles.container}>
-      <ScreenHeader title="Catalog" icon="search" navigateTo="search"/>
       <CategoryCard list={CATEGORIES}/>
     </View>
   )
 }
-const styles =StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.light,
+    marginTop:spacing.m
   },
 })

@@ -1,13 +1,32 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Categories from './Catalog'
-import { colors } from '../../../components/constants/theme'
+import CatalogDetail from './CatalogDetail'
+import Icon from '../../../components/shared/Icon'
+import { useNavigation } from '@react-navigation/native'
 
 export default function Index() {
-    const CategoryNavigator = createNativeStackNavigator()
+  const navigation = useNavigation()
+  const CategoryNavigator = createNativeStackNavigator()
   return (
     <CategoryNavigator.Navigator>
-      <CategoryNavigator.Screen name="Home" component={Categories} options={{headerShown: false, statusBarColor: colors.light}}/>
+      <CategoryNavigator.Screen
+        name="Home"
+        component={Categories}
+        options={{
+          headerTitle: 'Catalog',
+          headerRight: () => (<Icon icon="search" size={23} onPress={() => navigation.navigate('search')} />),
+        }}
+      />
+
+      <CategoryNavigator.Screen
+        name="catalogDetail"
+        component={CatalogDetail}
+        options={{
+          headerTitle: '',
+          headerRight: () => (<Icon icon="cart" size={25} onPress={() => navigation.navigate('cart')} />),
+        }}
+      />
     </CategoryNavigator.Navigator>
   )
 }

@@ -203,7 +203,7 @@ export const TOP_PRODUCTS = [
 export const PRODUCTS = [
   {
     id: 5,
-    image: require('../assets/Products/topProduct-4-min.jpg'),
+    imageUrl: 'https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     title: 'Cappadocia',
     price: 350,
     description:
@@ -221,7 +221,7 @@ export const PRODUCTS = [
   },
   {
     id: 2,
-    image: require('../assets/Products/topProduct-5-min.jpg'),
+    imageUrl: 'https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     title: 'Capri',
     price: 75,
     description:
@@ -235,7 +235,7 @@ export const PRODUCTS = [
   },
   {
     id: 3,
-    image: require('../assets/Products/topProduct-6-min.jpg'),
+    imageUrl: 'https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     title: 'Bora Bora',
     price: 250,
     description:
@@ -249,7 +249,7 @@ export const PRODUCTS = [
   },
   {
     id: 7,
-    image: require('../assets/Products/topProduct-2-min.jpg'),
+    imageUrl: 'https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     title: 'Phuket',
     price: 200,
     description:
@@ -491,15 +491,18 @@ export const WOMENS_FEATURED_PRODUCTS = [
 export const CATEGORIES = [
   {
     title: "Men",
-    image: require('../assets/male_model_category.jpg')
+    image: require('../assets/male_model_category.jpg'),
+    categoryTypes: ['All', 'Shirts', 'Jeans', 'T-shirts', 'Trouser', 'Suit', 'Jackets', 'Belt', 'Polo shirt', 'Coat', 'Sneakers'],
   },
   {
     title: "Child",
-    image: require('../assets/child_model_category.jpg')
+    image: require('../assets/child_model_category.jpg'),
+    categoryTypes: ['All', 'Shirts', 'Jeans', 'T-shirts', 'Trouser', 'Kurta', 'Hijab', 'Salwar kameez',],
   },
   {
     title: "Women",
-    image: require('../assets/female_model_category.jpg')
+    image: require('../assets/female_model_category.jpg'),
+    categoryTypes: ['All', 'Dress', 'Kurta', 'Hijab', 'Salwar kameez', 'Burka', 'Abaya gowns'],
   },
   {
     title: "Brands",

@@ -18,22 +18,17 @@ export default function Options({ list }) {
 }
 const styles = StyleSheet.create({
     container: {
-        paddingHorizontal: spacing.m,
         gap: spacing.s,
         backgroundColor: colors.white,
         borderTopLeftRadius: sizes.radius,
         borderTopRightRadius: sizes.radius,
         elevation: 7,
         paddingTop: spacing.l,
-        height: sizes.height,
     },
     cardWrapper: {
-        height: 70,
-        width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: spacing.m,
     },
     textWrapper: {
         flexDirection: 'row-reverse',

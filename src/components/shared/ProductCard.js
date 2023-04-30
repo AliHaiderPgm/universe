@@ -22,7 +22,7 @@ export default function ProductCard({ cardData, carousel }) {
             onPress={()=>navigation.navigate('productDetail',{product: cardData})}>
                 <View style={[styles.card, shadow.light]}>
                     <View style={styles.imageContainer}>
-                        <Image source={cardData.image} style={styles.image} />
+                        <Image source={{uri:cardData.imageUrl}} style={styles.image} />
                     </View>
                     <View style={styles.footer}>
                         <View>

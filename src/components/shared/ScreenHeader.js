@@ -35,5 +35,6 @@ const styles = StyleSheet.create({
     heading: {
         fontSize: sizes.h2,
         color: colors.black,
+        fontWeight:'600',
     }
 })
