@@ -4,7 +4,7 @@ import { colors, shadow, sizes, spacing } from '../constants/theme';
 import { useNavigation } from '@react-navigation/native';
 
 
-const CARD_WIDTH = sizes.width / 2 - (spacing.l + spacing.l / 2);
+const CARD_WIDTH = sizes.width / 2 - (spacing.l + spacing.l / 2); 
 const CARD_HEIGHT = 220;
 export default function ProductCard({ cardData, carousel }) {
     const navigation = useNavigation()
@@ -26,7 +26,7 @@ export default function ProductCard({ cardData, carousel }) {
                     </View>
                     <View style={styles.footer}>
                         <View>
-                            <Text style={styles.title}>{cardData.title}</Text>
+                            <Text style={styles.title}>{cardData.name}</Text>
                             <Text style={styles.price}>${cardData.price}</Text>
                         </View>
                     </View>

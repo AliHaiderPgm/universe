@@ -9,7 +9,7 @@ export default function Index() {
   const navigation = useNavigation()
   const CategoryNavigator = createNativeStackNavigator()
   return (
-    <CategoryNavigator.Navigator>
+    <CategoryNavigator.Navigator initialRouteName='Home'>
       <CategoryNavigator.Screen
         name="Home"
         component={Categories}
@@ -23,7 +23,6 @@ export default function Index() {
         name="catalogDetail"
         component={CatalogDetail}
         options={{
-          headerTitle: '',
           headerRight: () => (<Icon icon="cart" size={25} onPress={() => navigation.navigate('cart')} />),
         }}
       />

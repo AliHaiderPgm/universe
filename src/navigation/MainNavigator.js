@@ -7,37 +7,43 @@ import Cart from '../screens/Frontend/Cart/Cart'
 import ProductDetails from '../screens/Frontend/ProductDetails'
 import Auth from '../screens/Auth'
 import { colors } from '../components/constants/theme'
+import Icon from '../components/shared/Icon'
 
 export default function MainNavigator() {
     const Stack = createNativeStackNavigator()
 
     return (
         <NavigationContainer>
-           <Stack.Navigator >
+            <Stack.Navigator >
                 <Stack.Screen
                     name='Root'
                     component={TabNavigator}
-                    options={{ headerShown: false,}} 
+                    options={{ headerShown: false, }}
                 />
                 <Stack.Screen
                     name='search'
                     component={SearchBar}
-                    options={{ headerShown: false }} 
+                    options={{ headerShown: false }}
                 />
                 <Stack.Screen
                     name='cart'
                     component={Cart}
-                    options={{ headerShown: false }} 
+                    options={{
+                        headerTitle: 'Shopping Cart',
+                        headerRight: () => (<Icon icon="heartOutline" size={25} />),
+                    }}
                 />
                 <Stack.Screen
                     name='productDetail'
                     component={ProductDetails}
-                    options={{ headerShown: false, statusBarColor: colors.white,}} 
+                    options={{
+                        headerRight: () => (<Icon icon="heartOutline" size={25} />),
+                    }}
                 />
                 <Stack.Screen
                     name='auth'
                     component={Auth}
-                    options={{ headerShown: false }} 
+                    options={{ headerShown: false }}
                 />
             </Stack.Navigator>
         </NavigationContainer>

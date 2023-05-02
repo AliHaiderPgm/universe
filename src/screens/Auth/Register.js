@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native'
 import { validEmail, validPassword } from '../../components/Global'
 import auth, { firebase } from '@react-native-firebase/auth';
 import { useToast } from 'native-base'
+import { useAuth } from '../../Context/AuthContext'
 
 const initialState = {
   firstName: '',
@@ -23,7 +24,9 @@ export default function Register() {
   const [validConfirmPassword, setValidConfirmPassword] = useState(true)
   const [firstNameValidation, setFirstNameValidation] = useState(true)
   const [loading, setLoading] = useState(false)
+
   const toast = useToast()
+  const { dispatch } = useAuth()
 
   const handleChange = (name, value) => {
     setState(s => ({ ...s, [name]: value }))
@@ -36,7 +39,7 @@ export default function Register() {
       setFirstNameValidation(false)
       return
     }
-    setFirstNameValidation(true)    
+    setFirstNameValidation(true)
     if (!validEmail.test(email)) {
       setEmailValidation(false)
       return
@@ -53,31 +56,33 @@ export default function Register() {
     }
     setValidConfirmPassword(true)
 
-    // Creating account
-    setLoading(true)
-    auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(async () => {
-        const user = {
-          displayName: !secondName ? firstName : firstName + ' ' + secondName,
-        };
-        await firebase.auth().currentUser.updateProfile(user);
-        setState(initialState)
-        notify('Account created!', 'green')
-        setLoading(false)
-        navigation.navigate('Profile')
-      })
-      .catch(error => {
-        if (error.code === 'auth/email-already-in-use') {
-          notify('Email alredy in use!', 'red')
-        }
-        if (error.code === 'auth/network-request-failed') {
-          notify('Check your network!', 'red')
-        }
+    createAccount(firstName, secondName, email, password)
+  }
 
-        // console.error(error.code);
-        setLoading(false)
-      });
+  const createAccount = async (firstName, secondName, email, password) => {
+    setLoading(true)
+    try {
+      const userCredential = await auth().createUserWithEmailAndPassword(email, password)
+      const user = userCredential.user
+      const userData = {
+        displayName: !secondName ? firstName : firstName + ' ' + secondName,
+      };
+      await user.updateProfile(userData);
+      const updatedUser = auth().currentUser
+      dispatch({type:'LOGIN',payload:{user:updatedUser}})
+      setState(initialState)
+      notify('Account created!', 'green')
+      navigation.navigate('Profile')
+    } catch (error) {
+      if (error.code === 'auth/email-already-in-use') {
+        notify('Email alredy in use!', 'red')
+      }
+      if (error.code === 'auth/network-request-failed') {
+        notify('Check your network!', 'red')
+      }
+    } finally {
+      setLoading(false)
+    }
   }
 
   const notify = (message, color) => {
@@ -104,7 +109,7 @@ export default function Register() {
             error={!firstNameValidation}
           />
           {
-            !firstNameValidation && <HelperText type="error" visible={true} style={{ marginTop: -20,color:'red' }}>
+            !firstNameValidation && <HelperText type="error" visible={true} style={{ marginTop: -20, color: 'red' }}>
               Invalid Name!
             </HelperText>
           }
@@ -131,7 +136,7 @@ export default function Register() {
             error={!emailValidation}
           />
           {
-            !emailValidation && <HelperText type="error" visible={true} style={{ marginTop: -20,color:'red' }}>
+            !emailValidation && <HelperText type="error" visible={true} style={{ marginTop: -20, color: 'red' }}>
               Email address is invalid!
             </HelperText>
           }
@@ -148,7 +153,7 @@ export default function Register() {
             error={!passwordValidation}
           />
           {
-            !passwordValidation && <HelperText type="error" visible={true} style={{ marginTop: -20,color:'red' }}>
+            !passwordValidation && <HelperText type="error" visible={true} style={{ marginTop: -20, color: 'red' }}>
               Password must contain 'alphabets and numbers' and length should be greater than 6.
             </HelperText>
           }
@@ -165,7 +170,7 @@ export default function Register() {
             error={!validConfirmPassword}
           />
           {
-            !validConfirmPassword && <HelperText type="error" visible={true} style={{ marginTop: -20,color:'red' }}>
+            !validConfirmPassword && <HelperText type="error" visible={true} style={{ marginTop: -20, color: 'red' }}>
               Password does not match.
             </HelperText>
           }

@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Image, ScrollView, Text, TouchableOpacity } from 'react-native'
 import { colors, sizes, spacing } from '../../components/constants/theme'
-import ScreenHeader from '../../components/shared/ScreenHeader'
 import Counter from '../../components/shared/Counter'
 import Icon from '../../components/shared/Icon'
+import { useNavigation } from '@react-navigation/native'
+import { useAuth } from '../../Context/AuthContext'
+import { useToast } from 'native-base'
+import firestore from '@react-native-firebase/firestore';
 
 export default function ProductDetails({ navgation, route }) {
   const { product } = route.params
@@ -12,6 +15,15 @@ export default function ProductDetails({ navgation, route }) {
   const [selectedColor, setSelectedColor] = useState(null);
   const [price, setPrice] = useState(null);
   const [quantity, setQuantity] = useState(null);
+  const [loading, setLoading] = useState(false)
+  const navigation = useNavigation()
+  const { isAuthenticated, user } = useAuth()
+  const toast = useToast()
+
+
+  useEffect(() => {
+    navigation.setOptions({ title: product.name })
+  }, [])
 
   // Function to handle size selection
   const handleSizeSelection = (size) => {
@@ -26,86 +38,121 @@ export default function ProductDetails({ navgation, route }) {
     setQuantity(data.count)
   }
 
+  const notify = (msg, color) => {
+    return toast.show(
+      {
+        title: msg,
+        placement: 'top',
+        backgroundColor: `${color}.800`,
+        duration: 2000,
+        marginTop: -10
+      }
+    )
+  }
   const handleAddTOCart = () => {
-    const cartProduct = {
-      details: product,
-      quantity,
-      price,
+    if (!isAuthenticated) {
+      navigation.navigate('auth', { name: 'login' })
+      return
     }
-
-    if (selectedSize === null) { alert('Please select a size') }
-    else if (selectedColor === null) { alert('Please select a color') }
+    const cartProduct = {
+      ...product,
+      quantity,
+      totalPrice: price,
+      selectedColor,
+      userId: user.uid
+    }
+    if (selectedSize === null) { notify('Select a size!', 'red') }
+    else if (selectedColor === null) { notify('Select a color!', 'red') }
     else (AddToCart(cartProduct))
   }
 
   const AddToCart = (cartProduct) => {
-    alert('Added to cart')
+    setLoading(true)
+    firestore()
+      .collection('cartItems')
+      .add(cartProduct)
+      .then(() => {
+        notify('Added to cart', 'green')
+        setSelectedColor(null)
+        setSelectedSize(null)
+      })
+      .catch(() => {
+        notify('Something went wrong!', 'red')
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   const sizes = ['S', 'M', 'L', 'XL',]
   const colors = ['#ef233c', '#2ec4b6', '#a2d2ff', '#6c757d', '#001233']
 
   return (
-      <View style={styles.mainContainer}>
-        <ScreenHeader icon="heartOutline" navigateTo="Home" style={styles.header} />
-        <ScrollView style={styles.container}>
+    <View style={styles.mainContainer}>
+      <ScrollView style={styles.container}>
 
 
-          <View style={styles.imageContainer}>
-            <Image source={product.image} style={styles.image} />
-          </View>
-
-
-          <View style={styles.detailsWrapper}>
-
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>{product.title}</Text>
-              <Text style={styles.desc}>{product.description}</Text>
-            </View>
-
-            <Text style={styles.label}>Size:</Text>
-            <View style={styles.selectionContainer}>
-              {sizes.map((size, index) => {
-                return <TouchableOpacity
-                  key={index}
-                  style={[styles.sizeButton, selectedSize === size && styles.selectedSizeButton]}
-                  onPress={() => handleSizeSelection(size)}
-                  activeOpacity={0.5}
-                >
-                  <Text style={styles.buttonText}>{size}</Text>
-                </TouchableOpacity>
-              })}
-            </View>
-
-            <Text style={styles.label}>Color:</Text>
-            <View style={styles.selectionContainer}>
-              {colors.map((color, index) => {
-                return <TouchableOpacity
-                  key={index}
-                  style={[styles.colorButton, selectedColor === color && styles.selectedColorButton]}
-                  onPress={() => handleColorSelection(color)}
-                  activeOpacity={0.5}
-                >
-                  <View style={[styles.color, { backgroundColor: color }]} />
-                </TouchableOpacity>
-              })}
-            </View>
-
-            <Text style={styles.label}>Quantity:</Text>
-            <Counter sendToParent={fromChild} productPrice={product.price} />
-
-          </View>
-        </ScrollView>
-        <View style={styles.buttonWrapper}>
-          <TouchableOpacity activeOpacity={0.5} style={styles.button} onPress={() => handleAddTOCart()}>
-            <Text style={styles.price}>${price}</Text>
-            <View style={styles.addToCartWrapper}>
-              <Icon icon="cart" size={23} />
-              <Text style={styles.addToCartText}>Add to cart</Text>
-            </View>
-          </TouchableOpacity>
+        <View style={styles.imageContainer}>
+          <Image source={{ uri: product.imageUrl }} style={styles.image} />
         </View>
+
+
+        <View style={styles.detailsWrapper}>
+
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>{product.name}</Text>
+            <Text style={styles.desc}>{product.description}</Text>
+          </View>
+
+          <Text style={styles.label}>Material:</Text>
+          <Text style={[styles.desc, { marginBottom: spacing.s }]}>{product?.material}</Text>
+
+          <Text style={styles.label}>Size:</Text>
+          <View style={styles.selectionContainer}>
+            {sizes.map((size, index) => {
+              return <TouchableOpacity
+                key={index}
+                style={[styles.sizeButton, selectedSize === size && styles.selectedSizeButton]}
+                onPress={() => handleSizeSelection(size)}
+                activeOpacity={0.5}
+              >
+                <Text style={styles.buttonText}>{size}</Text>
+              </TouchableOpacity>
+            })}
+          </View>
+
+          <Text style={styles.label}>Color:</Text>
+          <View style={styles.selectionContainer}>
+            {colors.map((color, index) => {
+              return <TouchableOpacity
+                key={index}
+                style={[styles.colorButton, selectedColor === color && styles.selectedColorButton]}
+                onPress={() => handleColorSelection(color)}
+                activeOpacity={0.5}
+              >
+                <View style={[styles.color, { backgroundColor: color }]} />
+              </TouchableOpacity>
+            })}
+          </View>
+
+          <Text style={styles.label}>Quantity:</Text>
+          <Counter sendToParent={fromChild} productPrice={product.price} />
+
+        </View>
+      </ScrollView>
+      <View style={styles.buttonWrapper}>
+        {
+          loading ? <View style={styles.button}><Text style={[styles.price, { marginVertical: spacing.s + 7 }]}>Adding...</Text></View>
+            : <TouchableOpacity activeOpacity={0.5} style={styles.button} onPress={() => handleAddTOCart()}>
+              <Text style={styles.price}>${price}</Text>
+              <View style={styles.addToCartWrapper}>
+                <Icon icon="cart" size={23} />
+                <Text style={styles.addToCartText}>Add to cart</Text>
+              </View>
+            </TouchableOpacity>
+        }
       </View>
+    </View>
   )
 }
 
@@ -114,16 +161,9 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     backgroundColor: colors.white,
   },
-  header: {
-    width: sizes.width,
-    zIndex: 1,
-    paddingTop: spacing.s, 
-    paddingBottom: spacing.s,
-    backgroundColor: colors.white,
-  },
   container: {
     position: 'relative',
-    marginBottom: 100,
+    marginBottom: 55,
   },
   imageContainer: {
     overflow: 'hidden',
@@ -201,7 +241,7 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     position: 'absolute',
-    bottom: 75,
+    bottom: 15,
     left: 25,
     width: sizes.width - 50,
   },

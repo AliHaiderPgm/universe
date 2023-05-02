@@ -3,11 +3,14 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 import { colors, sizes, spacing } from '../../../components/constants/theme'
 import { ActivityIndicator, Divider } from 'react-native-paper'
 import firestore from '@react-native-firebase/firestore';
-import ProductList from '../../../components/Frontend/ProductList';
+import CatalogProductsCard from '../../../components/Frontend/Catalog/CatalogProductsCard';
+import { useNavigation } from '@react-navigation/native';
 
 export default function CatalogDetail({ route }) {
     const [loading, setLoading] = useState(false)
     const [collection, setCollection] = useState([])
+    const navigation = useNavigation()
+
     let type;
     if (route.params.name === 'Men') {
         type = 'maleProducts'
@@ -28,6 +31,7 @@ export default function CatalogDetail({ route }) {
     }
     useEffect(() => {
         getData()
+        navigation.setOptions({title: route.params.name + ' Products'})
     }, [])
 
     const types = route.params.types;
@@ -51,9 +55,9 @@ export default function CatalogDetail({ route }) {
                             <ActivityIndicator animating={true} color={colors.gold} size={'large'} />
                         </View>
                         :
-                        <>
-                            <ProductList list={collection} />
-                        </>
+                        <View style={styles.cards}>
+                            <CatalogProductsCard list={collection} />
+                        </View>
                 }
             </ScrollView>
 
@@ -83,5 +87,12 @@ const styles = StyleSheet.create({
         color: colors.black,
         fontSize: sizes.h3,
         fontWeight: '400',
+    },
+    cards:{
+        flexDirection:'row',
+        gap: spacing.m,
+        flexWrap:'wrap',
+        justifyContent:'center',
+        marginVertical: spacing.m,
     },
 })

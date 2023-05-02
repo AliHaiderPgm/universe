@@ -10,8 +10,8 @@ export default function NoProductFound() {
       <Image source={require('../../../assets/empty_cart.png')} style={styles.image} />
       <Text style={styles.heading}>Your cart is empty</Text>
       <Text style={styles.desc}>Looks like you haven't added anything to your cart yet</Text>
-      <TouchableOpacity style={styles.btn} onPress={()=> naviagtion.navigate("Categories")} activeOpacity={0.5}>
-        <Text>SHOP NOW</Text>
+      <TouchableOpacity style={styles.btn} onPress={()=> naviagtion.navigate("Categories",{name:'Home'})} activeOpacity={0.5}>
+        <Text style={styles.text}>SHOP NOW</Text>
       </TouchableOpacity>
     </View>
   )
@@ -46,5 +46,9 @@ const styles = StyleSheet.create({
     borderRadius: sizes.radius,
     fontSize: sizes.h3,
     backgroundColor: colors.gold
+  },
+  text:{
+    color:colors.black,
+    fontWeight:'600'
   },
 })

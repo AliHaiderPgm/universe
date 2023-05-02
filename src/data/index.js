@@ -204,7 +204,7 @@ export const PRODUCTS = [
   {
     id: 5,
     imageUrl: 'https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    title: 'Cappadocia',
+    name: 'Cappadocia',
     price: 350,
     description:
       "Cappadocia's landscape includes dramatic expanses of soft volcanic rock, shaped by erosion into towers, cones, valleys, and caves. Rock-cut churches and underground tunnel complexes from the Byzantine and Islamic eras are scattered throughout the countryside.",
@@ -222,7 +222,7 @@ export const PRODUCTS = [
   {
     id: 2,
     imageUrl: 'https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    title: 'Capri',
+    name: 'Capri',
     price: 75,
     description:
       'Capri is an island of a thousand faces, where visitors can walk the trails skirting the cliffs above the Mediterranean in total solitude, dive into the crystalline waters of its rocky shore, or plunge into the vibrant crowds of the Piazzetta and shop in the most fashionable boutiques in the world.',
@@ -236,7 +236,7 @@ export const PRODUCTS = [
   {
     id: 3,
     imageUrl: 'https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    title: 'Bora Bora',
+    name: 'Bora Bora',
     price: 250,
     description:
       'Learn how you can travel Bora Bora on a budget and how overwater bungalows are possible for cheap plus tips on keeping Bora Bora trip costs low.',
@@ -250,7 +250,7 @@ export const PRODUCTS = [
   {
     id: 7,
     imageUrl: 'https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    title: 'Phuket',
+    name: 'Phuket',
     price: 200,
     description:
       'Phuket is the largest island in Thailand. It is located in the Andaman Sea in southern Thailand',

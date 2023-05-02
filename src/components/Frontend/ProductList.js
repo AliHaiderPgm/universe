@@ -4,7 +4,6 @@ import ProductCard from '../shared/ProductCard';
 
 
 export default function ProductList({ list }) {
-    console.log(list)
     return (
         <View style={styles.container}>
             {list.map((item,index) => {

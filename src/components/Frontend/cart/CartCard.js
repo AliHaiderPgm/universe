@@ -5,27 +5,27 @@ import { colors, shadow, sizes, spacing } from '../../constants/theme'
 
 export default function CartCard({ item, increment, decrement, remove }) {
     return (
-        <View style={[shadow.dark, styles.cardWrapper]} key={item.id}>
+        <View style={[shadow.dark, styles.cardWrapper]} key={item._data.id}>
 
             <View style={styles.quantityContainer}>
-                <TouchableOpacity style={styles.btn} onPress={() => increment(item.id)}>
+                <TouchableOpacity style={styles.btn} onPress={() => increment(item._data.id)}>
                     <Text style={styles.text}>+</Text>
                 </TouchableOpacity>
 
-                <Text style={styles.text}>{item.quantity}</Text>
+                <Text style={styles.text}>{item._data.quantity}</Text>
                 
-                <TouchableOpacity style={styles.btn} onPress={() => decrement(item.id)}>
+                <TouchableOpacity style={styles.btn} onPress={() => decrement(item._data.id)}>
                     <Text style={styles.text}>-</Text>
                 </TouchableOpacity>
             </View>
 
             <View style={styles.imageContainer}>
-                <Image source={item.image} style={styles.image} />
+                <Image source={{uri:item._data.imageUrl}} style={styles.image} />
             </View>
 
             <View style={styles.detailsContainer}>
-                <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.price}>${item.price}</Text>
+                <Text style={styles.title}>{item._data.name}</Text>
+                <Text style={styles.price}>${item._data.price}</Text>
             </View>
 
             <TouchableOpacity style={styles.deleteButtonContainer} onPress={()=> remove(item.id)}>
