@@ -66,12 +66,33 @@ export default function ProductDetails({ navgation, route }) {
     else (AddToCart(cartProduct))
   }
 
-  const AddToCart = (cartProduct) => {
+  const AddToCart = async (cartProduct) => {
     setLoading(true)
+    const docRef = firestore()
+    .collection('cartItems')
+    .where('id', '==', cartProduct.id)
+    const querySnapShot = await docRef.get()
+      if(!querySnapShot.empty){
+        updateDoc(cartProduct)
+      } else{
+        handleAddToCart(cartProduct)
+      }
+
+  }
+
+  const updateDoc = (cartProduct) => {
+    notify('Already added to cart!', 'red')
+    setLoading(false)
+  }
+
+  const handleAddToCart = (cartProduct) => {
     firestore()
       .collection('cartItems')
       .add(cartProduct)
-      .then(() => {
+      .then((docRef) => {
+        docRef.update({
+          docRefId: docRef.id,
+        })
         notify('Added to cart', 'green')
         setSelectedColor(null)
         setSelectedSize(null)

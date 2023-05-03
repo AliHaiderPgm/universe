@@ -28,7 +28,7 @@ export default function CartCard({ item, increment, decrement, remove }) {
                 <Text style={styles.price}>${item._data.price}</Text>
             </View>
 
-            <TouchableOpacity style={styles.deleteButtonContainer} onPress={()=> remove(item.id)}>
+            <TouchableOpacity style={styles.deleteButtonContainer} onPress={()=> remove(item._data.docRefId)}>
                 <Icon icon="close" size={13} />
             </TouchableOpacity>
         </View>
