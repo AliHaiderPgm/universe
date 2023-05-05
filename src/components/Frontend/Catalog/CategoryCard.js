@@ -1,8 +1,9 @@
 import React from 'react'
 import { View, Text, Pressable, Image, StyleSheet } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+//components
 import { colors, sizes, spacing } from '../../constants/theme'
 import OptionCard from '../../shared/OptionCard'
-import { useNavigation } from '@react-navigation/native'
 
 export default function CategoryCard({ list }) {
     const navigation = useNavigation()

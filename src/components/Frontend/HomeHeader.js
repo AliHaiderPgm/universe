@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet, Image } from 'react-native'
+//components
 import { colors, sizes, spacing } from '../constants/theme'
 
 export default function HomeHeader({mainHeading,secondTitle}) {

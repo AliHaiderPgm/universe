@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Text, FlatList ,Image, StyleSheet, TouchableHighlight } from 'react-native'
+//components
 import { colors, shadow, sizes, spacing } from '../constants/theme'
 import ProductCard from '../shared/ProductCard';
 

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import firestore from '@react-native-firebase/firestore'
+//components
 import { colors, sizes, spacing } from '../../constants/theme'
 import CartCard from './CartCard'
-import firestore from '@react-native-firebase/firestore';
 
 
 export default function CartDetails({ list, resetItems }) {

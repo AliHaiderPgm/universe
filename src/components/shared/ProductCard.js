@@ -1,7 +1,8 @@
 import React from 'react'
 import { View, Image, StyleSheet, Text, TouchableHighlight } from 'react-native'
-import { colors, shadow, sizes, spacing } from '../constants/theme';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native'
+//components
+import { colors, shadow, sizes, spacing } from '../constants/theme'
 
 
 const CARD_WIDTH = sizes.width / 2 - (spacing.l + spacing.l / 2); 

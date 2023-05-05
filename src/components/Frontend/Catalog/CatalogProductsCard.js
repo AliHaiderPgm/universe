@@ -1,7 +1,8 @@
 import React from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { colors, sizes, spacing } from '../../constants/theme';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native'
+//components
+import { colors, sizes, spacing } from '../../constants/theme'
 
 
 const CARD_HEIGHT = 180;

@@ -1,6 +1,6 @@
-import { View, StyleSheet } from 'react-native'
 import React from 'react'
-import { Image } from 'react-native'
+import { View, StyleSheet, Image } from 'react-native'
+//components
 import { colors, spacing } from '../constants/theme'
 
 export default function Features({icons,size}) {

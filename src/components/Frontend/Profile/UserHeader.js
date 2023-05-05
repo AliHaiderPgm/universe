@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Text, Image, StyleSheet } from 'react-native'
+//components
 import { colors, sizes, spacing } from '../../constants/theme'
 
 export default function UserHeader({ data,userName }) {

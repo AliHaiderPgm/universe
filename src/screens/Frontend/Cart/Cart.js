@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import NoProductFound from '../../../components/Frontend/cart/NoProductFound'
-import CartDetails from '../../../components/Frontend/cart/CartDetails'
-import { useAuth } from '../../../Context/AuthContext'
-import firestore from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore'
 import { ActivityIndicator } from 'react-native-paper'
 import { View } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+//context
+import { useAuth } from '../../../Context/AuthContext'
+//components
+import NoProductFound from '../../../components/Frontend/cart/NoProductFound'
+import CartDetails from '../../../components/Frontend/cart/CartDetails'
 import { colors } from '../../../components/constants/theme'
 
 export default function Cart() {
   const [cartItems, setCartItems] = useState([])
   const [loading, setLoading] = useState(false)
-  const { user } = useAuth()
+  const { user,isAuthenticated } = useAuth()
+  const navigation = useNavigation()
 
   const getItems = () => {
     if (user.uid) {
@@ -33,7 +37,7 @@ export default function Cart() {
     }
   }
   useEffect(() => {
-    getItems()
+    !isAuthenticated ? navigation.navigate('auth',{name: 'login'}) :  getItems()
   }, [])
 
   const resetItems = ()=>{
@@ -47,7 +51,7 @@ export default function Cart() {
         :
         <>
           {
-            cartItems.length === 0 ? <NoProductFound /> : <CartDetails list={cartItems} resetItems={resetItems}/>
+           cartItems.length === 0 ? <NoProductFound /> : <CartDetails list={cartItems} resetItems={resetItems}/>
           }
         </>
     }

@@ -1,15 +1,18 @@
 import React from 'react'
+import auth from '@react-native-firebase/auth';
 import { StyleSheet, View, ScrollView } from 'react-native'
+import { useToast } from 'native-base'
+import { Button } from 'react-native-paper'
+//context
+import { useAuth } from '../../../Context/AuthContext'
+//data
 import { SETTING_OPTIONS, USERS } from '../../../data'
+//components
 import ScreenHeader from '../../../components/shared/ScreenHeader'
 import UserHeader from '../../../components/Frontend/Profile/UserHeader'
 import Options from '../../../components/Frontend/Profile/Options'
-import { colors, spacing } from '../../../components/constants/theme'
-import auth from '@react-native-firebase/auth';
-import { useToast } from 'native-base'
-import { Button } from 'react-native-paper'
 import UserNotFound from '../../../components/Frontend/Profile/UserNotFound'
-import { useAuth } from '../../../Context/AuthContext'
+import { colors, spacing } from '../../../components/constants/theme'
 
 export default function Profile() {
   const toast = useToast()

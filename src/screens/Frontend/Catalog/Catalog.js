@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { StyleSheet, View } from 'react-native'
+//data
 import { CATEGORIES } from '../../../data'
+//components
 import CategoryCard from '../../../components/Frontend/Catalog/CategoryCard'
 import { spacing } from '../../../components/constants/theme'
 

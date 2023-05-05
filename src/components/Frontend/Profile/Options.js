@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
+//components
 import { colors, sizes, spacing } from '../../constants/theme'
 import OptionCard from '../../shared/OptionCard'
 

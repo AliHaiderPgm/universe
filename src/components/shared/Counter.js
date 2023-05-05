@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+//components
 import { colors, sizes, spacing } from '../constants/theme'
 
 export default function Counter({sendToParent,productPrice}) {

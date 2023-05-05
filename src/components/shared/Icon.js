@@ -1,5 +1,6 @@
 import React from 'react'
 import { Image, TouchableOpacity } from 'react-native'
+//components
 import icons from '../constants/icons'
 
 export default function Icon({ onPress, icon, style, size = 32 }) {

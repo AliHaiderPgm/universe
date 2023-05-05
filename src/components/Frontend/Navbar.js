@@ -3,14 +3,13 @@ import { View, Image, StyleSheet, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from '../shared/Icon'
+import { colors, spacing } from '../constants/theme'
 
 export default function Navbar() {
     const insets = useSafeAreaInsets()
     const navigation = useNavigation()
     return (
         <View style={[styles.container, { marginTop: insets.top }]}>
-            {/* Hamburger */}
-            <Icon icon="menu" size={25}/>
 
             {/* Logo */}
             <View>
@@ -40,17 +39,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: 25,
-        paddingVertical: 4,
+        paddingHorizontal:spacing.l,
+        paddingVertical: spacing.s,
+        backgroundColor: colors.white,
+        elevation: 5
     },
     logo: {
         height: 32,
         width: 100,
         resizeMode: 'contain',
-        marginLeft: 30
     },
     searchAndCart: {
         flexDirection: 'row',
-        gap: 12
+        gap: spacing.s
     },
 })

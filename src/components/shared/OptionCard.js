@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
+//components
 import { colors, sizes, spacing } from '../constants/theme'
 import Icon from './Icon'
 

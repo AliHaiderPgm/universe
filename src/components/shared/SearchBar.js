@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, Image, TextInput, TouchableOpacity, Pressable, StatusBar } from 'react-native'
+import { View, StyleSheet, Image, TextInput, TouchableOpacity, StatusBar } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import Icon from './Icon'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+//components
 import { colors, sizes, spacing } from '../constants/theme'
+import Icon from './Icon'
 
 const SearchBar = () => {
     const [text, setText] = useState('')

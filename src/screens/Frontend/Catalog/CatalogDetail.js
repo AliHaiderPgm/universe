@@ -1,15 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator } from 'react-native-paper'
+import { useNavigation } from '@react-navigation/native'
+import { useToast } from 'native-base'
+import firestore from '@react-native-firebase/firestore'
+
+//components
 import { colors, sizes, spacing } from '../../../components/constants/theme'
-import { ActivityIndicator, Divider } from 'react-native-paper'
-import firestore from '@react-native-firebase/firestore';
 import CatalogProductsCard from '../../../components/Frontend/Catalog/CatalogProductsCard';
-import { useNavigation } from '@react-navigation/native';
 
 export default function CatalogDetail({ route }) {
     const [loading, setLoading] = useState(false)
     const [collection, setCollection] = useState([])
     const navigation = useNavigation()
+    const [selectedOption, setSelectedOption] = useState(1)
+    const toast = useToast()
+
+    const notify = (title, color) => {
+        toast.show({ title: title, backgroundColor: `${color}.700`, placement: 'top', duration: 2000 })
+    }
 
     let type;
     if (route.params.name === 'Men') {
@@ -26,41 +35,44 @@ export default function CatalogDetail({ route }) {
                 let data = snapShot.data()
                 setCollection(s => [...s, data])
             })
+        }).catch(() => {
+            notify('Something went wrong!', 'red')
+        }).finally(() => {
             setLoading(false)
         })
     }
     useEffect(() => {
         getData()
-        navigation.setOptions({title: route.params.name + ' Products'})
+        navigation.setOptions({ title: route.params.name + ' Products' })
     }, [])
 
     const types = route.params.types;
+    const handlePress = (id) => {
+        setSelectedOption(id)
+    }
     return (
         <View style={styles.container}>
             <View style={styles.typesContainer}>
-                {
-                    types.map((e, i) => <View key={i}>
-                        <TouchableOpacity style={styles.typeBtn}>
-                            <Text style={styles.typeText}>{e}</Text>
-                        </TouchableOpacity>
-                        <Divider />
-                    </View>)
-                }
+                {types.map((e, i) =>
+                    <TouchableOpacity style={[styles.typeBtn, e.id === selectedOption && styles.selectedOption]} key={i} onPress={() => handlePress(e.id)} activeOpacity={0.8}>
+                        <Text style={[styles.typeText, e.id === selectedOption && styles.selectedText]}>
+                            {e.name}
+                        </Text>
+                    </TouchableOpacity>
+                )}
             </View>
             {/* Cards */}
             <ScrollView style={styles.cardsContainer}>
-                {
-                    loading ?
-                        <View style={{ height: sizes.height - 100, alignItems: 'center', justifyContent: 'center' }}>
-                            <ActivityIndicator animating={true} color={colors.gold} size={'large'} />
-                        </View>
-                        :
-                        <View style={styles.cards}>
-                            <CatalogProductsCard list={collection} />
-                        </View>
+                {loading ?
+                    <View style={{ height: sizes.height - 100, alignItems: 'center', justifyContent: 'center' }}>
+                        <ActivityIndicator animating={true} color={colors.gold} size={'large'} />
+                    </View>
+                    :
+                    <View style={styles.cards}>
+                        <CatalogProductsCard list={collection} />
+                    </View>
                 }
             </ScrollView>
-
         </View>
     )
 }
@@ -74,13 +86,12 @@ const styles = StyleSheet.create({
     typesContainer: {
         flex: 1,
     },
-    cardsContainer: {
-        backgroundColor: colors.white,
-        width: sizes.width - 220,
-    },
     typeBtn: {
+        width: 122,
+        paddingRight: spacing.m,
         height: 50,
         justifyContent: 'center',
+        alignItems: 'flex-start',
     },
     typeText: {
         paddingLeft: spacing.m,
@@ -88,11 +99,21 @@ const styles = StyleSheet.create({
         fontSize: sizes.h3,
         fontWeight: '400',
     },
-    cards:{
-        flexDirection:'row',
+    selectedOption: {
+        backgroundColor: colors.black,
+    },
+    selectedText: {
+        color: colors.white,
+    },
+    cardsContainer: {
+        backgroundColor: colors.white,
+        width: sizes.width - 235,
+    },
+    cards: {
+        flexDirection: 'row',
         gap: spacing.m,
-        flexWrap:'wrap',
-        justifyContent:'center',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
         marginVertical: spacing.m,
     },
 })

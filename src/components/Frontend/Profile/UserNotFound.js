@@ -1,8 +1,9 @@
-import { StyleSheet, Text, View, ImageBackground, Image } from 'react-native'
 import React from 'react'
-import { colors, spacing } from '../../constants/theme'
+import { StyleSheet, View, Image } from 'react-native'
 import { Button } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
+//components
+import { colors, spacing } from '../../constants/theme'
 
 export default function UserNotFound() {
     const navigation = useNavigation()

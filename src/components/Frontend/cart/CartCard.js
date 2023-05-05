@@ -1,7 +1,8 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
-import Icon from '../../shared/Icon'
+//components
 import { colors, shadow, sizes, spacing } from '../../constants/theme'
+import Icon from '../../shared/Icon'
 
 export default function CartCard({ item, increment, decrement, remove }) {
     return (

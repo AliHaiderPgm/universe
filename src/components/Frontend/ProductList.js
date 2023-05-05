@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
-import ProductCard from '../shared/ProductCard';
+//components
+import ProductCard from '../shared/ProductCard'
 
 
 export default function ProductList({ list }) {
