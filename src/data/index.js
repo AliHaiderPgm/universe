@@ -497,7 +497,7 @@ export const CATEGORIES = [
       {id:2,name:'Shirts'} , 
       {id:3, name: 'Jeans'}, 
       {id:4,name:'T-shirts'}, 
-      {id:5,name:'Trouser'}, 
+      {id:5,name:'Underwear'}, 
       {id:6,name:'Suit'}, 
       {id:7,name:'Jackets'}, 
       {id:8,name:'Belt'}, 

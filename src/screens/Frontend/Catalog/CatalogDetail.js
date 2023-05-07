@@ -8,13 +8,19 @@ import firestore from '@react-native-firebase/firestore'
 //components
 import { colors, sizes, spacing } from '../../../components/constants/theme'
 import CatalogProductsCard from '../../../components/Frontend/Catalog/CatalogProductsCard';
+import Icon from '../../../components/shared/Icon'
+import Dropdown from '../../../components/shared/Dropdown'
 
 export default function CatalogDetail({ route }) {
     const [loading, setLoading] = useState(false)
     const [collection, setCollection] = useState([])
+    const [filteredCollection, setFilteredCollection] = useState([])
     const navigation = useNavigation()
     const [selectedOption, setSelectedOption] = useState(1)
     const toast = useToast()
+    const SORT = ["Recommened", "Price Low to High", "Price High to Low", "New Arrival", "Top Rated"]
+    const [sortedItems, setSortedItems] = useState()
+    const [sort, setSort] = useState()
 
     const notify = (title, color) => {
         toast.show({ title: title, backgroundColor: `${color}.700`, placement: 'top', duration: 2000 })
@@ -47,14 +53,47 @@ export default function CatalogDetail({ route }) {
     }, [])
 
     const types = route.params.types;
-    const handlePress = (id) => {
-        setSelectedOption(id)
+    const handlePress = (e) => {
+        setSelectedOption(e.id)
+        filter(e.name)
+    }
+    const filter = (name) => {
+        if (name === 'All') {
+            setFilteredCollection(collection)
+        } else {
+            setFilteredCollection(collection.filter(obj => obj.categoryType === name))
+        }
+    }
+    useEffect(() => {
+        setFilteredCollection(collection)
+    }, [collection])
+    useEffect(()=>{
+        handleSelect('Recommended')
+    },[sortedItems])
+
+    const handleSelect = (e) => {
+        console.log('Calling sort')
+        let sortedItems
+        if(e === 'Recommended' ){
+            setSortedItems(filteredCollection)
+        }
+        if(e === 'Price Low to High'){
+            sortedItems = filteredCollection.sort((a,b)=> a.price - b.price)
+            setSortedItems(sortedItems)
+        }
+        else if(e === 'Price High to Low'){
+            sortedItems = filteredCollection.sort((a,b)=> b.price - a.price )
+            setSortedItems(sortedItems)
+        }
+        else{
+            setSortedItems(sortedItems)
+        }
     }
     return (
         <View style={styles.container}>
             <View style={styles.typesContainer}>
                 {types.map((e, i) =>
-                    <TouchableOpacity style={[styles.typeBtn, e.id === selectedOption && styles.selectedOption]} key={i} onPress={() => handlePress(e.id)} activeOpacity={0.8}>
+                    <TouchableOpacity style={[styles.typeBtn, e.id === selectedOption && styles.selectedOption]} key={i} onPress={() => handlePress(e)} activeOpacity={0.8}>
                         <Text style={[styles.typeText, e.id === selectedOption && styles.selectedText]}>
                             {e.name}
                         </Text>
@@ -62,17 +101,30 @@ export default function CatalogDetail({ route }) {
                 )}
             </View>
             {/* Cards */}
-            <ScrollView style={styles.cardsContainer}>
-                {loading ?
-                    <View style={{ height: sizes.height - 100, alignItems: 'center', justifyContent: 'center' }}>
-                        <ActivityIndicator animating={true} color={colors.gold} size={'large'} />
-                    </View>
-                    :
-                    <View style={styles.cards}>
-                        <CatalogProductsCard list={collection} />
+            <View style={styles.cardsContainer}>
+                {
+                    filteredCollection.length !== 0 && <View style={styles.filterContainer}>
+                        <Dropdown defaultText="Sort" list={SORT} onSelect={handleSelect} />
                     </View>
                 }
-            </ScrollView>
+                <ScrollView>
+                    {loading ?
+                        <View style={{ height: sizes.height - 100, alignItems: 'center', justifyContent: 'center' }}>
+                            <ActivityIndicator animating={true} color={colors.gold} size={'large'} />
+                        </View>
+                        :
+                        filteredCollection.length === 0 ?
+                            <View style={styles.noProductContainer}>
+                                <Icon icon="emptyBox" size={80} />
+                                <Text style={{ color: colors.gray }}>No product found!</Text>
+                            </View>
+                            :
+                            <View style={styles.cards}>
+                                <CatalogProductsCard list={sortedItems ? sortedItems : filteredCollection} />
+                            </View>
+                    }
+                </ScrollView>
+            </View>
         </View>
     )
 }
@@ -106,8 +158,13 @@ const styles = StyleSheet.create({
         color: colors.white,
     },
     cardsContainer: {
+        width: sizes.width - 115,
+        alignItems: 'center',
         backgroundColor: colors.white,
-        width: sizes.width - 235,
+    },
+    filterContainer: {
+        paddingVertical: spacing.s,
+        flexDirection: 'row'
     },
     cards: {
         flexDirection: 'row',
@@ -116,4 +173,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginVertical: spacing.m,
     },
+    noProductContainer: {
+        height: sizes.height,
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: spacing.s,
+    }
 })

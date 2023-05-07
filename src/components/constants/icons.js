@@ -24,6 +24,8 @@ import heartOutline from '../../assets/icons/heart-outline.png';
 import setting from '../../assets/icons/setting.png';
 import shoppingBag from '../../assets/icons/shopping-bag.png';
 import close from '../../assets/icons/close.png'
+import emptyBox from '../../assets/icons/emptyBox.png'
+import downArrow from '../../assets/icons/down.png'
 
 export default {
     home,homeFilled,
@@ -44,4 +46,6 @@ export default {
     bell, creditCard, navigation, heart, setting, shoppingBag,
     close,
     heartOutline,
+    emptyBox,
+    downArrow
 }

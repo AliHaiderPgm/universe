@@ -72,6 +72,7 @@ export default function ProductDetails({ navgation, route }) {
     setLoading(true)
     const docRef = firestore()
     .collection('cartItems')
+    .where('userId', '==', cartProduct.userId)
     .where('id', '==', cartProduct.id)
     const querySnapShot = await docRef.get()
       if(!querySnapShot.empty){
