@@ -18,14 +18,13 @@ export default function CatalogDetail({ route }) {
     const navigation = useNavigation()
     const [selectedOption, setSelectedOption] = useState(1)
     const toast = useToast()
-    const SORT = ["Recommened", "Price Low to High", "Price High to Low", "New Arrival", "Top Rated"]
-    const [sortedItems, setSortedItems] = useState()
-    const [sort, setSort] = useState()
+    const SORT = ["Recommended", "Price Low to High", "Price High to Low", "New Arrival", "Top Rated"]
+    const [sortType, setSortType] = useState('')
+    const [sortedCollections, setSortedCollections] = useState()
 
     const notify = (title, color) => {
         toast.show({ title: title, backgroundColor: `${color}.700`, placement: 'top', duration: 2000 })
     }
-
     let type;
     if (route.params.name === 'Men') {
         type = 'maleProducts'
@@ -34,6 +33,7 @@ export default function CatalogDetail({ route }) {
     } else {
         type = 'childrenProducts'
     }
+
     const getData = async () => {
         setLoading(true)
         await firestore().collection(type).get().then((querySnapShot) => {
@@ -53,6 +53,7 @@ export default function CatalogDetail({ route }) {
     }, [])
 
     const types = route.params.types;
+
     const handlePress = (e) => {
         setSelectedOption(e.id)
         filter(e.name)
@@ -63,32 +64,27 @@ export default function CatalogDetail({ route }) {
         } else {
             setFilteredCollection(collection.filter(obj => obj.categoryType === name))
         }
+        handleSelect(sortType)
     }
     useEffect(() => {
         setFilteredCollection(collection)
     }, [collection])
-    useEffect(()=>{
-        handleSelect('Recommended')
-    },[sortedItems])
 
     const handleSelect = (e) => {
-        console.log('Calling sort')
-        let sortedItems
-        if(e === 'Recommended' ){
-            setSortedItems(filteredCollection)
+        if (e === 'Price Low to High') {
+            filteredCollection.sort((a, b) => a.price - b.price)
         }
-        if(e === 'Price Low to High'){
-            sortedItems = filteredCollection.sort((a,b)=> a.price - b.price)
-            setSortedItems(sortedItems)
+        if (e === 'Price High to Low') {
+            filteredCollection.sort((a, b) => b.price - a.price)
         }
-        else if(e === 'Price High to Low'){
-            sortedItems = filteredCollection.sort((a,b)=> b.price - a.price )
-            setSortedItems(sortedItems)
+        if (e === 'Recommended') {
+            filteredCollection.sort((a, b) => b.brand.localeCompare(a.brand))
         }
-        else{
-            setSortedItems(sortedItems)
-        }
+        setSortType(e)
     }
+    useEffect(() => {
+        handleSelect(sortType)
+    }, [sortType])
     return (
         <View style={styles.container}>
             <View style={styles.typesContainer}>
@@ -120,7 +116,7 @@ export default function CatalogDetail({ route }) {
                             </View>
                             :
                             <View style={styles.cards}>
-                                <CatalogProductsCard list={sortedItems ? sortedItems : filteredCollection} />
+                                <CatalogProductsCard list={filteredCollection} />
                             </View>
                     }
                 </ScrollView>
@@ -171,7 +167,7 @@ const styles = StyleSheet.create({
         gap: spacing.m,
         flexWrap: 'wrap',
         justifyContent: 'center',
-        marginVertical: spacing.m,
+        marginBottom: spacing.m,
     },
     noProductContainer: {
         height: sizes.height,

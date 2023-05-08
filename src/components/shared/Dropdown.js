@@ -14,9 +14,9 @@ export default DropDown = ({defaultText, list, onSelect}) => {
             buttonTextAfterSelection={(selectedItem) => {
                 return selectedItem
             }}
-            // rowTextForSelection={(item, index) => {
-            //     return item
-            // }}
+            rowTextForSelection={(item) => {
+                return item
+            }}
             buttonStyle={{backgroundColor:colors.white,borderRadius:sizes.radius,borderWidth:1, height: 40, width: 130,}}
             buttonTextStyle={{fontSize: sizes.caption}}
             dropdownStyle={{borderRadius:sizes.radius,width: 180,marginLeft: -20}}

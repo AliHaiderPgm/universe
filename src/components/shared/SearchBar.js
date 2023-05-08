@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, Image, TextInput, TouchableOpacity, StatusBar } from 'react-native'
+import { View, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 //components
@@ -12,7 +12,6 @@ const SearchBar = () => {
     const navigation = useNavigation()
     return (
         <>
-            <StatusBar backgroundColor={colors.light} />
             <View style={[styles.mainContainer, { marginTop: inset.top }]}>
                 <Icon size={28} icon="leftArrow" onPress={() => navigation.goBack()} />
                 <View style={styles.searchContainer}>
@@ -28,17 +27,16 @@ const SearchBar = () => {
                                 setText(s)
                             }}
                         />
-                        {
-                            text ?
-                                <TouchableOpacity onPress={() => {
-                                    setText('')
-                                }}>
-                                    <Image
-                                        style={styles.image}
-                                        source={require('../../assets/icons/close.png')}
-                                    />
-                                </TouchableOpacity>
-                                : <View style={styles.image} />
+                        {text ?
+                            <TouchableOpacity onPress={() => {
+                                setText('')
+                            }}>
+                                <Image
+                                    style={styles.image}
+                                    source={require('../../assets/icons/close.png')}
+                                />
+                            </TouchableOpacity>
+                            : <View style={styles.image} />
                         }
                     </View>
                 </View>
@@ -67,7 +65,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white,
         borderRadius: sizes.radius + 12,
     },
-    inputContainer:{
+    inputContainer: {
         position: 'relative',
         flexDirection: 'row',
     },

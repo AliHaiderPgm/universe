@@ -23,7 +23,10 @@ export default function MainNavigator() {
                 <Stack.Screen
                     name='search'
                     component={SearchBar}
-                    options={{ headerShown: false }}
+                    options={{ 
+                        headerShown: false,
+                        statusBarColor: 'transparent'
+                     }}
                 />
                 <Stack.Screen
                     name='cart'
