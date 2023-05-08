@@ -11,7 +11,10 @@ export default function Index() {
   const {isAuthenticated} = useAuth()
   return (
     <ProfileNavigator.Navigator>
-      <ProfileNavigator.Screen name="Home" component={Profile} options={{ headerShown: false,statusBarColor: isAuthenticated ? colors.white : colors.black }} />
+      <ProfileNavigator.Screen name="Home" component={Profile} options={{ 
+        headerShown: false,
+        statusBarColor: isAuthenticated ? colors.white : colors.black, 
+        statusBarStyle: isAuthenticated ? 'dark' : 'light'  }} />
     </ProfileNavigator.Navigator>
   )
 }

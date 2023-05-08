@@ -16,16 +16,18 @@ export default function Index() {
         options={{
           headerTitle: 'Catalog',
           headerRight: () => (<Icon icon="search" size={23} onPress={() => navigation.navigate('search')} />),
+          statusBarStyle: 'dark'
         }}
-      />
+        />
 
       <CategoryNavigator.Screen
         name="catalogDetail"
         component={CatalogDetail}
         options={{
           headerRight: () => (<Icon icon="cart" size={25} onPress={() => navigation.navigate('cart')} />),
+          statusBarStyle: 'dark'
         }}
-      />
+        />
     </CategoryNavigator.Navigator>
   )
 }

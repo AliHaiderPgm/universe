@@ -1,7 +1,7 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { NavigationContainer } from '@react-navigation/native'
-import SearchBar from '../components/shared/SearchBar'
+import SearchBar from '../screens/Frontend/SearchBar'
 import TabNavigator from './TabNavigator'
 import Cart from '../screens/Frontend/Cart/Cart'
 import ProductDetails from '../screens/Frontend/ProductDetails'
@@ -18,14 +18,18 @@ export default function MainNavigator() {
                 <Stack.Screen
                     name='Root'
                     component={TabNavigator}
-                    options={{ headerShown: false, }}
+                    options={{ 
+                        headerShown: false,
+                        statusBarStyle: 'dark'
+                     }}
                 />
                 <Stack.Screen
                     name='search'
                     component={SearchBar}
                     options={{ 
                         headerShown: false,
-                        statusBarColor: 'transparent'
+                        statusBarColor: colors.light,
+                        statusBarStyle: 'dark'
                      }}
                 />
                 <Stack.Screen
@@ -33,6 +37,7 @@ export default function MainNavigator() {
                     component={Cart}
                     options={{
                         headerTitle: 'Shopping Cart',
+                        statusBarStyle: 'dark',
                         headerRight: () => (<Icon icon="heartOutline" size={25} />),
                     }}
                 />
@@ -40,13 +45,17 @@ export default function MainNavigator() {
                     name='productDetail'
                     component={ProductDetails}
                     options={{
+                        statusBarStyle: 'dark',
                         headerRight: () => (<Icon icon="heartOutline" size={25} />),
                     }}
                 />
                 <Stack.Screen
                     name='auth'
                     component={Auth}
-                    options={{ headerShown: false }}
+                    options={{
+                        statusBarStyle: 'light', 
+                        headerShown: false 
+                    }}
                 />
             </Stack.Navigator>
         </NavigationContainer>
