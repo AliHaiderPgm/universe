@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, TextInput, Text } from 'react-native'
+import { View, StyleSheet, TextInput, Text, ScrollView } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import firestore from '@react-native-firebase/firestore';
 import { useToast } from 'native-base';
+import { ActivityIndicator } from 'react-native-paper';
 //components
 import { colors, sizes, spacing } from '../../components/constants/theme'
 import Icon from '../../components/shared/Icon'
-import Tabs from '../../components/shared/Tabs'
-import { ActivityIndicator } from 'react-native-paper';
+import ProductList from '../../components/Frontend/ProductList';
 
 const SearchBar = () => {
     const [text, setText] = useState('')
@@ -16,37 +16,43 @@ const SearchBar = () => {
     const inset = useSafeAreaInsets()
     const navigation = useNavigation()
     const toast = useToast()
-    const [loading, setLoading] = useState()
+    const [loading, setLoading] = useState(false)
     const [state, setState] = useState(false)
-    const [maleProducts, setMaleProducts] = useState()
+    const [searchedProduct, setSearchedProduct] = useState()
 
-    const handleSearch = () => {
+    const handleSearch = async () => {
         setSearchText(text)
-        const newText = capitlize(text)
-        setMaleProducts([])
-        getData(newText, setMaleProducts, setLoading)
+        setSearchedProduct([])
+        setState(true)
+        setLoading(true)
+        try {
+            const maleProducts = await getData('maleProducts')
+            const femaleProducts = await getData('femaleProducts')
+            const childrenProducts = await getData('childrenProducts')
+            setSearchedProduct([...maleProducts, ...femaleProducts, ...childrenProducts])
+        } catch (err) {
+            notify('Something went wrong!', 'red')
+        } finally {
+            setLoading(false)
+        }
     }
 
-    const getData = (text, storeDataIn, loading) => {
-        loading(true)
-        firestore()
-            .collection('maleProducts')
-            .where('name', '>=', text)
-            .where('name', '<=', text + '\uf8ff')
+    const getData = async (collectionName) => {
+        const newText = capitlize(text)
+        const products = []
+        await firestore()
+            .collection(collectionName)
+            .where('name', '>=', newText)
+            .where('name', '<=', newText + '\uf8ff')
             .get()
             .then(querySnapShot => {
                 if (!querySnapShot.empty) {
                     querySnapShot.forEach(snapShot => {
-                        storeDataIn(s => [...s, snapShot.data()])
+                        products.push(snapShot.data())
                     })
                 }
             })
-            .catch(() => {
-                notify('Something went worng!', 'red')
-            }).finally(() => {
-                loading(false)
-                setState(true)
-            })
+            return products
     }
     const capitlize = (str) => {
         return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
@@ -73,6 +79,7 @@ const SearchBar = () => {
                             onChangeText={(s) => {
                                 setText(s)
                             }}
+                            onSubmitEditing={()=> handleSearch()}
                         />
                         {text && <Icon icon="close" size={15} onPress={() => { setText('') }} style={styles.image} />}
                     </View>
@@ -81,15 +88,16 @@ const SearchBar = () => {
             </View>
             {
                 state && <>
-                    {
-                        loading ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                            <ActivityIndicator animating={true} size='large' color={colors.gold} />
+                    {loading ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor:colors.light }}>
+                        <ActivityIndicator animating={true} size='large' color={colors.gold} />
+                    </View>
+                        : searchedProduct.length === 0 ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: spacing.s, backgroundColor:colors.light }}>
+                            <Icon icon="emptyBox" size={80} />
+                            <Text style={{ color: colors.gray }}>No product found for <Text style={{ color: colors.black, fontWeight: '600' }}>{searchText}</Text>!</Text>
                         </View>
-                            : maleProducts.length !== 0 ? <Tabs />
-                                : <View style={{flex:1, justifyContent:'center', alignItems:'center',gap: spacing.s}}>
-                                    <Icon icon="emptyBox" size={80} />
-                                    <Text style={{ color: colors.gray }}>No product found for <Text style={{color:colors.black, fontWeight:'600'}}>{searchText}</Text>!</Text>
-                                </View>
+                            : <ScrollView style={{paddingVertical:spacing.s, backgroundColor:colors.light}}>
+                                <ProductList list={searchedProduct} />
+                            </ScrollView>
                     }
                 </>
             }
