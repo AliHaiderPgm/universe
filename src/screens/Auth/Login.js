@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { Image, StyleSheet, Text, View, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback } from 'react-native'
-import { colors, sizes, spacing } from '../../components/constants/theme'
-import { Button, HelperText, TextInput } from 'react-native-paper'
+import { Button, HelperText, TextInput, shadow } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
-import { validEmail, validPassword } from '../../components/Global'
 import auth from '@react-native-firebase/auth';
 import { useToast } from 'native-base'
+//components
+import { validEmail } from '../../components/Global'
+import { colors, sizes, spacing } from '../../components/constants/theme'
 
 const initialState = {
   email: '',
@@ -24,7 +25,7 @@ export default function Login() {
 
   const handleLogin = () => {
     let { email, password } = state
-    if (!validEmail.test(email)) {
+    if (!validEmail.test(email.trim())) {
       setEmailValid(false)
       return
     }
@@ -37,30 +38,26 @@ export default function Login() {
 
     setLoading(true)
     auth()
-      .signInWithEmailAndPassword(email, password)
+      .signInWithEmailAndPassword(email.trim(), password)
       .then((user) => {
-        console.log(user);
-        setLoading(false)
         navigation.navigate('Profile')
       })
       .catch(error => {
-
         if (error.code === 'auth/user-not-found') {
-          notify('Email or password is incorrect!', 'red')
+          notify('Email or password is incorrect!', 'error')
+        }else if (error.code === 'auth/wrong-password') {
+          notify('Email or password is incorrect!', 'error')
+        }else if (error.code === 'auth/network-request-failed') {
+          notify('Check your network!', 'error')
+        }else{
+          notify('Something went wrong!', 'error')
         }
-        if (error.code === 'auth/wrong-password') {
-          notify('Email or password is incorrect!', 'red')
-        }
-        if (error.code === 'auth/network-request-failed') {
-          notify('Check your network!', 'red')
-        }
-
-        // console.error(error.code);
+      }).finally(()=>{
         setLoading(false)
-      });
+      })
   }
   const notify = (message,color) => {
-    toast.show({ description: message, placement: 'top', duration: 2000, backgroundColor: `${color}.800` })
+    toast.show({ description: message, placement: 'top', duration: 2000, backgroundColor: `${color}.700`,shadow:'9' })
   }
   return (
     <KeyboardAvoidingView behavior={"height"} enabled={true} style={styles.container}>

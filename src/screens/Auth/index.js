@@ -1,8 +1,10 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+//Pages
 import Login from './Login'
 import Register from './Register'
 import ForgotPassword from './ForgotPassword'
+//components
 import { colors } from '../../components/constants/theme'
 
 export default function Index() {

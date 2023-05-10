@@ -35,17 +35,17 @@ export default function Register() {
   const handleRegister = () => {
     const { firstName, secondName, email, password, confirmPassword } = state
     // Checking validation
-    if (firstName.length <= 2) {
+    if (firstName.trim().length <= 2) {
       setFirstNameValidation(false)
       return
     }
     setFirstNameValidation(true)
-    if (!validEmail.test(email)) {
+    if (!validEmail.test(email.trim())) {
       setEmailValidation(false)
       return
     }
     setEmailValidation(true)
-    if (!validPassword.test(password)) {
+    if (!validPassword.test(password.trim())) {
       setPasswordValidation(false)
       return
     }
@@ -71,14 +71,16 @@ export default function Register() {
       const updatedUser = auth().currentUser
       dispatch({type:'LOGIN',payload:{user:updatedUser}})
       setState(initialState)
-      notify('Account created!', 'green')
+      notify('Account created!', 'success')
       navigation.navigate('Profile')
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {
-        notify('Email alredy in use!', 'red')
+        notify('Email alredy in use!', 'error')
       }
       if (error.code === 'auth/network-request-failed') {
-        notify('Check your network!', 'red')
+        notify('Check your network!', 'error')
+      }else{
+        notify('Something went wrong!', 'error')
       }
     } finally {
       setLoading(false)
@@ -86,7 +88,7 @@ export default function Register() {
   }
 
   const notify = (message, color) => {
-    toast.show({ title: message, placement: 'top', duration: 2000, backgroundColor: `${color}.800` })
+    toast.show({ title: message, placement: 'top', duration: 2000, backgroundColor: `${color}.700` })
   }
   return (
     <KeyboardAwareScrollView>

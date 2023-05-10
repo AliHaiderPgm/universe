@@ -8,10 +8,12 @@ import ProductDetails from '../screens/Frontend/ProductDetails'
 import Auth from '../screens/Auth'
 import { colors } from '../components/constants/theme'
 import Icon from '../components/shared/Icon'
+import { useAuth } from '../Context/AuthContext'
+import Login from '../screens/Auth/Login'
 
 export default function MainNavigator() {
     const Stack = createNativeStackNavigator()
-
+    const {isAuthenticated} = useAuth()
     return (
         <NavigationContainer>
             <Stack.Navigator >
@@ -34,9 +36,11 @@ export default function MainNavigator() {
                 />
                 <Stack.Screen
                     name='cart'
-                    component={Cart}
+                    component={isAuthenticated ? Cart : Login}
                     options={{
+                        headerShown: isAuthenticated,
                         headerTitle: 'Shopping Cart',
+                        statusBarColor: isAuthenticated ? colors.light : colors.black ,
                         statusBarStyle: 'dark',
                         headerRight: () => (<Icon icon="heartOutline" size={25} />),
                     }}

@@ -20,7 +20,6 @@ export default function CatalogDetail({ route }) {
     const toast = useToast()
     const SORT = ["Recommended", "Price Low to High", "Price High to Low", "New Arrival", "Top Rated"]
     const [sortType, setSortType] = useState('')
-    const [sortedCollections, setSortedCollections] = useState()
 
     const notify = (title, color) => {
         toast.show({ title: title, backgroundColor: `${color}.700`, placement: 'top', duration: 2000 })

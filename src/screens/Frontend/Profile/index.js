@@ -8,13 +8,15 @@ import Profile from './Profile'
 
 export default function Index() {
   const ProfileNavigator = createNativeStackNavigator()
-  const {isAuthenticated} = useAuth()
+  const { isAuthenticated } = useAuth()
   return (
     <ProfileNavigator.Navigator>
-      <ProfileNavigator.Screen name="Home" component={Profile} options={{ 
+      <ProfileNavigator.Screen name="Home" component={Profile} options={{
         headerShown: false,
-        statusBarColor: isAuthenticated ? colors.white : colors.black, 
-        statusBarStyle: isAuthenticated ? 'dark' : 'light'  }} />
+        statusBarColor: isAuthenticated ? colors.white : colors.black,
+        statusBarStyle: isAuthenticated ? 'dark' : 'light',
+      }}
+      />
     </ProfileNavigator.Navigator>
   )
 }

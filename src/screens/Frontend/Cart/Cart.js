@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import firestore from '@react-native-firebase/firestore'
 import { ActivityIndicator } from 'react-native-paper'
 import { View } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useToast } from 'native-base'
 //context
 import { useAuth } from '../../../Context/AuthContext'
 //components
@@ -13,8 +13,9 @@ import { colors } from '../../../components/constants/theme'
 export default function Cart() {
   const [cartItems, setCartItems] = useState([])
   const [loading, setLoading] = useState(false)
-  const { user,isAuthenticated } = useAuth()
-  const navigation = useNavigation()
+  const { user } = useAuth()
+  const toast = useToast()
+
 
   const getItems = () => {
     if (user.uid) {
@@ -28,26 +29,26 @@ export default function Cart() {
             setCartItems(s => ([...s, doc]))
           })
         })
-        .catch(err => {
-          console.error('Something went wrong!', err)
+        .catch(() => {
+          notify('Something went wrong!', 'red')
         })
         .finally(() => {
           setLoading(false)
         })
     }
   }
-  useEffect(() => {
-    !isAuthenticated ? navigation.navigate('auth',{name: 'login'}) :  getItems()
-  }, [])
 
   const resetItems = ()=>{
     setCartItems([])
   }
+  const notify=()=>{
+    toast.show({title: msg, color:`${color}.700`, placement:'top', duration:2000 })
+  }
   return <>
     {
       loading ? <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator animating={true} color={colors.gold} size={'large'} />
-      </View>
+                  <ActivityIndicator animating={true} color={colors.gold} size={'large'} />
+                </View>
         :
         <>
           {

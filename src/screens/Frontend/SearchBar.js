@@ -12,7 +12,7 @@ import ProductList from '../../components/Frontend/ProductList';
 
 const SearchBar = () => {
     const [text, setText] = useState('')
-    const [searchText, setSearchText] = useState('')
+    const [searchedText, setSearchedText] = useState('')
     const inset = useSafeAreaInsets()
     const navigation = useNavigation()
     const toast = useToast()
@@ -21,7 +21,7 @@ const SearchBar = () => {
     const [searchedProduct, setSearchedProduct] = useState()
 
     const handleSearch = async () => {
-        setSearchText(text)
+        setSearchedText(text)
         setSearchedProduct([])
         setState(true)
         setLoading(true)
@@ -38,7 +38,7 @@ const SearchBar = () => {
     }
 
     const getData = async (collectionName) => {
-        const newText = capitlize(text)
+        const newText = capitlize(text).trim()
         const products = []
         await firestore()
             .collection(collectionName)
@@ -93,7 +93,7 @@ const SearchBar = () => {
                     </View>
                         : searchedProduct.length === 0 ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: spacing.s, backgroundColor:colors.light }}>
                             <Icon icon="emptyBox" size={80} />
-                            <Text style={{ color: colors.gray }}>No product found for <Text style={{ color: colors.black, fontWeight: '600' }}>{searchText}</Text>!</Text>
+                            <Text style={{ color: colors.gray }}>No product found for <Text style={{ color: colors.black, fontWeight: '600' }}>{searchedText}</Text>!</Text>
                         </View>
                             : <ScrollView style={{paddingVertical:spacing.s, backgroundColor:colors.light}}>
                                 <ProductList list={searchedProduct} />

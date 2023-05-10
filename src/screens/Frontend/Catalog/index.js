@@ -1,9 +1,11 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { useNavigation } from '@react-navigation/native'
+//Pages
 import Categories from './Catalog'
 import CatalogDetail from './CatalogDetail'
+//Components
 import Icon from '../../../components/shared/Icon'
-import { useNavigation } from '@react-navigation/native'
 
 export default function Index() {
   const navigation = useNavigation()

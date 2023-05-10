@@ -17,33 +17,33 @@ export default function ForgotPassword() {
     setEmailVal(e)
   }
   const handleSubmit = () => {
-    validEmail.test(emailVal) ? setEmailValidation(true) : setEmailValidation(false)
-    if(!validEmail.test(emailVal)){
+    validEmail.test(emailVal.trim()) ? setEmailValidation(true) : setEmailValidation(false)
+    if(!validEmail.test(emailVal.trim())){
       setEmailValidation(false)
       return
     }
     setEmailValidation(true)
     setLoading(true)
     auth()
-      .sendPasswordResetEmail(emailVal)
+      .sendPasswordResetEmail(emailVal.trim())
       .then(() => {
-        notify('Reset link sent!', 'green')
-        setLoading(false)
+        notify('Reset link sent!', 'success')
       })
       .catch(error => {
         if (error.code === 'auth/user-not-found') {
-          notify('User not found!', 'red')
+          notify('User not found!', 'error')
         }
-        if (error.code === 'auth/network-request-failed') {
-          notify('Check your network!', 'red')
+        else if (error.code === 'auth/network-request-failed') {
+          notify('Check your network!', 'error')
+        } else{
+          notify('Something went wrong!', 'error')
         }
+      }).finally(()=>{
         setLoading(false)
-        // console.error(error.code);
-      });
-    // setEmailVal('')
+      })
   }
   const notify = (msg, color) => {
-    toast.show({title:msg, placement: 'top', backgroundColor: `${color}.800`})
+    toast.show({title:msg, placement: 'top', backgroundColor: `${color}.700`, duration:2000, shadow:'9'})
   }
   return (
     <KeyboardAwareScrollView>

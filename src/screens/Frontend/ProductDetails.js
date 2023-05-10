@@ -51,7 +51,7 @@ export default function ProductDetails({ navgation, route }) {
       }
     )
   }
-  const handleAddTOCart = () => {
+  const handleAddToCart = () => {
     if (!isAuthenticated) {
       navigation.navigate('auth', { name: 'login' })
       return
@@ -65,10 +65,10 @@ export default function ProductDetails({ navgation, route }) {
     }
     if (selectedSize === null) { notify('Select a size!', 'red') }
     else if (selectedColor === null) { notify('Select a color!', 'red') }
-    else (AddToCart(cartProduct))
+    else (Add(cartProduct))
   }
 
-  const AddToCart = async (cartProduct) => {
+  const Add = async (cartProduct) => {
     setLoading(true)
     const docRef = firestore()
     .collection('cartItems')
@@ -78,7 +78,7 @@ export default function ProductDetails({ navgation, route }) {
       if(!querySnapShot.empty){
         updateDoc(cartProduct)
       } else{
-        handleAddToCart(cartProduct)
+        AddToCart(cartProduct)
       }
 
   }
@@ -88,7 +88,7 @@ export default function ProductDetails({ navgation, route }) {
     setLoading(false)
   }
 
-  const handleAddToCart = (cartProduct) => {
+  const AddToCart = (cartProduct) => {
     firestore()
       .collection('cartItems')
       .add(cartProduct)
@@ -115,11 +115,9 @@ export default function ProductDetails({ navgation, route }) {
     <View style={styles.mainContainer}>
       <ScrollView style={styles.container}>
 
-
         <View style={styles.imageContainer}>
           <Image source={{ uri: product.imageUrl }} style={styles.image} />
         </View>
-
 
         <View style={styles.detailsWrapper}>
 
@@ -167,7 +165,7 @@ export default function ProductDetails({ navgation, route }) {
       <View style={styles.buttonWrapper}>
         {
           loading ? <View style={styles.button}><Text style={[styles.price, { marginVertical: spacing.s + 7 }]}>Adding...</Text></View>
-            : <TouchableOpacity activeOpacity={0.5} style={styles.button} onPress={() => handleAddTOCart()}>
+            : <TouchableOpacity activeOpacity={0.5} style={styles.button} onPress={() => handleAddToCart()}>
               <Text style={styles.price}>${price}</Text>
               <View style={styles.addToCartWrapper}>
                 <Icon icon="cart" size={23} />

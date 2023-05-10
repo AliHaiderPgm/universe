@@ -21,12 +21,12 @@ export default function Profile() {
     auth()
       .signOut()
       .then(() => {
-        notify('Logged out.', 'green')
+        notify('Logged out!', 'success')
         dispatch({type:'LOGOUT'})
       });
   }
   const notify = (message, color) => {
-    toast.show({ title: message, placement: 'top', duration: 2000, backgroundColor: `${color}.800` })
+    toast.show({ title: message, placement: 'top', duration: 2000, backgroundColor: `${color}.700`, shadow:'9' })
   }
   if (!isAuthenticated) {
     return (
