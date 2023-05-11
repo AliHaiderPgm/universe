@@ -60,7 +60,8 @@ export default function ProductDetails({ navgation, route }) {
       ...product,
       quantity,
       totalPrice: price,
-      selectedColor,
+      color:selectedColor,
+      size:selectedSize,
       userId: user.uid
     }
     if (selectedSize === null) { notify('Select a size!', 'red') }
@@ -74,6 +75,8 @@ export default function ProductDetails({ navgation, route }) {
     .collection('cartItems')
     .where('userId', '==', cartProduct.userId)
     .where('id', '==', cartProduct.id)
+    .where('size', '==', cartProduct.size)
+    .where('color', '==', cartProduct.color)
     const querySnapShot = await docRef.get()
       if(!querySnapShot.empty){
         updateDoc(cartProduct)

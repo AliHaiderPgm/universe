@@ -71,7 +71,6 @@ export default function CartDetails({ list, resetItems }) {
             .doc(docRefId)
             .delete()
             .then(() => {
-                console.log('item deleted!');
                 if(newItems.length === 0){
                     resetItems()
                 }

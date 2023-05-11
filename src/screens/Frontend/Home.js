@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { ScrollView, StatusBar, StyleSheet, View } from 'react-native'
-import { useToast } from 'native-base'
 //components
 import ImageCarousel from '../../components/shared/ImagesCarousel'
 import Navbar from '../../components/Frontend/Navbar'
@@ -12,12 +11,6 @@ import ProductList from '../../components/Frontend/ProductList'
 import ProductsCarousel from '../../components/Frontend/ProductsCarousel'
 import Features from '../../components/Frontend/Features'
 export default Home = () => {
-    const toast = useToast()
-    useEffect(()=>{
-        if(!navigator.online){
-            toast.show({title: "You are currently offline!", placement:'bottom', duration:3000, backgroundColor:'coolGray.800', shadow:'9',})
-        }
-    },[])
     return (
         <View style={styles.container}>
             <StatusBar backgroundColor={colors.light} />

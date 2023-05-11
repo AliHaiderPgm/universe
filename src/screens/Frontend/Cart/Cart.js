@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import firestore from '@react-native-firebase/firestore'
 import { ActivityIndicator } from 'react-native-paper'
 import { View } from 'react-native'
@@ -38,10 +38,14 @@ export default function Cart() {
     }
   }
 
+  useEffect(()=>{
+    getItems()
+  },[])
+
   const resetItems = ()=>{
     setCartItems([])
   }
-  const notify=()=>{
+  const notify=(msg,color)=>{
     toast.show({title: msg, color:`${color}.700`, placement:'top', duration:2000 })
   }
   return <>

@@ -5,6 +5,16 @@ import { colors, shadow, sizes, spacing } from '../../constants/theme'
 import Icon from '../../shared/Icon'
 
 export default function CartCard({ item, increment, decrement, remove }) {
+    let size;
+    if (item._data.size === 'S') {
+        size = 'Small'
+    } else if (item._data.size === 'M') {
+        size = 'Medium'
+    } else if (item._data.size === 'L') {
+        size = 'Large'
+    } else {
+        size = 'Extra Large'
+    }
     return (
         <View style={[shadow.dark, styles.cardWrapper]} key={item._data.id}>
 
@@ -14,22 +24,24 @@ export default function CartCard({ item, increment, decrement, remove }) {
                 </TouchableOpacity>
 
                 <Text style={styles.text}>{item._data.quantity}</Text>
-                
+
                 <TouchableOpacity style={styles.btn} onPress={() => decrement(item._data.id)}>
                     <Text style={styles.text}>-</Text>
                 </TouchableOpacity>
             </View>
 
             <View style={styles.imageContainer}>
-                <Image source={{uri:item._data.imageUrl}} style={styles.image} />
+                <Image source={{ uri: item._data.imageUrl }} style={styles.image} />
             </View>
 
             <View style={styles.detailsContainer}>
                 <Text style={styles.title}>{item._data.name}</Text>
+                <Text style={styles.size}>{size}</Text>
+                <View style={[styles.color, { backgroundColor: item._data.color }]} />
                 <Text style={styles.price}>${item._data.price}</Text>
             </View>
 
-            <TouchableOpacity style={styles.deleteButtonContainer} onPress={()=> remove(item._data.docRefId)}>
+            <TouchableOpacity style={styles.deleteButtonContainer} onPress={() => remove(item._data.docRefId)}>
                 <Icon icon="close" size={13} />
             </TouchableOpacity>
         </View>
@@ -82,14 +94,24 @@ const styles = StyleSheet.create({
         width: 80,
     },
     title: {
-        fontSize: sizes.h3,
+        fontSize: sizes.h2,
         fontWeight: 'bold',
+        color: colors.black,
+    },
+    size: {
+        fontWeight: 'bold',
+        fontSize: sizes.h3,
         color: colors.black,
     },
     price: {
         fontWeight: 'bold',
         fontSize: sizes.h3,
         color: colors.gold,
+    },
+    color: {
+        height: 22,
+        width: 22,
+        borderRadius: sizes.radius,
     },
     deleteButtonContainer: {
         position: 'relative',
