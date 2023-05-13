@@ -22,7 +22,8 @@ export default function MainNavigator() {
                     component={TabNavigator}
                     options={{ 
                         headerShown: false,
-                        statusBarStyle: 'dark'
+                        statusBarStyle: 'light',
+                        statusBarColor: colors.white,
                      }}
                 />
                 <Stack.Screen
@@ -50,7 +51,8 @@ export default function MainNavigator() {
                     component={ProductDetails}
                     options={{
                         statusBarStyle: 'dark',
-                        headerRight: () => (<Icon icon="heartOutline" size={25} />),
+                        statusBarColor:colors.light
+                        // headerRight: () => (<Icon icon="heartOutline" size={25} />),
                     }}
                 />
                 <Stack.Screen

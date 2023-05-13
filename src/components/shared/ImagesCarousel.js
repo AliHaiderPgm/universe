@@ -1,46 +1,54 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { View, Image, ScrollView, StyleSheet, Dimensions } from 'react-native'
 
 
-const {width} = Dimensions.get('window')
-const height = width * 0.68
+const { width } = Dimensions.get('window')
+const height = width * 0.30
 export default function ImageCarousel(props) {
     const data = props.data;
     const [isActive, setIsActive] = useState(0)
-    const change = ({nativeEvent})=>{
+    const scrollRef = useRef(null)
+    
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+          const nextIndex = (isActive + 1) % data.length;
+          scrollRef.current.scrollTo({
+            x: nextIndex * width,
+            animated: false,
+          });
+          setIsActive(nextIndex);
+        }, 5000)
+    
+        return () => {
+          clearInterval(interval);
+        };
+      }, [isActive, data.length]);
+
+    const change = ({ nativeEvent }) => {
         const slide = Math.ceil(nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width);
-        if(slide !== isActive){
+        if (slide !== isActive) {
             setIsActive(slide)
         }
     }
     return (
         <View style={styles.mainContainer}>
-            <ScrollView 
-            horizontal 
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}  
-            onScroll={e=> change(e)}
-            style={styles.scroll}>
-                {
-                    data.map((doc, i) => {
-                        return (
-                            <Image
-                            key={i}
-                            style={styles.image}
-                            source={{uri: doc.uri}}
-                            />
-                        )
-                    })
-                }
+            <ScrollView
+                ref={scrollRef}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                onScroll={e => change(e)}
+                style={styles.scroll}
+                scrollEventThrottle={16}
+                scrollToOverflowEnabled
+                >
+
+                {data.map((doc, i) => { return (<Image key={i} style={styles.image} source={{ uri: doc }} />) })}
+
             </ScrollView>
             <View style={styles.pagination}>
-                {
-                    data.map((d,i)=>{
-                        return (
-                            <View key={i} style={i==isActive ? styles.pagingActive : styles.paging} />
-                        )
-                    })
-                }
+                {data.map((d, i) => { return (<View key={i} style={i == isActive ? styles.pagingActive : styles.paging} />) })}
             </View>
         </View>
     )
@@ -50,17 +58,17 @@ const styles = StyleSheet.create({
     mainContainer: {
         width,
         height,
-        marginTop:-10,
+        marginTop: -10,
     },
     scroll: {
-        width: width + 0.19, 
+        width: width + 0.19,
         height,
     },
     image: {
-        resizeMode:'cover',
+        resizeMode: 'cover',
         height,
         width: width,
-        },
+    },
     pagination: {
         flexDirection: 'row',
         position: 'absolute',
@@ -68,19 +76,19 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     paging: {
-        height: 8, 
-        width: 11, 
-        borderRadius: 11 / 2 , 
-        backgroundColor: '#777', 
-        margin: 2, 
+        height: 3,
+        width: 9,
+        borderRadius: 11 / 2,
+        backgroundColor: '#999',
+        margin: 2,
         marginBottom: 10,
     },
     pagingActive: {
-        height: 8,
-        width: 25, 
-        borderRadius: 11/2 ,
-        backgroundColor: '#fff', 
-        margin: 2, 
+        height: 3,
+        width: 12,
+        borderRadius: 11 / 2,
+        backgroundColor: '#f6f7f8',
+        margin: 2,
         marginBottom: 10
     },
 })

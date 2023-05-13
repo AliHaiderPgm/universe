@@ -26,26 +26,22 @@ import shoppingBag from '../../assets/icons/shopping-bag.png';
 import close from '../../assets/icons/close.png'
 import emptyBox from '../../assets/icons/emptyBox.png'
 import downArrow from '../../assets/icons/down.png'
+import heartFilled from '../../assets/icons/heart-filled.png'
 
 export default {
     home,homeFilled,
-    arc,
     categories,categoriesFilled,
     profile,profileFilled,
+    arc,
     menu,
     search,
     cart,
-    adidas,
-    fendi,
-    nike,
-    zara,
-    rightArrow,
-    leftArrow,
+    adidas,fendi,nike,zara,
+    rightArrow,leftArrow,downArrow,
     star,
     next,
     bell, creditCard, navigation, heart, setting, shoppingBag,
     close,
-    heartOutline,
+    heartOutline,heartFilled,
     emptyBox,
-    downArrow
 }

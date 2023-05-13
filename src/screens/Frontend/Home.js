@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, StatusBar, StyleSheet, View } from 'react-native'
+import { ScrollView, StyleSheet, View } from 'react-native'
 //components
 import ImageCarousel from '../../components/shared/ImagesCarousel'
 import Navbar from '../../components/Frontend/Navbar'
@@ -11,12 +11,13 @@ import ProductList from '../../components/Frontend/ProductList'
 import ProductsCarousel from '../../components/Frontend/ProductsCarousel'
 import Features from '../../components/Frontend/Features'
 export default Home = () => {
+    
     return (
         <View style={styles.container}>
-            <StatusBar backgroundColor={colors.light} />
             <Navbar />
             <ScrollView showsVerticalScrollIndicator={false}>
-                {/* <ImageCarousel data={data} /> */}
+                <ImageCarousel data={data} />
+                
                 <ScreenHeader mainHeading="Find Your" secondTitle="Dream Style" />
                 <ProductsCarousel list={TOP_PRODUCTS} inProductCard={false} />
 
@@ -26,10 +27,9 @@ export default Home = () => {
                 <SectionHeader title="Featured Brands" showArrow={false}/>
                 <Features icons={brands} size={60} />
 
-                {/* <SectionHeader title="For Men" />
-                <ProductsCarousel list={MENS_FEATURED_PRODUCTS} inProductCard={true} />
+                {/* <SectionHeader title="For Men" />  */}
 
-                <SectionHeader title= "For Child" />
+                {/* <SectionHeader title= "For Child" />
                 <ProductsCarousel list={CHILD_FEATURED_PRODUCTS} inProductCard={true}/>
 
                 <SectionHeader title= "For Women"/>

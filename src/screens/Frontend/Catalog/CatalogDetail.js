@@ -85,42 +85,45 @@ export default function CatalogDetail({ route }) {
         handleSelect(sortType)
     }, [sortType])
     return (
-        <View style={styles.container}>
-            <View style={styles.typesContainer}>
-                {types.map((e, i) =>
-                    <TouchableOpacity style={[styles.typeBtn, e.id === selectedOption && styles.selectedOption]} key={i} onPress={() => handlePress(e)} activeOpacity={0.8}>
-                        <Text style={[styles.typeText, e.id === selectedOption && styles.selectedText]}>
-                            {e.name}
-                        </Text>
-                    </TouchableOpacity>
-                )}
-            </View>
-            {/* Cards */}
-            <View style={styles.cardsContainer}>
-                {
-                    filteredCollection.length !== 0 && <View style={styles.filterContainer}>
-                        <Dropdown defaultText="Sort" list={SORT} onSelect={handleSelect} />
-                    </View>
-                }
-                <ScrollView>
-                    {loading ?
-                        <View style={{ height: sizes.height - 100, alignItems: 'center', justifyContent: 'center' }}>
-                            <ActivityIndicator animating={true} color={colors.gold} size={'large'} />
+        <>
+            {
+                loading ? <View style={{ height: sizes.height - 100, alignItems: 'center', justifyContent: 'center' }}>
+                    <ActivityIndicator animating={true} color={colors.gold} size={'large'} />
+                </View>
+                    :
+                    <View style={styles.container}>
+                        <View style={styles.typesContainer}>
+                            {types.map((e, i) =>
+                                <TouchableOpacity style={[styles.typeBtn, e.id === selectedOption && styles.selectedOption]} key={i} onPress={() => handlePress(e)} activeOpacity={0.8}>
+                                    <Text style={[styles.typeText, e.id === selectedOption && styles.selectedText]}>
+                                        {e.name}
+                                    </Text>
+                                </TouchableOpacity>
+                            )}
                         </View>
-                        :
-                        filteredCollection.length === 0 ?
-                            <View style={styles.noProductContainer}>
-                                <Icon icon="emptyBox" size={80} />
-                                <Text style={{ color: colors.gray }}>No product found!</Text>
-                            </View>
-                            :
-                            <View style={styles.cards}>
-                                <CatalogProductsCard list={filteredCollection} />
-                            </View>
-                    }
-                </ScrollView>
-            </View>
-        </View>
+                        {/* Cards */}
+                        <View style={styles.cardsContainer}>
+                            {
+                                filteredCollection.length !== 0 && <View style={styles.filterContainer}>
+                                    <Dropdown defaultText="Sort" list={SORT} onSelect={handleSelect} />
+                                </View>
+                            }
+                            <ScrollView>
+                                {filteredCollection.length === 0 ?
+                                    <View style={styles.noProductContainer}>
+                                        <Icon icon="emptyBox" size={80} />
+                                        <Text style={{ color: colors.gray }}>No product found!</Text>
+                                    </View>
+                                    :
+                                    <View style={styles.cards}>
+                                        <CatalogProductsCard list={filteredCollection} />
+                                    </View>
+                                }
+                            </ScrollView>
+                        </View>
+                    </View>
+            }
+        </>
     )
 }
 

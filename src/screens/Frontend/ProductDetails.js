@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Image, ScrollView, Text, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useToast } from 'native-base'
-import firestore from '@react-native-firebase/firestore';
+import firestore, { firebase } from '@react-native-firebase/firestore';
 //context
 import { useAuth } from '../../Context/AuthContext'
 //components
 import { colors, sizes, spacing } from '../../components/constants/theme'
 import Icon from '../../components/shared/Icon'
 import Counter from '../../components/shared/Counter'
+import { ActivityIndicator } from 'react-native-paper';
 
 export default function ProductDetails({ navgation, route }) {
   const { product } = route.params
-
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [price, setPrice] = useState(null);
@@ -21,12 +21,14 @@ export default function ProductDetails({ navgation, route }) {
   const navigation = useNavigation()
   const { isAuthenticated, user } = useAuth()
   const toast = useToast()
+  const [wished, setWished] = useState(false)
+  const [wishLoading, setWishLoading] = useState(false)
 
 
   useEffect(() => {
     navigation.setOptions({ title: product.name })
+    isAuthenticated && isWished()
   }, [])
-
   // Function to handle size selection
   const handleSizeSelection = (size) => {
     setSelectedSize(size);
@@ -47,11 +49,30 @@ export default function ProductDetails({ navgation, route }) {
         placement: 'top',
         backgroundColor: `${color}.800`,
         duration: 2000,
-        marginTop: -10
+        marginTop: -10,
+        shadow: '9',
       }
     )
   }
-  const handleAddToCart = () => {
+
+  const isWished = () => {
+    setWishLoading(true)
+    firestore()
+      .collection('wishList')
+      .where('userId', '==', user.uid)
+      .where('id', '==', product.id)
+      .get()
+      .then((docRef) => {
+        if(!docRef.empty){
+          setWished(true)
+        }
+      }).catch(() => {
+        notify('Something went wrong while checking wish list!', 'error')
+      }).finally(() => {
+        setWishLoading(false)
+      })
+  }
+  const handleAdd = (func) => {
     if (!isAuthenticated) {
       navigation.navigate('auth', { name: 'login' })
       return
@@ -60,54 +81,87 @@ export default function ProductDetails({ navgation, route }) {
       ...product,
       quantity,
       totalPrice: price,
-      color:selectedColor,
-      size:selectedSize,
+      color: selectedColor,
+      size: selectedSize,
       userId: user.uid
+    }
+    if (func === CheckInWishList) {
+      func(cartProduct)
+      return
     }
     if (selectedSize === null) { notify('Select a size!', 'red') }
     else if (selectedColor === null) { notify('Select a color!', 'red') }
-    else (Add(cartProduct))
+    else { func(cartProduct) }
   }
 
-  const Add = async (cartProduct) => {
+  const CheckInCart = async (cartProduct) => {
     setLoading(true)
     const docRef = firestore()
-    .collection('cartItems')
-    .where('userId', '==', cartProduct.userId)
-    .where('id', '==', cartProduct.id)
-    .where('size', '==', cartProduct.size)
-    .where('color', '==', cartProduct.color)
-    const querySnapShot = await docRef.get()
-      if(!querySnapShot.empty){
-        updateDoc(cartProduct)
-      } else{
-        AddToCart(cartProduct)
-      }
-
-  }
-
-  const updateDoc = (cartProduct) => {
-    notify('Already added to cart!', 'red')
-    setLoading(false)
-  }
-
-  const AddToCart = (cartProduct) => {
-    firestore()
       .collection('cartItems')
+      .where('userId', '==', cartProduct.userId)
+      .where('id', '==', cartProduct.id)
+      .where('size', '==', cartProduct.size)
+      .where('color', '==', cartProduct.color)
+    const querySnapShot = await docRef.get()
+    if (!querySnapShot.empty) {
+      notify('Already added to cart!', 'error')
+      setLoading(false)
+    } else {
+      Add(cartProduct, 'cartItems', 'cart')
+    }
+  }
+
+  const CheckInWishList = async (cartProduct) => {
+    setWishLoading(true)
+    const docRef = firestore()
+      .collection('wishList')
+      .where('userId', '==', cartProduct.userId)
+      .where('id', '==', cartProduct.id)
+    const querySnapShot = await docRef.get()
+    if (!querySnapShot.empty) {
+      removeItem(cartProduct)
+    } else {
+      Add(cartProduct, 'wishList', 'wish list')
+    }
+  }
+
+  const removeItem = (cartProduct) => {
+    setWishLoading(true)
+    firestore()
+      .collection('wishList')
+      .where('userId', '==', user.uid)
+      .where('id', '==', cartProduct.id)
+      .get()
+      .then(docRef => {
+        docRef.forEach(doc => {
+          doc.ref.delete()
+        });
+        setWished(false)
+        notify('Removed from wish list!', 'success')
+      }).catch(() => {
+        notify('Something went wrong!', 'error')
+      }).finally(() => {
+        setWishLoading(false)
+      })
+  }
+
+  const Add = (cartProduct, collectionName, name) => {
+    firestore()
+      .collection(collectionName)
       .add(cartProduct)
       .then((docRef) => {
-        docRef.update({
-          docRefId: docRef.id,
-        })
-        notify('Added to cart', 'green')
-        setSelectedColor(null)
-        setSelectedSize(null)
+        docRef.update({ docRefId: docRef.id })
+        notify(`Added to ${name}`, 'success')
+        collectionName === 'cartItem' && setSelectedColor(null)
+        collectionName === 'cartItem' && setSelectedSize(null)
+        collectionName === 'wishList' && setWished(true)
       })
       .catch(() => {
         notify('Something went wrong!', 'red')
       })
       .finally(() => {
         setLoading(false)
+        setWishLoading(false)
       })
   }
 
@@ -167,8 +221,16 @@ export default function ProductDetails({ navgation, route }) {
       </ScrollView>
       <View style={styles.buttonWrapper}>
         {
-          loading ? <View style={styles.button}><Text style={[styles.price, { marginVertical: spacing.s + 7 }]}>Adding...</Text></View>
-            : <TouchableOpacity activeOpacity={0.5} style={styles.button} onPress={() => handleAddToCart()}>
+          wishLoading ? <ActivityIndicator color='gold' style={{marginLeft:spacing.m - 1}}/>
+            :
+            <Icon icon={wished ? 'heartFilled' : 'heartOutline'} onPress={() => handleAdd(CheckInWishList)} />
+        }
+        {
+          loading ? <View style={styles.button}>
+            <Text style={[styles.price, { marginVertical: spacing.s + 7 }]}>Adding...</Text>
+            <ActivityIndicator color='gold'/>
+          </View>
+            : <TouchableOpacity activeOpacity={0.8} style={styles.button} onPress={() => handleAdd(CheckInCart)}>
               <Text style={styles.price}>${price}</Text>
               <View style={styles.addToCartWrapper}>
                 <Icon icon="cart" size={23} />
@@ -188,7 +250,7 @@ const styles = StyleSheet.create({
   },
   container: {
     position: 'relative',
-    marginBottom: 55,
+    marginBottom: 35,
   },
   imageContainer: {
     overflow: 'hidden',
@@ -200,7 +262,7 @@ const styles = StyleSheet.create({
   },
   detailsWrapper: {
     position: 'relative',
-    top: -20,
+    top: -30,
     backgroundColor: colors.white,
     borderTopLeftRadius: sizes.radius + 20,
     borderTopRightRadius: sizes.radius + 20,
@@ -266,12 +328,20 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     position: 'absolute',
-    bottom: 15,
-    left: 25,
-    width: sizes.width - 50,
+    bottom: 0,
+    left: 0,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: spacing.m,
+    paddingHorizontal: spacing.xl,
+    height: 70,
+    width: sizes.width,
+    backgroundColor: colors.light
   },
   button: {
-    backgroundColor: colors.gold,
+    width: '100%',
+    backgroundColor: colors.black,
     borderRadius: sizes.radius,
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -281,7 +351,8 @@ const styles = StyleSheet.create({
   price: {
     fontSize: sizes.h2,
     fontWeight: 'bold',
-    color: colors.black,
+    color: colors.white,
+    justifyContent: 'center'
   },
   addToCartWrapper: {
     backgroundColor: colors.white,

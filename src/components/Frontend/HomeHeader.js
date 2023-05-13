@@ -19,18 +19,18 @@ const styles = StyleSheet.create({
         paddingVertical:spacing.s,
     },
     mainTitle:{
-        fontSize:sizes.title,
+        fontSize:sizes.h2 + 5,
         fontWeight:'bold',
         color: colors.black,
       },
       secondTitle:{
         color: colors.black,
-        fontSize: sizes.title,
+        fontSize: sizes.h2 + 5,
     },
     shape:{
       position: 'absolute',
-      bottom: -12,
-      left: '39%',
+      bottom: -10,
+      left: '35%',
       zIndex: -1,
       height: 35,
       width: 35,

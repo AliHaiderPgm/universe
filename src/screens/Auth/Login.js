@@ -39,8 +39,8 @@ export default function Login() {
     setLoading(true)
     auth()
       .signInWithEmailAndPassword(email.trim(), password)
-      .then((user) => {
-        navigation.navigate('Profile')
+      .then(() => {
+        navigation.goBack()
       })
       .catch(error => {
         if (error.code === 'auth/user-not-found') {
