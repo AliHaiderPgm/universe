@@ -1,22 +1,27 @@
 import React from 'react'
+import { TouchableOpacity } from 'react-native'
 import { View, Text, StyleSheet } from 'react-native'
 //components
 import { colors, sizes, spacing } from '../constants/theme'
 import Icon from './Icon'
+import { useNavigation } from '@react-navigation/native'
 
 export default function OptionCard({ data }) {
+    const navigation = useNavigation()
     return (
-        <View style={styles.cardWrapper}>
-            <View style={styles.textWrapper}>
-                <Text style={styles.title}>{data.title}</Text>
-                <View style={styles.icon}>
-                    <Icon icon={data?.icon} size={25} />
+        <TouchableOpacity activeOpacity={0.5} onPress={()=>navigation.navigate(data.path)}>
+            <View style={styles.cardWrapper}>
+                <View style={styles.textWrapper}>
+                    <Text style={styles.title}>{data.title}</Text>
+                    <View style={styles.icon}>
+                        <Icon icon={data?.icon} size={25} />
+                    </View>
+                </View>
+                <View style={styles.next}>
+                    <Icon icon="next" size={25} />
                 </View>
             </View>
-            <View style={styles.next}>
-                <Icon icon="next" size={25} />
-            </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 const styles = StyleSheet.create({

@@ -261,18 +261,7 @@ export const PRODUCTS = [
     type: 'PRODUCT',
     quantity: 1,
   },
-];
-export const SEARCH_PRODUCTS = [...PRODUCTS, ...TOP_PRODUCTS].map(item => ({
-  ...item,
-  id: Math.random().toString(),
-}))
-// export const SEARCH_HOTELS = [...Object.values(HOTELS)].map(item => ({
-//   ...item,
-//   id: Math.random().toString(),
-// }));
-
-// export const SEARCH_ALL = [...SEARCH_PLACES, ...SEARCH_HOTELS];
-
+]
 export const data= [
   "https://source.unsplash.com/random/1024x768/?fashion",
   "https://source.unsplash.com/random/1024x768/?maleModel",
@@ -521,7 +510,8 @@ export const CATEGORIES = [
   },
   {
     title: "Brands",
-    icon: "star"
+    icon: "star",
+    path:"brands",
   },
 ]
 export const SETTING_OPTIONS = [
@@ -551,3 +541,42 @@ export const SETTING_OPTIONS = [
   },
 ]
 export const SORT = ["Recommended", "Price Low to High", "Price High to Low", "New Arrival", "Top Rated"]
+
+export const BRANDS = [
+  {
+    name: "Gap Kids",
+    logoImage: "https://brandslogos.com/wp-content/uploads/images/large/gap-kids-logo-black-and-white.png",
+  },
+  {
+    name: "Gymboree",
+    logoImage:"https://logodix.com/logo/1058184.png",
+  },
+  {
+    name: "Nike",
+    logoImage:"https://cdn.wallpapersafari.com/18/1/h7Ub3j.jpg"
+  },
+  {
+    name:"ASOS",
+    logoImage:"https://content.asos-media.com/-/media/homepages/unisex/brands-logos/256x256/asos-design-logo_256_v4.png"
+  },
+  {
+    name:"Zara",
+    logoImage:"https://logos-world.net/wp-content/uploads/2020/05/Zara-Logo.png"
+  },
+  {
+    name:"Misguided",
+    logoImage:"https://upload.wikimedia.org/wikipedia/commons/0/05/Missguided.jpg"
+  },
+  {
+    name:"Valentino",
+    logoImage:"https://i.pinimg.com/originals/47/71/cc/4771cc779936d37fdc94e62236cc4580.jpg"
+  },
+  {
+    name:"Gucci",
+    logoImage:"https://w7.pngwing.com/pngs/511/222/png-transparent-gucci-logo-united-states-logo-organization-service-information-gucci-logo-angle-trademark-service.png"
+  },
+  {
+    name:"Balenciaga",
+    logoImage:"https://balenciaga.dam.kering.com/m/30fdf48e5a0e7773/Medium-648433T15671070_L.jpg?v=0"
+  }
+]

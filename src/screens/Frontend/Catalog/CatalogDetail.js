@@ -11,8 +11,10 @@ import CatalogProductsCard from '../../../components/Frontend/Catalog/CatalogPro
 import Icon from '../../../components/shared/Icon'
 import Dropdown from '../../../components/shared/Dropdown'
 import { SORT } from '../../../data'
+import { sortData } from '../../../components/Global'
 
 export default function CatalogDetail({ route }) {
+    const types = route.params.types
     const [loading, setLoading] = useState(false)
     const [collection, setCollection] = useState([])
     const [filteredCollection, setFilteredCollection] = useState([])
@@ -21,19 +23,23 @@ export default function CatalogDetail({ route }) {
     const toast = useToast()
     const [sortType, setSortType] = useState('')
 
-    const notify = (title, color) => {
-        toast.show({ title: title, backgroundColor: `${color}.700`, placement: 'top', duration: 2000 })
-    }
-    let type;
-    if (route.params.name === 'Men') {
-        type = 'maleProducts'
-    } else if (route.params.name === 'Women') {
-        type = 'femaleProducts'
-    } else {
-        type = 'childrenProducts'
-    }
+    const notify = (title, color) => {toast.show({ title: title, backgroundColor: `${color}.700`, placement: 'top', duration: 2000, shadow:'9' })}
 
-    const getData = async () => {
+    useEffect(() => {
+        setCollection([])
+        let type
+        if (route.params.name === 'Men') {
+            type = 'maleProducts'
+        } else if (route.params.name === 'Women') {
+            type = 'femaleProducts'
+        } else {
+            type = 'childrenProducts'
+        }
+        getData(type)
+        navigation.setOptions({ title: route.params.name + ' Products' })
+    }, [])
+
+    const getData = async (type) => {
         setLoading(true)
         await firestore().collection(type).get().then((querySnapShot) => {
             querySnapShot.forEach(snapShot => {
@@ -47,13 +53,11 @@ export default function CatalogDetail({ route }) {
         })
     }
     useEffect(() => {
-        getData()
-        navigation.setOptions({ title: route.params.name + ' Products' })
-    }, [])
-
-    const types = route.params.types;
+        setFilteredCollection(collection)
+    }, [collection])
 
     const handlePress = (e) => {
+        setSortType('')
         setSelectedOption(e.id)
         filter(e.name)
     }
@@ -63,27 +67,16 @@ export default function CatalogDetail({ route }) {
         } else {
             setFilteredCollection(collection.filter(obj => obj.categoryType === name))
         }
-        handleSelect(sortType)
     }
-    useEffect(() => {
-        setFilteredCollection(collection)
-    }, [collection])
 
     const handleSelect = (e) => {
-        if (e === 'Price Low to High') {
-            filteredCollection.sort((a, b) => a.price - b.price)
-        }
-        if (e === 'Price High to Low') {
-            filteredCollection.sort((a, b) => b.price - a.price)
-        }
-        if (e === 'Recommended') {
-            filteredCollection.sort((a, b) => b.brand.localeCompare(a.brand))
-        }
         setSortType(e)
+        sortData(filteredCollection, e)
     }
     useEffect(() => {
         handleSelect(sortType)
     }, [sortType])
+
     return (
         <>
             {

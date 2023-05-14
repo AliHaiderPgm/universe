@@ -6,6 +6,8 @@ import Categories from './Catalog'
 import CatalogDetail from './CatalogDetail'
 //Components
 import Icon from '../../../components/shared/Icon'
+import Brands from './Brands'
+import BrandsDetail from './BrandsDetail'
 
 export default function Index() {
   const navigation = useNavigation()
@@ -28,6 +30,23 @@ export default function Index() {
         options={{
           headerRight: () => (<Icon icon="cart" size={25} onPress={() => navigation.navigate('cart')} />),
           statusBarStyle: 'dark'
+        }}
+        />
+
+      <CategoryNavigator.Screen
+        name="brands"
+        component={Brands}
+        options={{
+          statusBarStyle: 'dark',
+          headerTitle:"Brands"
+        }}
+        />
+      <CategoryNavigator.Screen
+        name="brandDetail"
+        component={BrandsDetail}
+        options={{
+          headerRight: () => (<Icon icon="cart" size={25} onPress={() => navigation.navigate('cart')} />),
+          statusBarStyle: 'dark',
         }}
         />
     </CategoryNavigator.Navigator>

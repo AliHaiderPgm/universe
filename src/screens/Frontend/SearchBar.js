@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { View, StyleSheet, TextInput, Text, ScrollView } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, StyleSheet, TextInput, Text, ScrollView, Keyboard } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import firestore from '@react-native-firebase/firestore';
@@ -15,6 +15,7 @@ import { sortData } from '../../components/Global';
 
 const SearchBar = () => {
     const [text, setText] = useState('')
+    const [isKeyboard, setIsKeyBoard] = useState(true)
     const [searchedText, setSearchedText] = useState('')
     const inset = useSafeAreaInsets()
     const navigation = useNavigation()
@@ -23,8 +24,16 @@ const SearchBar = () => {
     const [state, setState] = useState(false)
     const [searchedProduct, setSearchedProduct] = useState()
     const [selectedOption, setSelectedOption] = useState()
+    
+    const notify = (msg, color) => { toast.show({ title: msg, backgroundColor: `${color}.700`, placement: 'top', duration: 2000 }) }
+    const capitlize = (str) => { return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() }
 
     const handleSearch = async () => {
+        if (text.length === 0) {
+            notify('Enter product name!','error')
+            return
+        }
+        setIsKeyBoard(false)
         setSearchedText(text)
         setSearchedProduct([])
         setState(true)
@@ -35,9 +44,10 @@ const SearchBar = () => {
             const childrenProducts = await getData('childrenProducts')
             setSearchedProduct([...maleProducts, ...femaleProducts, ...childrenProducts])
         } catch (err) {
-            notify('Something went wrong!', 'red')
+            notify('Something went wrong!', 'error')
         } finally {
             setLoading(false)
+            setIsKeyBoard(true)
         }
     }
     const getData = async (collectionName) => {
@@ -57,12 +67,12 @@ const SearchBar = () => {
             })
         return products
     }
-    const capitlize = (str) => { return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() }
-    const notify = (msg, color) => { toast.show({ title: msg, backgroundColor: `${color}.700`, placement: 'top', duration: 2000 }) }
 
-    useEffect(()=>{
-        sortData(searchedProduct,selectedOption)
-    },[selectedOption])
+    const handleSelect = (e)=>{
+        setSelectedOption(e)
+        sortData(searchedProduct, e)
+    }
+
     return (
         <>
             <View style={[styles.mainContainer, { marginTop: inset.top }]}>
@@ -79,37 +89,35 @@ const SearchBar = () => {
                             autoFocus={true}
                             selectionColor='skyblue'
                             value={text}
-                            onChangeText={(s) => {
-                                setText(s)
-                            }}
+                            onChangeText={(s) => { setText(s) }}
                             onSubmitEditing={() => handleSearch()}
+                            onBlur={Keyboard.dismiss}
+                            editable={isKeyboard}
                         />
                         {text && <Icon icon="close" size={15} onPress={() => { setText('') }} style={styles.image} />}
                     </View>
                 </View>
                 <Icon icon="search" size={25} onPress={() => handleSearch()} />
             </View>
-            {
-                state && <>
-                    {loading ?
-                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.light }}>
-                            <ActivityIndicator size='large' color={colors.gold} />
+
+            {state && <>
+                {loading ?
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.light }}>
+                        <ActivityIndicator size='large' color={colors.gold} />
+                    </View>
+                    : searchedProduct.length === 0 ?
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: spacing.s, backgroundColor: colors.light }}>
+                            <Icon icon="emptyBox" size={80} />
+                            <Text style={{ color: colors.gray }}>No product found for <Text style={{ color: colors.black, fontWeight: '600' }}>{searchedText}</Text>!</Text>
                         </View>
-                        : searchedProduct.length === 0 ?
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: spacing.s, backgroundColor: colors.light }}>
-                                <Icon icon="emptyBox" size={80} />
-                                <Text style={{ color: colors.gray }}>No product found for <Text style={{ color: colors.black, fontWeight: '600' }}>{searchedText}</Text>!</Text>
-                            </View>
-                            :
-                            <View style={styles.products}>
-                                <Dropdown defaultText="Sort" list={SORT} onSelect={e => setSelectedOption(e)} />
-                                <ScrollView style={{ paddingVertical: spacing.s }}>
-                                    <ProductList list={searchedProduct} />
-                                </ScrollView>
-                            </View>
-                    }
-                </>
-            }
+                        :
+                        <View style={styles.products}>
+                            <Dropdown defaultText="Sort" list={SORT} onSelect={handleSelect} style={{ marginVertical: spacing.s }} />
+                            <ScrollView style={{ paddingBottom: spacing.m }}>
+                                <ProductList list={searchedProduct} />
+                            </ScrollView>
+                        </View>}
+            </>}
         </>
     )
 }
@@ -152,7 +160,7 @@ const styles = StyleSheet.create({
         color: colors.black,
     },
     products: {
-        paddingTop: spacing.s,
+        flex: 1,
         backgroundColor: colors.light,
         alignItems: 'center',
         justifyContent: 'center'
