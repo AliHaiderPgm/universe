@@ -9,6 +9,9 @@ import { ActivityIndicator } from 'react-native-paper';
 import { colors, sizes, spacing } from '../../components/constants/theme'
 import Icon from '../../components/shared/Icon'
 import ProductList from '../../components/Frontend/ProductList';
+import Dropdown from '../../components/shared/Dropdown';
+import { SORT } from '../../data';
+import { sortData } from '../../components/Global';
 
 const SearchBar = () => {
     const [text, setText] = useState('')
@@ -19,6 +22,7 @@ const SearchBar = () => {
     const [loading, setLoading] = useState(false)
     const [state, setState] = useState(false)
     const [searchedProduct, setSearchedProduct] = useState()
+    const [selectedOption, setSelectedOption] = useState()
 
     const handleSearch = async () => {
         setSearchedText(text)
@@ -36,7 +40,6 @@ const SearchBar = () => {
             setLoading(false)
         }
     }
-
     const getData = async (collectionName) => {
         const newText = capitlize(text).trim()
         const products = []
@@ -52,14 +55,14 @@ const SearchBar = () => {
                     })
                 }
             })
-            return products
+        return products
     }
-    const capitlize = (str) => {
-        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
-    }
-    const notify = (msg, color) => {
-        toast.show({ title: msg, backgroundColor: `${color}.700`, placement: 'top', duration: 2000 })
-    }
+    const capitlize = (str) => { return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() }
+    const notify = (msg, color) => { toast.show({ title: msg, backgroundColor: `${color}.700`, placement: 'top', duration: 2000 }) }
+
+    useEffect(()=>{
+        sortData(searchedProduct,selectedOption)
+    },[selectedOption])
     return (
         <>
             <View style={[styles.mainContainer, { marginTop: inset.top }]}>
@@ -79,7 +82,7 @@ const SearchBar = () => {
                             onChangeText={(s) => {
                                 setText(s)
                             }}
-                            onSubmitEditing={()=> handleSearch()}
+                            onSubmitEditing={() => handleSearch()}
                         />
                         {text && <Icon icon="close" size={15} onPress={() => { setText('') }} style={styles.image} />}
                     </View>
@@ -88,16 +91,22 @@ const SearchBar = () => {
             </View>
             {
                 state && <>
-                    {loading ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor:colors.light }}>
-                        <ActivityIndicator animating={true} size='large' color={colors.gold} />
-                    </View>
-                        : searchedProduct.length === 0 ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: spacing.s, backgroundColor:colors.light }}>
-                            <Icon icon="emptyBox" size={80} />
-                            <Text style={{ color: colors.gray }}>No product found for <Text style={{ color: colors.black, fontWeight: '600' }}>{searchedText}</Text>!</Text>
+                    {loading ?
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.light }}>
+                            <ActivityIndicator size='large' color={colors.gold} />
                         </View>
-                            : <ScrollView style={{paddingVertical:spacing.s, backgroundColor:colors.light}}>
-                                <ProductList list={searchedProduct} />
-                            </ScrollView>
+                        : searchedProduct.length === 0 ?
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: spacing.s, backgroundColor: colors.light }}>
+                                <Icon icon="emptyBox" size={80} />
+                                <Text style={{ color: colors.gray }}>No product found for <Text style={{ color: colors.black, fontWeight: '600' }}>{searchedText}</Text>!</Text>
+                            </View>
+                            :
+                            <View style={styles.products}>
+                                <Dropdown defaultText="Sort" list={SORT} onSelect={e => setSelectedOption(e)} />
+                                <ScrollView style={{ paddingVertical: spacing.s }}>
+                                    <ProductList list={searchedProduct} />
+                                </ScrollView>
+                            </View>
                     }
                 </>
             }
@@ -141,5 +150,11 @@ const styles = StyleSheet.create({
         fontSize: 17,
         paddingRight: 28,
         color: colors.black,
+    },
+    products: {
+        paddingTop: spacing.s,
+        backgroundColor: colors.light,
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 })

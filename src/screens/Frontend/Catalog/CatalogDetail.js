@@ -10,6 +10,7 @@ import { colors, sizes, spacing } from '../../../components/constants/theme'
 import CatalogProductsCard from '../../../components/Frontend/Catalog/CatalogProductsCard';
 import Icon from '../../../components/shared/Icon'
 import Dropdown from '../../../components/shared/Dropdown'
+import { SORT } from '../../../data'
 
 export default function CatalogDetail({ route }) {
     const [loading, setLoading] = useState(false)
@@ -18,7 +19,6 @@ export default function CatalogDetail({ route }) {
     const navigation = useNavigation()
     const [selectedOption, setSelectedOption] = useState(1)
     const toast = useToast()
-    const SORT = ["Recommended", "Price Low to High", "Price High to Low", "New Arrival", "Top Rated"]
     const [sortType, setSortType] = useState('')
 
     const notify = (title, color) => {

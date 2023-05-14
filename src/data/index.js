@@ -550,3 +550,4 @@ export const SETTING_OPTIONS = [
     title: "Settings"
   },
 ]
+export const SORT = ["Recommended", "Price Low to High", "Price High to Low", "New Arrival", "Top Rated"]
