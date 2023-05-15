@@ -22,7 +22,7 @@ export default function Brands() {
         <ScrollView>
             <View style={styles.cardsContainer}>
                 {BRANDS.map((brand, index) => {
-                    return <BrandCards data={brand} key={index} onPress={()=> navigation.navigate('brandDetail',{name:brand.name})}/>
+                    return <BrandCards data={brand} key={index} onPress={()=> navigation.navigate('brandDetail',{brandDetails:brand})}/>
                 })}
             </View>
         </ScrollView>
@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
         height: CARD_HEIGHT - 30,
         width: CARD_WIDTH,
         resizeMode:'contain',
-        backgroundColor: colors.primary
     },
     nameConatiner:{
         paddingHorizontal: spacing.s,
