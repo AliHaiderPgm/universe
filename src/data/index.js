@@ -533,7 +533,8 @@ export const SETTING_OPTIONS = [
   },
   {
     icon: "heart",
-    title: "Whislist"
+    title: "Whislist",
+    path: "wishList",
   },
   {
     icon: "setting",

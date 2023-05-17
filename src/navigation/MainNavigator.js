@@ -10,6 +10,7 @@ import { colors } from '../components/constants/theme'
 import Icon from '../components/shared/Icon'
 import { useAuth } from '../Context/AuthContext'
 import Login from '../screens/Auth/Login'
+import WishList from '../screens/Frontend/Profile/WishList'
 
 export default function MainNavigator() {
     const Stack = createNativeStackNavigator()
@@ -61,6 +62,15 @@ export default function MainNavigator() {
                     options={{
                         statusBarStyle: 'light', 
                         headerShown: false 
+                    }}
+                />
+                <Stack.Screen
+                    name='wishList'
+                    component={WishList}
+                    options={{
+                        statusBarColor:colors.light,
+                        statusBarStyle:'dark',
+                        headerTitle:'Wish List'
                     }}
                 />
             </Stack.Navigator>

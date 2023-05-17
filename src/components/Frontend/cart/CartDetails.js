@@ -64,16 +64,14 @@ export default function CartDetails({ list, resetItems }) {
     }
 
     const handleDelete = (docRefId) => {
-        const newItems = cartItems.filter(item => item._data.docRefId !== docRefId)
-        setCartItems(newItems)
         firestore()
             .collection('cartItems')
             .doc(docRefId)
             .delete()
             .then(() => {
-                if(newItems.length === 0){
-                    resetItems()
-                }
+                const newItems = cartItems.filter(item => item._data.docRefId !== docRefId)
+                setCartItems(newItems)
+                if (newItems.length === 0) { resetItems() }
             })
     }
 
@@ -82,16 +80,8 @@ export default function CartDetails({ list, resetItems }) {
 
             <View style={styles.container}>
                 {cartItems.map((item, index) => {
-                    return <CartCard
-                        item={item}
-                        increment={handleIncrement}
-                        decrement={handleDecrement}
-                        remove={handleDelete}
-                        key={index}
-                    />
+                    return <CartCard item={item} increment={handleIncrement} decrement={handleDecrement} remove={handleDelete} key={index} />
                 })}
-
-                {/* Calculation */}
                 <View style={{ marginTop: spacing.m, gap: spacing.s }}>
 
                     {totalAmountData.map((item, index) => {

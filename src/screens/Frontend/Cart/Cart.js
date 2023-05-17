@@ -29,12 +29,8 @@ export default function Cart() {
             setCartItems(s => ([...s, doc]))
           })
         })
-        .catch(() => {
-          notify('Something went wrong!', 'red')
-        })
-        .finally(() => {
-          setLoading(false)
-        })
+        .catch(() => {notify('Something went wrong!', 'red')})
+        .finally(() => {setLoading(false)})
     }
   }
 

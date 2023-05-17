@@ -29,14 +29,12 @@ export default function ProductDetails({ navgation, route }) {
     navigation.setOptions({ title: product.name })
     isAuthenticated && isWished()
   }, [])
-  // Function to handle size selection
   const handleSizeSelection = (size) => {
     setSelectedSize(size);
-  };
-  // Function to handle color selection
+  }
   const handleColorSelection = (color) => {
     setSelectedColor(color);
-  };
+  }
   const fromChild = (data) => {
     setPrice(data.number)
     setQuantity(data.count)
@@ -63,7 +61,7 @@ export default function ProductDetails({ navgation, route }) {
       .where('id', '==', product.id)
       .get()
       .then((docRef) => {
-        if(!docRef.empty){
+        if (!docRef.empty) {
           setWished(true)
         }
       }).catch(() => {
@@ -221,14 +219,14 @@ export default function ProductDetails({ navgation, route }) {
       </ScrollView>
       <View style={styles.buttonWrapper}>
         {
-          wishLoading ? <ActivityIndicator color='gold' style={{marginLeft:spacing.m - 1}}/>
+          wishLoading ? <ActivityIndicator color='gold' style={{ marginLeft: spacing.m - 1 }} />
             :
             <Icon icon={wished ? 'heartFilled' : 'heartOutline'} onPress={() => handleAdd(CheckInWishList)} />
         }
         {
           loading ? <View style={styles.button}>
             <Text style={[styles.price, { marginVertical: spacing.s + 7 }]}>Adding...</Text>
-            <ActivityIndicator color='gold'/>
+            <ActivityIndicator color='gold' />
           </View>
             : <TouchableOpacity activeOpacity={0.8} style={styles.button} onPress={() => handleAdd(CheckInCart)}>
               <Text style={styles.price}>${price}</Text>

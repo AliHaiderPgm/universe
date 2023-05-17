@@ -8,6 +8,7 @@ import CatalogDetail from './CatalogDetail'
 import Icon from '../../../components/shared/Icon'
 import Brands from './Brands'
 import BrandsDetail from './BrandsDetail'
+import { colors } from '../../../components/constants/theme'
 
 export default function Index() {
   const navigation = useNavigation()
@@ -47,6 +48,9 @@ export default function Index() {
         options={{
           headerRight: () => (<Icon icon="cart" size={25} onPress={() => navigation.navigate('cart')} />),
           statusBarStyle: 'dark',
+          statusBarColor: colors.light,
+          headerTransparent:true,
+          headerTitle:'',
         }}
         />
     </CategoryNavigator.Navigator>
