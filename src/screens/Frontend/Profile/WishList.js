@@ -4,6 +4,7 @@ import firestore from '@react-native-firebase/firestore';
 import { ActivityIndicator, Button } from 'react-native-paper';
 import { useToast } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
+//components
 import { colors, sizes, spacing } from '../../../components/constants/theme';
 import { useAuth } from '../../../Context/AuthContext';
 import Icon from '../../../components/shared/Icon';
@@ -11,13 +12,23 @@ import Icon from '../../../components/shared/Icon';
 const CARD_HEIGHT = 150;
 const CARD_WIDTH = sizes.width - spacing.xl;
 
-const Card = ({ data, deleteItem }) => {
+const Card = ({ data, items, setItems, user, notify }) => {
     const navigation = useNavigation()
     const [deleting, setDeleting] = useState(false)
-    const handleDelete = async () => {
+    const handleDelete = () => {
         setDeleting(true)
-        await deleteItem()
-        setDeleting(false)
+        firestore()
+            .collection('wishList')
+            .where('userId', '==', user.uid)
+            .where('id', '==', data.id)
+            .get()
+            .then(docRef => {
+                docRef.forEach(doc => { doc.ref.delete() })
+                notify('Item removed!', 'success')
+                setItems(items.filter(item => item.id !== data.id))
+            })
+            .catch((err) => { notify(`Something went wrong! ${err.message}`, 'error') })
+            .finally(() => { setDeleting(false) })
     }
     return <>
         {deleting ?
@@ -42,8 +53,7 @@ const Card = ({ data, deleteItem }) => {
                         textColor='white'
                         rippleColor='white'
                         onPress={() => navigation.navigate('productDetail', { product: data })}
-                    >
-                        View details
+                    >View details
                     </Button>
                 </View>
             </View>
@@ -54,7 +64,6 @@ export default function WishList() {
     const { user } = useAuth()
     const [items, setItems] = useState([])
     const [loading, setLoading] = useState(false)
-    const [deleting, setDeleting] = useState(false)
     const toast = useToast();
     const notify = (title, color) => { toast.show({ title: title, backgroundColor: `${color}.700`, placement: 'top', duration: 2000, shadow: '9' }) };
     const getData = async () => {
@@ -78,35 +87,22 @@ export default function WishList() {
     useEffect(() => {
         getData()
     }, [])
-    const handleDelete = (e) => {
-        setDeleting(true)
-        firestore()
-            .collection('wishList')
-            .where('userId', '==', user.uid)
-            .where('id', '==', e.id)
-            .get()
-            .then(docRef => {
-                docRef.forEach(doc => { doc.ref.delete() })
-                notify('Item removed!', 'success')
-                setItems(items.filter(item => item.id !== e.id))
-            })
-            .catch(() => { notify('Something went wrong!', 'error') })
-            .finally(() => { setDeleting(false) })
-    }
+
     return <>
-        {
-            loading ? <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <ActivityIndicator color={colors.gold} size={'large'} /></View>
+        {loading ?
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <ActivityIndicator color={colors.gold} size={'large'} />
+            </View>
+            :
+            items.length === 0 ?
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.s }}>
+                    <Icon icon='emptyBox' size={80} />
+                    <Text style={{ color: colors.gray }}>Empty wish list</Text>
+                </View>
                 :
-                items.length === 0 ?
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.s }}>
-                        <Icon icon='emptyBox' size={80} />
-                        <Text style={{ color: colors.gray }}>Empty wish list</Text>
-                    </View>
-                    :
-                    <View style={styles.container}>
-                        {items.map((item, index) => { return <Card data={item} key={index} deleteItem={() => handleDelete(item)} delState={deleting} /> })}
-                    </View>
+                <View style={styles.container}>
+                    {items.map((item, index) => { return <Card data={item} key={index} items={items} setItems={setItems} user={user} notify={notify} /> })}
+                </View>
         }
     </>
 }

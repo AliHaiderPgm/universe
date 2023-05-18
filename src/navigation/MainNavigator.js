@@ -1,13 +1,12 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer,} from '@react-navigation/native'
 import SearchBar from '../screens/Frontend/SearchBar'
 import TabNavigator from './TabNavigator'
 import Cart from '../screens/Frontend/Cart/Cart'
 import ProductDetails from '../screens/Frontend/ProductDetails'
 import Auth from '../screens/Auth'
 import { colors } from '../components/constants/theme'
-import Icon from '../components/shared/Icon'
 import { useAuth } from '../Context/AuthContext'
 import Login from '../screens/Auth/Login'
 import WishList from '../screens/Frontend/Profile/WishList'
@@ -44,7 +43,6 @@ export default function MainNavigator() {
                         headerTitle: 'Shopping Cart',
                         statusBarColor: isAuthenticated ? colors.light : colors.black ,
                         statusBarStyle: 'dark',
-                        headerRight: () => (<Icon icon="heartOutline" size={25} />),
                     }}
                 />
                 <Stack.Screen

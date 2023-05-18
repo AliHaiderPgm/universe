@@ -542,38 +542,3 @@ export const SETTING_OPTIONS = [
   },
 ]
 export const SORT = ["Recommended", "Price Low to High", "Price High to Low", "New Arrival", "Top Rated"]
-
-export const BRANDS = [
-  {
-    name: "Gap Kids",
-    logoImage: "https://brandslogos.com/wp-content/uploads/images/large/gap-kids-logo-black-and-white.png",
-  },
-  {
-    name: "Nike",
-    logoImage: "https://static.vecteezy.com/system/resources/previews/010/994/232/original/nike-logo-black-clothes-design-icon-abstract-football-illustration-with-white-background-free-vector.jpg"
-  },
-  {
-    name: "ASOS",
-    logoImage: "https://content.asos-media.com/-/media/homepages/unisex/brands-logos/256x256/asos-design-logo_256_v4.png"
-  },
-  {
-    name: "Zara",
-    logoImage: "https://assets.stickpng.com/images/585990814f6ae202fedf28d6.png"
-  },
-  {
-    name: "Misguided",
-    logoImage: "https://upload.wikimedia.org/wikipedia/commons/0/05/Missguided.jpg"
-  },
-  {
-    name: "Valentino",
-    logoImage: "https://i.pinimg.com/originals/47/71/cc/4771cc779936d37fdc94e62236cc4580.jpg"
-  },
-  {
-    name: "Gucci",
-    logoImage: "https://static.vecteezy.com/system/resources/previews/020/336/406/original/gucci-logo-gucci-icon-free-free-vector.jpg"
-  },
-  {
-    name: "Balenciaga",
-    logoImage: "https://balenciaga.dam.kering.com/m/30fdf48e5a0e7773/Medium-648433T15671070_L.jpg?v=0"
-  }
-]

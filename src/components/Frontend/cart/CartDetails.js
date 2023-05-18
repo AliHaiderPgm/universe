@@ -4,13 +4,19 @@ import firestore from '@react-native-firebase/firestore'
 //components
 import { colors, sizes, spacing } from '../../constants/theme'
 import CartCard from './CartCard'
+import { useNavigation } from '@react-navigation/native'
+import Icon from '../../shared/Icon'
 
 
 export default function CartDetails({ list, resetItems }) {
     const initialState = list
     const [cartItems, setCartItems] = useState(initialState)
     const [cartTotal, setCartTotal] = useState(0)
+    const navigation = useNavigation()
 
+    useEffect(() => {
+        navigation.setOptions({ headerRight: () => (<Icon icon="heartOutline" size={25} onPress={() => navigation.navigate('wishList')} />), })
+    }, [])
     const cart_total = () => {
         let sum = 0
         cartItems.map(item => {
