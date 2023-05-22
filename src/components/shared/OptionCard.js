@@ -1,5 +1,4 @@
 import React from 'react'
-import { TouchableHighlight, TouchableOpacity } from 'react-native'
 import { View, Text, StyleSheet } from 'react-native'
 //components
 import { colors, sizes, spacing } from '../constants/theme'
@@ -7,6 +6,7 @@ import Icon from './Icon'
 import { useNavigation } from '@react-navigation/native'
 import { Linking, Platform } from 'react-native';
 import NotificationSetting from 'react-native-open-notification';
+import Ripple from 'react-native-material-ripple';
 
 export default function OptionCard({ data }) {
     const navigation = useNavigation()
@@ -22,11 +22,11 @@ export default function OptionCard({ data }) {
     }
 
     return (
-        <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={data.path === 'openSetting' ? openSettings
+        <Ripple onPress={
+            data.path === 'openSetting' ? openSettings
                 : data.path === 'openNotification' ? openNotification
-                    : () => navigation.navigate(data.path)}
+                    : () => navigation.navigate(data.path)
+        }
         >
             <View style={styles.cardWrapper}>
                 <View style={styles.textWrapper}>
@@ -39,7 +39,7 @@ export default function OptionCard({ data }) {
                     <Icon icon="next" size={25} />
                 </View>
             </View>
-        </TouchableOpacity>
+        </Ripple>
     )
 }
 const styles = StyleSheet.create({
