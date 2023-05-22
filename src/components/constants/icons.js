@@ -4,6 +4,7 @@ import arc from '../../assets/icons/arc.png';
 import categories from '../../assets/icons/categories.png';
 import categoriesFilled from '../../assets/icons/categories-filled.png';
 import profile from '../../assets/icons/profile.png';
+import goldProfile from '../../assets/icons/yellowProfile.png';
 import profileFilled from '../../assets/icons/profile-filled.png';
 import menu from '../../assets/icons/menu.png';
 import search from '../../assets/icons/search.png';
@@ -22,16 +23,19 @@ import navigation from '../../assets/icons/gps-navigation.png';
 import heart from '../../assets/icons/heart.png';
 import heartOutline from '../../assets/icons/heart-outline.png';
 import setting from '../../assets/icons/setting.png';
+import settingsBlackFilled from '../../assets/icons/settingsBlackFilled.png';
+import settingsBlack from '../../assets/icons/settingsBlack.png';
 import shoppingBag from '../../assets/icons/shopping-bag.png';
 import close from '../../assets/icons/close.png'
 import emptyBox from '../../assets/icons/emptyBox.png'
 import downArrow from '../../assets/icons/down.png'
+import camera from '../../assets/icons/camera.png'
 import heartFilled from '../../assets/icons/heart-filled.png'
 
 export default {
     home,homeFilled,
     categories,categoriesFilled,
-    profile,profileFilled,
+    profile,profileFilled,goldProfile,
     arc,
     menu,
     search,
@@ -40,8 +44,8 @@ export default {
     rightArrow,leftArrow,downArrow,
     star,
     next,
-    bell, creditCard, navigation, heart, setting, shoppingBag,
+    bell, creditCard, navigation, heart, setting, settingsBlack,settingsBlackFilled, shoppingBag,
     close,
     heartOutline,heartFilled,
-    emptyBox,
+    emptyBox,camera
 }

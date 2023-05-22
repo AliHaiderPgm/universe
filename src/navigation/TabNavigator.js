@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Icon from '../components/shared/Icon';
 import Home from '../screens/Frontend/Home';
 import Categories from '../screens/Frontend/Catalog';
-import Profile from '../screens/Frontend/Profile';
+import Settings from '../screens/Frontend/Settings';
 
 export default function TabNavigator() {
   const Tab = createBottomTabNavigator();
@@ -23,9 +23,9 @@ export default function TabNavigator() {
           return focused ? <Icon icon="categoriesFilled" /> : <Icon icon="categories" />
         },
       }} />
-      <Tab.Screen name="Profile" component={Profile} options={{
+      <Tab.Screen name="Setting" component={Settings} options={{
         tabBarIcon: ({ focused }) => {
-          return focused ? <Icon icon="profileFilled" /> : <Icon icon="profile" />
+          return focused ? <Icon icon="settingsBlackFilled" /> : <Icon icon="settingsBlack" />
         }
       }} />
     </Tab.Navigator>

@@ -3,12 +3,12 @@ import { View, Text, Image, StyleSheet } from 'react-native'
 //components
 import { colors, sizes, spacing } from '../../constants/theme'
 
-export default function UserHeader({ data,userName }) {
+export default function UserHeader({ data }) {
     return (
         <View style={styles.mainContainer}>
             <View style={styles.container}>
-                <Image source={data.avatar} style={styles.avatar} />
-                <Text style={styles.userName}>{userName}</Text>
+                <Image source={data.photoURL ? {uri:data.photoURL} : require('../../../assets/icons/user.png')} style={styles.avatar} />
+                <Text style={styles.userName}>{data?.displayName}</Text>
             </View>
         </View>
     )

@@ -7298,6 +7298,11 @@ react-native-keyboard-aware-scroll-view@^0.9.5:
     prop-types "^15.6.2"
     react-native-iphone-x-helper "^1.0.3"
 
+react-native-open-notification@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.npmjs.org/react-native-open-notification/-/react-native-open-notification-0.1.4.tgz"
+  integrity sha512-TPeFRsao6nDFW5nvBseD6nheRCN1U3poaY90iDzBY1MEEVepClqfEC9Iw0cqj7LYnpDSF8V25fb/SpjEg3HdQQ==
+
 react-native-pager-view@*, react-native-pager-view@^6.2.0:
   version "6.2.0"
   resolved "https://registry.npmjs.org/react-native-pager-view/-/react-native-pager-view-6.2.0.tgz"

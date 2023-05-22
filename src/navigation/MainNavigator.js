@@ -1,6 +1,6 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { NavigationContainer,} from '@react-navigation/native'
+import { NavigationContainer, useNavigation,} from '@react-navigation/native'
 import SearchBar from '../screens/Frontend/SearchBar'
 import TabNavigator from './TabNavigator'
 import Cart from '../screens/Frontend/Cart/Cart'
@@ -9,7 +9,8 @@ import Auth from '../screens/Auth'
 import { colors } from '../components/constants/theme'
 import { useAuth } from '../Context/AuthContext'
 import Login from '../screens/Auth/Login'
-import WishList from '../screens/Frontend/Profile/WishList'
+import WishList from '../screens/Frontend/Settings/WishList'
+import UpdateProfile from '../screens/Frontend/Settings/UpdateProfile'
 
 export default function MainNavigator() {
     const Stack = createNativeStackNavigator()
@@ -50,8 +51,7 @@ export default function MainNavigator() {
                     component={ProductDetails}
                     options={{
                         statusBarStyle: 'dark',
-                        statusBarColor:colors.light
-                        // headerRight: () => (<Icon icon="heartOutline" size={25} />),
+                        statusBarColor:colors.light,
                     }}
                 />
                 <Stack.Screen
@@ -69,6 +69,15 @@ export default function MainNavigator() {
                         statusBarColor:colors.light,
                         statusBarStyle:'dark',
                         headerTitle:'Wish List'
+                    }}
+                />
+                <Stack.Screen
+                    name='updateProfile'
+                    component={UpdateProfile}
+                    options={{
+                        statusBarColor:colors.light,
+                        statusBarStyle:'dark',
+                        headerTitle:'Profile'
                     }}
                 />
             </Stack.Navigator>

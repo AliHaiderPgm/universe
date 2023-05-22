@@ -26,7 +26,9 @@ export default function ProductDetails({ navgation, route }) {
 
 
   useEffect(() => {
-    navigation.setOptions({ title: product.name })
+    navigation.setOptions({ 
+      title: product.name, 
+    })
     isAuthenticated && isWished()
   }, [])
   const handleSizeSelection = (size) => {

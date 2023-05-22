@@ -516,16 +516,18 @@ export const CATEGORIES = [
 ]
 export const SETTING_OPTIONS = [
   {
+    icon: "goldProfile",
+    title: "Profile",
+    path:"updateProfile"
+  },
+  {
     icon: "bell",
-    title: "Notification"
+    title: "Notification",
+    path:'openNotification'
   },
   {
     icon: "shoppingBag",
     title: "My Orders"
-  },
-  {
-    icon: "navigation",
-    title: "Addresses"
   },
   {
     icon: "creditCard",
@@ -538,7 +540,8 @@ export const SETTING_OPTIONS = [
   },
   {
     icon: "setting",
-    title: "Settings"
+    title: "Settings",
+    path: 'openSetting'
   },
 ]
 export const SORT = ["Recommended", "Price Low to High", "Price High to Low", "New Arrival", "Top Rated"]

@@ -1,15 +1,33 @@
 import React from 'react'
-import { TouchableOpacity } from 'react-native'
+import { TouchableHighlight, TouchableOpacity } from 'react-native'
 import { View, Text, StyleSheet } from 'react-native'
 //components
 import { colors, sizes, spacing } from '../constants/theme'
 import Icon from './Icon'
 import { useNavigation } from '@react-navigation/native'
+import { Linking, Platform } from 'react-native';
+import NotificationSetting from 'react-native-open-notification';
 
 export default function OptionCard({ data }) {
     const navigation = useNavigation()
+    const openSettings = () => {
+        if (Platform.OS === 'android') {
+            Linking.openSettings();
+        } else if (Platform.OS === 'ios') {
+            Linking.openURL('app-settings:');
+        }
+    }
+    const openNotification = () => {
+        NotificationSetting.open();
+    }
+
     return (
-        <TouchableOpacity activeOpacity={0.5} onPress={()=>navigation.navigate(data.path)}>
+        <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={data.path === 'openSetting' ? openSettings
+                : data.path === 'openNotification' ? openNotification
+                    : () => navigation.navigate(data.path)}
+        >
             <View style={styles.cardWrapper}>
                 <View style={styles.textWrapper}>
                     <Text style={styles.title}>{data.title}</Text>
