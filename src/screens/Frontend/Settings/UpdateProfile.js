@@ -93,18 +93,24 @@ const UpdateProfile = () => {
           swipeDirection={['down']}
           animationOutTiming={600}
           backdropTransitionOutTiming={0}
-          style={ styles.modal}
+          style={styles.modal}
         >
-          <View style={styles.modalContent  }>
-            <Text style={{ color: colors.black }}>Hello bro</Text>
-            <Text style={{ color: colors.black }}>Hello bro</Text>
-            <Text style={{ color: colors.black }}>Hello bro</Text>
-            <Text style={{ color: colors.black }}>Hello bro</Text>
-            <Text style={{ color: colors.black }}>Hello bro</Text>
-            <Text style={{ color: colors.black }}>Hello bro</Text>
-            <Text style={{ color: colors.black }}>Hello bro</Text>
-            <Text style={{ color: colors.black }}>Hello bro</Text>
-            <Text style={{ color: colors.black }}>Hello bro</Text>
+          <View style={styles.modalContent}>
+            <Text style={styles.heading}>Profile photo</Text>
+            <View style={styles.callToAction}>
+              <View>
+                <TouchableOpacity style={styles.modalIcons} activeOpacity={0.5}>
+                  <Icon icon="camera" />
+                </TouchableOpacity>
+                <Text style={styles.label}>Camera</Text>
+              </View>
+              <View>
+                <TouchableOpacity style={styles.modalIcons} activeOpacity={0.5}>
+                  <Icon icon="image" />
+                </TouchableOpacity>
+                <Text style={styles.label}>Gallery</Text>
+              </View>
+            </View>
           </View>
         </ReactNativeModal>
       </GestureHandlerRootView>
@@ -155,16 +161,37 @@ const styles = StyleSheet.create({
     right: -10,
     elevation: 9,
   },
-  modal:{
-    justifyContent: 'flex-end', 
+  modal: {
+    justifyContent: 'flex-end',
     margin: 0,
     backgroundColor: 'rgba(0,0,0,0)'
   },
-  modalContent:{
+  modalContent: {
     borderTopLeftRadius: sizes.radius,
     borderTopRightRadius: sizes.radius,
-    backgroundColor: 'white', 
-    padding: 20
+    backgroundColor: 'white',
+    padding: spacing.m,
+    gap:spacing.m
+  },
+  callToAction: {
+    flexDirection: 'row',
+    gap: spacing.m
+  },
+  modalIcons: {
+    borderWidth: 0.5,
+    borderRadius: 50,
+    padding: spacing.s + 2,
+  },
+  heading: {
+    fontSize: sizes.h2,
+    fontWeight: '600',
+    color: colors.black
+  },
+  label: {
+    fontSize: sizes.caption,
+    color: colors.black,
+    alignSelf:'center',
+    marginTop:spacing.s
   }
 
 });

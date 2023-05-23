@@ -31,6 +31,7 @@ import emptyBox from '../../assets/icons/emptyBox.png'
 import downArrow from '../../assets/icons/down.png'
 import camera from '../../assets/icons/camera.png'
 import heartFilled from '../../assets/icons/heart-filled.png'
+import image from '../../assets/icons/image.png'
 
 export default {
     home,homeFilled,
@@ -47,5 +48,5 @@ export default {
     bell, creditCard, navigation, heart, setting, settingsBlack,settingsBlackFilled, shoppingBag,
     close,
     heartOutline,heartFilled,
-    emptyBox,camera
+    emptyBox,camera,image
 }
