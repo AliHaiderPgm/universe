@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
         gap: spacing.m,
         flexWrap: 'wrap',
         justifyContent: 'center',
-        marginBottom: 50,
+        marginBottom: spacing.m,
     },
     noProductContainer: {
         height: sizes.height,

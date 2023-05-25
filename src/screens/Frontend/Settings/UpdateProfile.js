@@ -6,7 +6,6 @@ import { useAuth } from '../../../Context/AuthContext';
 import Icon from '../../../components/shared/Icon';
 import { ReactNativeModal } from 'react-native-modal';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
 
 
 
@@ -44,10 +43,9 @@ const UpdateProfile = () => {
   const initialState = {
     name: user.displayName,
     email: user.email,
-  }
-  const [state, setState] = useState(initialState)
-  const [image, setImage] = useState(null)
-  const [modalVisible, setModalVisible] = useState(false)
+  };
+  const [state, setState] = useState(initialState);
+  const [modalVisible, setModalVisible] = useState(false);
 
 
   const handleChange = (val, name) => setState(prevState => ({ ...prevState, [name]: val, }));
@@ -56,41 +54,16 @@ const UpdateProfile = () => {
     console.log('Updating...')
   }
 
-  const handleOpenModal = () => { setModalVisible(true); }
-  const handleCloseModal = () => { setModalVisible(false) }
-
-  const openCamera = () => {
-    launchCamera({}, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled camera');
-      } else if (response.error) {
-        console.log('Camera Error: ', response.error);
-      } else {
-        const source = { uri: response.assets[0].uri };
-        setImage(source);
-      }
-      handleCloseModal()
-    })
+  const handleOpenModal = () => {
+    setModalVisible(true);
   }
 
-  const openImagePicker = () => {
-    launchImageLibrary({}, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      } else {
-        const source = { uri: response.assets[0].uri };
-        setImage(source);
-      }
-      handleCloseModal()
-    });
+  const handleCloseModal = () => {
+    setModalVisible(false)
   }
   return (
     <>
-      <View style={styles.mainContainer}> 
+      <View style={styles.mainContainer}>
         <View style={styles.detailsContainer}>
           <View style={styles.imageContainer}>
             <Image source={user.photoURL ? { uri: user.photoURL } : require('../../../assets/icons/user.png')} style={styles.image} />
@@ -126,13 +99,13 @@ const UpdateProfile = () => {
             <Text style={styles.heading}>Profile photo</Text>
             <View style={styles.callToAction}>
               <View>
-                <TouchableOpacity style={styles.modalIcons} activeOpacity={0.5} onPress={openCamera}>
+                <TouchableOpacity style={styles.modalIcons} activeOpacity={0.5}>
                   <Icon icon="camera" />
                 </TouchableOpacity>
                 <Text style={styles.label}>Camera</Text>
               </View>
               <View>
-                <TouchableOpacity style={styles.modalIcons} activeOpacity={0.5} onPress={openImagePicker}>
+                <TouchableOpacity style={styles.modalIcons} activeOpacity={0.5}>
                   <Icon icon="image" />
                 </TouchableOpacity>
                 <Text style={styles.label}>Gallery</Text>
@@ -184,21 +157,21 @@ const styles = StyleSheet.create({
     backgroundColor: colors.gold,
     borderRadius: 50,
     position: 'absolute',
-    bottom: -3,
-    right: -2,
+    bottom: -10,
+    right: -10,
     elevation: 9,
   },
   modal: {
     justifyContent: 'flex-end',
     margin: 0,
+    backgroundColor: 'rgba(0,0,0,0)'
   },
   modalContent: {
     borderTopLeftRadius: sizes.radius,
     borderTopRightRadius: sizes.radius,
     backgroundColor: 'white',
     padding: spacing.m,
-    gap: spacing.m,
-    marginBottom:-20
+    gap:spacing.m
   },
   callToAction: {
     flexDirection: 'row',
@@ -217,8 +190,8 @@ const styles = StyleSheet.create({
   label: {
     fontSize: sizes.caption,
     color: colors.black,
-    alignSelf: 'center',
-    marginTop: spacing.s
+    alignSelf:'center',
+    marginTop:spacing.s
   }
 
 });

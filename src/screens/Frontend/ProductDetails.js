@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   },
   container: {
     position: 'relative',
-    marginBottom: 100,
+    marginBottom: 35,
   },
   imageContainer: {
     overflow: 'hidden',
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     position: 'absolute',
-    bottom: 50,
+    bottom: 0,
     left: 0,
     flexDirection: 'row',
     justifyContent: 'center',
