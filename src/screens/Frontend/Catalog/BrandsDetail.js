@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { colors, sizes, spacing } from '../../../components/constants/theme';
-import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import { useToast } from 'native-base';
 import DetailRoute from '../../../components/Frontend/Catalog/DetailRoute';

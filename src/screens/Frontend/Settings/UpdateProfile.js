@@ -57,7 +57,6 @@ const UpdateProfile = () => {
   const handleOpenModal = () => {
     setModalVisible(true);
   }
-
   const handleCloseModal = () => {
     setModalVisible(false)
   }
