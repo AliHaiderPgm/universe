@@ -53,7 +53,7 @@ export default function Brands() {
         }
     ]
     return (
-        <ScrollView>
+        <ScrollView style={{marginBottom:50}}>
             <View style={styles.cardsContainer}>
                 {BRANDS.map((brand, index) => {
                     return <BrandCards data={brand} key={index} onPress={() => navigation.navigate('brandDetail', { brandDetails: brand })} />

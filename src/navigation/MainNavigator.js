@@ -1,6 +1,6 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { NavigationContainer, useNavigation,} from '@react-navigation/native'
+import { NavigationContainer } from '@react-navigation/native'
 import SearchBar from '../screens/Frontend/SearchBar'
 import TabNavigator from './TabNavigator'
 import Cart from '../screens/Frontend/Cart/Cart'
