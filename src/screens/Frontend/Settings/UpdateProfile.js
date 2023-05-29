@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import { colors, sizes, spacing } from '../../../components/constants/theme';
@@ -6,6 +6,10 @@ import { useAuth } from '../../../Context/AuthContext';
 import Icon from '../../../components/shared/Icon';
 import { ReactNativeModal } from 'react-native-modal';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import ImagePicker from 'react-native-image-crop-picker';
+import storage from '@react-native-firebase/storage';
+import { firebase } from '@react-native-firebase/firestore';
+import { useToast } from 'native-base';
 
 
 
@@ -27,11 +31,12 @@ const Input = ({ label, value, onChangeText }) => {
   );
 };
 
-const MyButton = ({ title, onPress, }) => {
+const MyButton = ({ title, onPress, loading }) => {
   return <Button
     mode="contained" buttonColor={colors.black} textColor={colors.white}
     style={styles.btn}
     onPress={onPress}
+    loading={loading}
   >
     {title}
   </Button>
@@ -39,48 +44,124 @@ const MyButton = ({ title, onPress, }) => {
 
 
 const UpdateProfile = () => {
-  const { user } = useAuth()
+  const { user, dispatch } = useAuth()
   const initialState = {
     name: user.displayName,
     email: user.email,
+    photoURL: user.photoURL,
   };
   const [state, setState] = useState(initialState);
   const [modalVisible, setModalVisible] = useState(false);
+  const [image, setImage] = useState('');
+  const [mounted, setMounted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const toast = useToast()
 
 
   const handleChange = (val, name) => setState(prevState => ({ ...prevState, [name]: val, }));
+  const notify = (msg, color) => toast.show({ title: msg, background: `${color}.700`, shadow: 9, placement: 'top', duration: 1500 })
 
-  const handleUpdate = () => {
-    console.log('Updating...')
+  const handleOpenModal = () => setModalVisible(true)
+  const handleCloseModal = () => setModalVisible(false)
+
+  const handleOpenCamera = () => {
+    ImagePicker.openCamera({
+      width: 400,
+      height: 400,
+      cropping: true,
+      cropperToolbarColor: 'black',
+      cropperToolbarWidgetColor: 'white',
+      cropperStatusBarColor: 'black',
+      disableCropperColorSetters: false,
+      hideBottomControls: true,
+    }).then(image => {
+      setImage(image)
+    }).catch(err => {
+      console.log(err)
+    }).finally(() => {
+      handleCloseModal()
+    })
+  }
+  const handleOpenGallery = () => {
+    ImagePicker.openPicker({
+      width: 400,
+      height: 400,
+      cropping: true,
+      cropperToolbarColor: 'black',
+      cropperToolbarWidgetColor: 'white',
+      cropperStatusBarColor: 'black',
+      disableCropperColorSetters: false,
+      hideBottomControls: true,
+    }).then(image => {
+      setImage(image)
+    }).catch(err => {
+      console.log(err)
+    }).finally(() => {
+      handleCloseModal()
+    })
   }
 
-  const handleOpenModal = () => {
-    setModalVisible(true);
+  const handleUpdate = async () => image.path ? uploadImage() : updateProfile()
+
+  const uploadImage = async () => {
+    setLoading(true)
+    const reference = storage().ref('images/').child(image.path.split('/').pop());
+    try {
+      await reference.putFile(image.path);
+      await storage().ref(`images/${image.path.split('/').pop()}`).getDownloadURL()
+        .then((url) => {
+          setState(prevState => ({ ...prevState, photoURL: url }))
+        })
+    } catch (error) {
+      notify('Failed to update photo!', 'error')
+    } finally {
+      setLoading(false)
+    }
   }
-  const handleCloseModal = () => {
-    setModalVisible(false)
+  useEffect(() => {
+    if (mounted && state.photoURL) {
+      updateProfile()
+    } else {
+      setMounted(true)
+    }
+  }, [state.photoURL])
+
+  const updateProfile = async () => {
+    setLoading(true)
+    const { name, email, photoURL } = state
+    try {
+      await user.updateProfile({
+        displayName: name,
+        photoURL: photoURL
+      })
+      user.email !== email && await user.updateEmail(email)
+      const currentUser = firebase.auth().currentUser;
+      await currentUser.reload()
+      dispatch({ type: 'LOGIN', payload: { user: currentUser } })
+      notify('Updated profile!', 'success')
+    } catch (error) {
+      notify('Failed to update profile!', 'error')
+    } finally {
+      setLoading(false)
+    }
   }
+
   return (
     <>
       <View style={styles.mainContainer}>
         <View style={styles.detailsContainer}>
           <View style={styles.imageContainer}>
-            <Image source={user.photoURL ? { uri: user.photoURL } : require('../../../assets/icons/user.png')} style={styles.image} />
-            <TouchableOpacity style={styles.iconContainer} activeOpacity={0.7} onPress={handleOpenModal}>
-              <Icon icon="camera" size={25} />
-            </TouchableOpacity>
+            {image ? <Image source={{ uri: image.path }} style={styles.image} />
+              : <Image source={user.photoURL ? { uri: user.photoURL } : require('../../../assets/icons/user.png')} style={styles.image} />}
           </View>
-          <Input
-            label="Name"
-            value={state.name}
-            onChangeText={val => handleChange(val, 'name')}
-          />
-          <Input
-            label="Email"
-            value={state.email}
-            onChangeText={val => handleChange(val, 'email')}
-          />
-          <MyButton title="Update Profile" onPress={handleUpdate} />
+          <TouchableOpacity style={styles.iconContainer} activeOpacity={0.7} onPress={handleOpenModal}>
+            <Icon icon="camera" size={25} />
+          </TouchableOpacity>
+
+          <Input label="Name" value={state.name} onChangeText={val => handleChange(val, 'name')} />
+          <Input label="Email" value={state.email} onChangeText={val => handleChange(val, 'email')} />
+          <MyButton title="Update Profile" onPress={handleUpdate} loading={loading} />
+
         </View>
       </View>
       <GestureHandlerRootView style={{ flex: 1 }}>
@@ -98,13 +179,13 @@ const UpdateProfile = () => {
             <Text style={styles.heading}>Profile photo</Text>
             <View style={styles.callToAction}>
               <View>
-                <TouchableOpacity style={styles.modalIcons} activeOpacity={0.5}>
+                <TouchableOpacity style={styles.modalIcons} activeOpacity={0.5} onPress={handleOpenCamera}>
                   <Icon icon="camera" />
                 </TouchableOpacity>
                 <Text style={styles.label}>Camera</Text>
               </View>
               <View>
-                <TouchableOpacity style={styles.modalIcons} activeOpacity={0.5}>
+                <TouchableOpacity style={styles.modalIcons} activeOpacity={0.5} onPress={handleOpenGallery}>
                   <Icon icon="image" />
                 </TouchableOpacity>
                 <Text style={styles.label}>Gallery</Text>
@@ -141,6 +222,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.m,
     borderRadius: 50,
     borderWidth: 1,
+    overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 2,
@@ -149,15 +231,15 @@ const styles = StyleSheet.create({
   image: {
     height: IMAGE_HEIGHT,
     width: IMAGE_WIDTH,
-    resizeMode: 'contain'
+    resizeMode: 'cover'
   },
   iconContainer: {
     padding: spacing.s,
     backgroundColor: colors.gold,
     borderRadius: 50,
     position: 'absolute',
-    bottom: -10,
-    right: -10,
+    left: '54%',
+    top: '18%',
     elevation: 9,
   },
   modal: {
@@ -170,7 +252,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: sizes.radius,
     backgroundColor: 'white',
     padding: spacing.m,
-    gap:spacing.m
+    gap: spacing.m
   },
   callToAction: {
     flexDirection: 'row',
@@ -189,8 +271,8 @@ const styles = StyleSheet.create({
   label: {
     fontSize: sizes.caption,
     color: colors.black,
-    alignSelf:'center',
-    marginTop:spacing.s
+    alignSelf: 'center',
+    marginTop: spacing.s
   }
 
 });

@@ -18,32 +18,27 @@ import Icon from '../../../components/shared/Icon';
 
 export default function Settings() {
   const toast = useToast()
-  const {isAuthenticated, dispatch, user} = useAuth()
+  const { isAuthenticated, dispatch } = useAuth()
   const navigation = useNavigation()
-  useEffect(()=>{
-    navigation.setOptions({
-      headerRight: () => (<Icon icon="cart" size={25} onPress={()=>navigation.navigate('cart')}/>),
-    })
-  },[])
+  useEffect(() => {
+    navigation.setOptions({ headerRight: () => (<Icon icon="cart" size={25} onPress={() => navigation.navigate('cart')} />), })
+  }, [])
   const handleLogout = () => {
     auth()
       .signOut()
       .then(() => {
         notify('Logged out!', 'success')
-        dispatch({type:'LOGOUT'})
+        dispatch({ type: 'LOGOUT' })
       });
   }
   const notify = (message, color) => {
-    toast.show({ title: message, placement: 'top', duration: 2000, backgroundColor: `${color}.700`, shadow:'9' })
+    toast.show({ title: message, placement: 'top', duration: 2000, backgroundColor: `${color}.700`, shadow: '9' })
   }
-  if (!isAuthenticated) {
-    return (
-      <UserNotFound />
-    );
-  }
+  if (!isAuthenticated) { return <UserNotFound /> }
+
   return (
     <ScrollView style={styles.container}>
-      <UserHeader data={user} />
+      <UserHeader />
       <Options list={SETTING_OPTIONS} />
       <View style={styles.btnContainer}>
         <Button mode="contained" buttonColor={colors.black} textColor={colors.white}
@@ -60,11 +55,11 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.light,
   },
-  btnContainer:{
-    paddingHorizontal:spacing.m,
-    backgroundColor:colors.white,
-    height:70,
-    justifyContent:'center',
+  btnContainer: {
+    paddingHorizontal: spacing.m,
+    backgroundColor: colors.white,
+    height: 70,
+    justifyContent: 'center',
   },
   btn: {
     paddingVertical: spacing.s - 5,

@@ -90,6 +90,8 @@ def reactNativeArchitectures() {
 }
 
 android {
+    compileSdkVersion 33
+    buildToolsVersion "33.0.0"
     ndkVersion rootProject.ext.ndkVersion
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -101,6 +103,9 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
+         vectorDrawables.useSupportLibrary = true
+         targetSdkVersion 33
     }
 
     splits {
