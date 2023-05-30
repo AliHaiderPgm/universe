@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useToast } from 'native-base';
+import storage from '@react-native-firebase/storage';
 import { TextInput, Button } from 'react-native-paper';
+import { ReactNativeModal } from 'react-native-modal';
+import ImagePicker from 'react-native-image-crop-picker';
+import { useNavigation } from '@react-navigation/native';
+import { firebase } from '@react-native-firebase/firestore';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { colors, sizes, spacing } from '../../../components/constants/theme';
+//components
 import { useAuth } from '../../../Context/AuthContext';
 import Icon from '../../../components/shared/Icon';
-import { ReactNativeModal } from 'react-native-modal';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import ImagePicker from 'react-native-image-crop-picker';
-import storage from '@react-native-firebase/storage';
-import { firebase } from '@react-native-firebase/firestore';
-import { useToast } from 'native-base';
-
-
 
 const IMAGE_HEIGHT = 90;
 const IMAGE_WIDTH = 90;
@@ -42,7 +42,6 @@ const MyButton = ({ title, onPress, loading }) => {
   </Button>
 }
 
-
 const UpdateProfile = () => {
   const { user, dispatch } = useAuth()
   const initialState = {
@@ -56,7 +55,7 @@ const UpdateProfile = () => {
   const [mounted, setMounted] = useState(false)
   const [loading, setLoading] = useState(false)
   const toast = useToast()
-
+  const navigation = useNavigation()
 
   const handleChange = (val, name) => setState(prevState => ({ ...prevState, [name]: val, }));
   const notify = (msg, color) => toast.show({ title: msg, background: `${color}.700`, shadow: 9, placement: 'top', duration: 1500 })
@@ -138,7 +137,7 @@ const UpdateProfile = () => {
       const currentUser = firebase.auth().currentUser;
       await currentUser.reload()
       dispatch({ type: 'LOGIN', payload: { user: currentUser } })
-      notify('Updated profile!', 'success')
+      navigation.navigate('Setting')
     } catch (error) {
       notify('Failed to update profile!', 'error')
     } finally {
