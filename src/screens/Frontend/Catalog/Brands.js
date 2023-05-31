@@ -1,6 +1,5 @@
 import React from 'react'
 import { StyleSheet, View, ScrollView, TouchableOpacity, Image, Text } from 'react-native'
-// import { BRANDS } from '../../../data'
 import { useNavigation } from '@react-navigation/native'
 import { colors, sizes, spacing } from '../../../components/constants/theme'
 

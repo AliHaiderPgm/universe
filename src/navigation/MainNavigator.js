@@ -1,6 +1,6 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { NavigationContainer, useNavigation,} from '@react-navigation/native'
+import { NavigationContainer } from '@react-navigation/native'
 import SearchBar from '../screens/Frontend/SearchBar'
 import TabNavigator from './TabNavigator'
 import Cart from '../screens/Frontend/Cart/Cart'
@@ -11,30 +11,31 @@ import { useAuth } from '../Context/AuthContext'
 import Login from '../screens/Auth/Login'
 import WishList from '../screens/Frontend/Settings/WishList'
 import UpdateProfile from '../screens/Frontend/Settings/UpdateProfile'
+import Checkout from '../screens/Frontend/Cart/Checkout'
 
 export default function MainNavigator() {
     const Stack = createNativeStackNavigator()
-    const {isAuthenticated} = useAuth()
+    const { isAuthenticated } = useAuth()
     return (
         <NavigationContainer>
             <Stack.Navigator >
                 <Stack.Screen
                     name='Root'
                     component={TabNavigator}
-                    options={{ 
+                    options={{
                         headerShown: false,
                         statusBarStyle: 'light',
                         statusBarColor: colors.white,
-                     }}
+                    }}
                 />
                 <Stack.Screen
                     name='search'
                     component={SearchBar}
-                    options={{ 
+                    options={{
                         headerShown: false,
                         statusBarColor: colors.light,
                         statusBarStyle: 'dark'
-                     }}
+                    }}
                 />
                 <Stack.Screen
                     name='cart'
@@ -42,7 +43,16 @@ export default function MainNavigator() {
                     options={{
                         headerShown: isAuthenticated,
                         headerTitle: 'Shopping Cart',
-                        statusBarColor: isAuthenticated ? colors.light : colors.black ,
+                        statusBarColor: isAuthenticated ? colors.light : colors.black,
+                        statusBarStyle: 'dark',
+                    }}
+                />
+                <Stack.Screen
+                    name='checkout'
+                    component={Checkout}
+                    options={{
+                        headerTitle: 'Check out',
+                        statusBarColor: colors.white,
                         statusBarStyle: 'dark',
                     }}
                 />
@@ -51,33 +61,33 @@ export default function MainNavigator() {
                     component={ProductDetails}
                     options={{
                         statusBarStyle: 'dark',
-                        statusBarColor:colors.light,
+                        statusBarColor: colors.light,
                     }}
                 />
                 <Stack.Screen
                     name='auth'
                     component={Auth}
                     options={{
-                        statusBarStyle: 'light', 
-                        headerShown: false 
+                        statusBarStyle: 'light',
+                        headerShown: false
                     }}
                 />
                 <Stack.Screen
                     name='wishList'
                     component={WishList}
                     options={{
-                        statusBarColor:colors.light,
-                        statusBarStyle:'dark',
-                        headerTitle:'Wish List'
+                        statusBarColor: colors.light,
+                        statusBarStyle: 'dark',
+                        headerTitle: 'Wish List'
                     }}
                 />
                 <Stack.Screen
                     name='updateProfile'
                     component={UpdateProfile}
                     options={{
-                        statusBarColor:colors.light,
-                        statusBarStyle:'dark',
-                        headerTitle:'Profile'
+                        statusBarColor: colors.light,
+                        statusBarStyle: 'dark',
+                        headerTitle: 'Profile'
                     }}
                 />
             </Stack.Navigator>

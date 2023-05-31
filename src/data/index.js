@@ -1,16 +1,4 @@
 import icons from '../components/constants/icons';
-export const USERS = {
-  1: {
-    id: 1,
-    username: 'Alexia Jane',
-    avatar: require('../assets/icons/user.png'),
-  },
-  2: {
-    id: 2,
-    username: 'Jacky Depp',
-    avatar: require('../assets/icons/user.png'),
-  },
-}
 //   const REVIEWS = {
 //     1: {
 //       id: 1,
@@ -518,20 +506,20 @@ export const SETTING_OPTIONS = [
   {
     icon: "goldProfile",
     title: "Profile",
-    path:"updateProfile"
+    path: "updateProfile"
   },
   {
     icon: "bell",
     title: "Notification",
-    path:'openNotification'
+    path: 'openNotification'
   },
   {
     icon: "shoppingBag",
     title: "My Orders"
   },
   {
-    icon: "creditCard",
-    title: "Payment"
+    icon: "ruler",
+    title: "Size Guide"
   },
   {
     icon: "heart",

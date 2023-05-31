@@ -18,6 +18,7 @@ import fendi from '../../assets/icons/fendi.png';
 import nike from '../../assets/icons/nike.png';
 import zara from '../../assets/icons/zara.png';
 import bell from '../../assets/icons/bell.png';
+import ruler from '../../assets/icons/ruler.png';
 import creditCard from '../../assets/icons/credit-card.png';
 import navigation from '../../assets/icons/gps-navigation.png';
 import heart from '../../assets/icons/heart.png';
@@ -34,19 +35,19 @@ import heartFilled from '../../assets/icons/heart-filled.png'
 import image from '../../assets/icons/image.png'
 
 export default {
-    home,homeFilled,
-    categories,categoriesFilled,
-    profile,profileFilled,goldProfile,
+    home, homeFilled,
+    categories, categoriesFilled,
+    profile, profileFilled, goldProfile,
     arc,
     menu,
     search,
     cart,
-    adidas,fendi,nike,zara,
-    rightArrow,leftArrow,downArrow,
+    adidas, fendi, nike, zara,
+    rightArrow, leftArrow, downArrow,
     star,
     next,
-    bell, creditCard, navigation, heart, setting, settingsBlack,settingsBlackFilled, shoppingBag,
+    bell, creditCard, navigation, heart, setting, settingsBlack, settingsBlackFilled, shoppingBag, ruler,
     close,
-    heartOutline,heartFilled,
-    emptyBox,camera,image
+    heartOutline, heartFilled,
+    emptyBox, camera, image
 }

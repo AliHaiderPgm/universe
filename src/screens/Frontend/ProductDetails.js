@@ -26,33 +26,18 @@ export default function ProductDetails({ navgation, route }) {
 
 
   useEffect(() => {
-    navigation.setOptions({
-      title: product.name,
-    })
+    navigation.setOptions({ title: product.name, })
     isAuthenticated && isWished()
   }, [])
-  const handleSizeSelection = (size) => {
-    setSelectedSize(size);
-  }
-  const handleColorSelection = (color) => {
-    setSelectedColor(color);
-  }
+  const handleSizeSelection = (size) => setSelectedSize(size);
+  const handleColorSelection = (color) => setSelectedColor(color);
   const fromChild = (data) => {
     setPrice(data.number)
     setQuantity(data.count)
   }
 
   const notify = (msg, color) => {
-    return toast.show(
-      {
-        title: msg,
-        placement: 'top',
-        backgroundColor: `${color}.800`,
-        duration: 2000,
-        marginTop: -10,
-        shadow: '9',
-      }
-    )
+    return toast.show({ title: msg, placement: 'top', backgroundColor: `${color}.800`, duration: 2000, marginTop: -10, shadow: '9', })
   }
 
   const isWished = () => {

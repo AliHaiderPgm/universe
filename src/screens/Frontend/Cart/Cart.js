@@ -16,8 +16,8 @@ export default function Cart() {
   const { user } = useAuth()
   const toast = useToast()
 
-
   const getItems = () => {
+    setCartItems([])
     if (user.uid) {
       setLoading(true)
       firestore()
@@ -29,30 +29,25 @@ export default function Cart() {
             setCartItems(s => ([...s, doc]))
           })
         })
-        .catch(() => {notify('Something went wrong!', 'red')})
-        .finally(() => {setLoading(false)})
+        .catch(() => { notify('Something went wrong!', 'red') })
+        .finally(() => { setLoading(false) })
     }
   }
 
-  useEffect(()=>{
-    getItems()
-  },[])
 
-  const resetItems = ()=>{
-    setCartItems([])
-  }
-  const notify=(msg,color)=>{
-    toast.show({title: msg, color:`${color}.700`, placement:'top', duration:2000 })
-  }
+  useEffect(() => getItems(), [])
+  const resetItems = () => setCartItems([])
+  const notify = (msg, color) => toast.show({ title: msg, color: `${color}.700`, placement: 'top', duration: 2000 })
+
   return <>
     {
       loading ? <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                  <ActivityIndicator animating={true} color={colors.gold} size={'large'} />
-                </View>
+        <ActivityIndicator animating={true} color={colors.gold} size={'large'} />
+      </View>
         :
         <>
           {
-           cartItems.length === 0 ? <NoProductFound /> : <CartDetails list={cartItems} resetItems={resetItems}/>
+            cartItems.length === 0 ? <NoProductFound /> : <CartDetails list={cartItems} resetItems={resetItems} />
           }
         </>
     }

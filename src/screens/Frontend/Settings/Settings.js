@@ -9,9 +9,9 @@ import { useAuth } from '../../../Context/AuthContext'
 import { SETTING_OPTIONS, USERS } from '../../../data'
 //components
 import ScreenHeader from '../../../components/shared/ScreenHeader'
-import UserHeader from '../../../components/Frontend/Profile/UserHeader'
-import Options from '../../../components/Frontend/Profile/Options'
-import UserNotFound from '../../../components/Frontend/Profile/UserNotFound'
+import UserHeader from '../../../components/Frontend/Settings/UserHeader'
+import Options from '../../../components/Frontend/Settings/Options'
+import UserNotFound from '../../../components/Frontend/Settings/UserNotFound'
 import { colors, spacing } from '../../../components/constants/theme'
 import { useNavigation } from '@react-navigation/native';
 import Icon from '../../../components/shared/Icon';

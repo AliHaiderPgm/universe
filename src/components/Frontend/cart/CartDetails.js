@@ -15,8 +15,9 @@ export default function CartDetails({ list, resetItems }) {
     const navigation = useNavigation()
 
     useEffect(() => {
-        navigation.setOptions({ headerRight: () => (<Icon icon="heartOutline" size={25} onPress={() => navigation.navigate('wishList')} />), })
+        navigation.setOptions({ headerRight: () => (<Icon icon="heartOutline" size={25} onPress={() => navigation.navigate('wishList')} />) })
     }, [])
+
     const cart_total = () => {
         let sum = 0
         cartItems.map(item => {
@@ -27,31 +28,31 @@ export default function CartDetails({ list, resetItems }) {
             setCartTotal(sum)
         })
     }
-
-    const totalAmountData = [
-        {
-            type: 'Cart total',
-            amount: parseFloat((cartTotal).toFixed(2)),
-        },
-        {
-            type: 'Tax',
-            amount: parseFloat((cartTotal * 5 / 100).toFixed(2)),
-        },
-        {
-            type: 'Delivery charges',
-            amount: 5,
-        },
-    ]
-
-    let subtotal = 0
-    totalAmountData.map(e => {
-        const amount = Math.round(e.amount)
-        subtotal += amount
-    })
-
     useEffect(() => {
         cart_total()
     }, [cartItems])
+
+    // const totalAmountData = [
+    //     {
+    //         type: 'Cart total',
+    //         amount: parseFloat((cartTotal).toFixed(2)),
+    //     },
+    //     {
+    //         type: 'Tax',
+    //         amount: parseFloat((cartTotal * 5 / 100).toFixed(2)),
+    //     },
+    //     {
+    //         type: 'Delivery charges',
+    //         amount: 5,
+    //     },
+    // ]
+
+    // let subtotal = 0
+    // totalAmountData.map(e => {
+    //     const amount = Math.round(e.amount)
+    //     subtotal += amount
+    // })
+
 
 
 
@@ -88,29 +89,32 @@ export default function CartDetails({ list, resetItems }) {
                 {cartItems.map((item, index) => {
                     return <CartCard item={item} increment={handleIncrement} decrement={handleDecrement} remove={handleDelete} key={index} />
                 })}
-                <View style={{ marginTop: spacing.m, gap: spacing.s }}>
 
-                    {totalAmountData.map((item, index) => {
+                <View style={{ height: 1, width: '100%', backgroundColor: colors.lightGray, marginTop: spacing.m }} />
+                <View style={{ marginTop: spacing.s, gap: spacing.s }}>
+                    <View style={styles.totalContainer}>
+                        <Text style={styles.type}>Cart Total</Text>
+                        <Text style={styles.amount}>${cartTotal}</Text>
+                    </View>
+                    {/* {totalAmountData.map((item, index) => {
                         return <View style={styles.totalContainer} key={index}>
                             <Text style={styles.type}>{item.type}</Text>
                             <Text style={styles.amount}>${item.amount}</Text>
                         </View>
-                    })
-                    }
+                    })}
 
-                    <View style={{ height: 1, width: '100%', backgroundColor: colors.lightGray }} />
 
                     <View style={styles.totalContainer}>
                         <Text style={styles.type}>Subtotal</Text>
                         <Text style={{ fontSize: sizes.title, fontWeight: 700, color: colors.black, }}>${subtotal}</Text>
-                    </View>
+                    </View> */}
 
                 </View>
             </View>
         </ScrollView>
 
-        <TouchableOpacity style={styles.button} activeOpacity={0.6}>
-            <Text style={styles.buttonText}>Procced to checkout</Text>
+        <TouchableOpacity style={styles.button} activeOpacity={0.6} onPress={() => navigation.navigate('checkout', { orderDetail: cartItems, cartTotal: cartTotal })}>
+            <Text style={styles.buttonText} >Procced to checkout</Text>
         </TouchableOpacity>
     </>
 }
@@ -149,5 +153,6 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: sizes.h2 - 4,
         color: colors.black,
+        fontWeight: 600
     }
 })

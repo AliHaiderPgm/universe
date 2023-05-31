@@ -14,7 +14,7 @@ const renderTabBar = props => (
     indicatorStyle={{ backgroundColor: colors.primary }}
     activeColor={colors.primary}
     inactiveColor={colors.gray}
-    style={{ backgroundColor: colors.white,elevation:5,borderTopWidth:0.2,borderTopColor:colors.gray }}
+    style={{ backgroundColor: colors.white, elevation: 5, borderTopWidth: 0.2, borderTopColor: colors.gray }}
     labelStyle={{ fontWeight: '700', fontSize: sizes.h3 - 2, textTransform: 'capitalize' }}
     pressColor={colors.lightGray}
   />
@@ -27,16 +27,26 @@ export default TabViewExample = ({ route }) => {
   const [menProducts, setMenProducts] = useState([])
   const [childrenProducts, setChildrenProducts] = useState([])
   const [loading, setLoading] = useState(false)
+
   useEffect(() => {
+    getAllData()
+  }, [])
+  const getAllData = async () => {
+    setLoading(true)
     setMenProducts([])
     setChildrenProducts([])
     setWomenProducts([])
-    getData('maleProducts')
-    getData('femaleProducts')
-    getData('childrenProducts')
-  }, [])
+    try {
+      await getData('maleProducts')
+      await getData('femaleProducts')
+      await getData('childrenProducts')
+    } catch {
+      notify('Something went wrong!', 'error')
+    } finally {
+      setLoading(false)
+    }
+  }
   const getData = async (type) => {
-    setLoading(true)
     await firestore()
       .collection(type)
       .where('brand', '==', brandData.name)
@@ -50,23 +60,21 @@ export default TabViewExample = ({ route }) => {
         })
       }).catch(() => {
         notify('Something went wrong!', 'red')
-      }).finally(() => {
-        setLoading(false)
       })
   }
   const notify = (title, color) => { toast.show({ title: title, backgroundColor: `${color}.700`, placement: 'top', duration: 2000, shadow: '9' }) }
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([]);
-  
+
   useEffect(() => {
     const newRoutes = []
-    if (menProducts.length > 0) {newRoutes.push({ key: 'first', title: 'men' })}
-    if (childrenProducts.length > 0) {newRoutes.push({ key: 'second', title: 'children' })}
-    if (womenProducts.length > 0) {newRoutes.push({ key: 'third', title: 'women' })}
+    if (menProducts.length > 0) { newRoutes.push({ key: 'first', title: 'men' }) }
+    if (childrenProducts.length > 0) { newRoutes.push({ key: 'second', title: 'children' }) }
+    if (womenProducts.length > 0) { newRoutes.push({ key: 'third', title: 'women' }) }
     setRoutes(newRoutes)
   }, [menProducts, childrenProducts, womenProducts])
-  
+
   const renderScene = SceneMap({
     first: () => (<DetailRoute data={menProducts} />),
     second: () => (<DetailRoute data={childrenProducts} />),
@@ -77,10 +85,10 @@ export default TabViewExample = ({ route }) => {
     <>{loading ? <View style={{ height: sizes.height, alignItems: 'center', justifyContent: 'center' }}>
       <ActivityIndicator animating={true} color={colors.gold} size={'large'} /></View>
       : <>
-      <View style={styles.container}>
-        <Image source={{uri: brandData.logoImage}} style={styles.image}/>
-        <Text style={styles.text}>{brandData.name}</Text>
-      </View>
+        <View style={styles.container}>
+          <Image source={{ uri: brandData.logoImage }} style={styles.image} />
+          <Text style={styles.text}>{brandData.name}</Text>
+        </View>
         <TabView
           renderTabBar={renderTabBar}
           navigationState={{ index, routes }}
@@ -93,25 +101,25 @@ export default TabViewExample = ({ route }) => {
 }
 
 const styles = StyleSheet.create({
-  container:{
-    paddingTop:spacing.s,
+  container: {
+    paddingTop: spacing.s,
     height: 100,
     width: sizes.width,
-    alignItems:'center',
-    justifyContent:'center',
-    overflow:'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
     gap: spacing.s,
-    backgroundColor:colors.light
+    backgroundColor: colors.light
   },
-  image:{
-    borderRadius:sizes.radius,
+  image: {
+    borderRadius: sizes.radius,
     height: 60,
-    width:70,
-    resizeMode:'contain',
-    borderWidth:1
+    width: 70,
+    resizeMode: 'contain',
+    borderWidth: 1
   },
-  text:{
-    color:colors.black,
+  text: {
+    color: colors.black,
     fontSize: sizes.h3 + 1,
     fontWeight: '600'
   },

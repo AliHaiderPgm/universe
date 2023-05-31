@@ -14,7 +14,8 @@ export default function Index() {
       <ProfileNavigator.Screen name="Home" component={Settings} options={{
         statusBarColor: isAuthenticated ? colors.white : colors.black,
         statusBarStyle: isAuthenticated ? 'dark' : 'light',
-        title:'Settings'
+        headerShown: isAuthenticated ? true : false,
+        title: 'Settings'
       }}
       />
     </ProfileNavigator.Navigator>
