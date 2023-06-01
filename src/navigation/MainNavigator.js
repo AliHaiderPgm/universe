@@ -12,6 +12,7 @@ import Login from '../screens/Auth/Login'
 import WishList from '../screens/Frontend/Settings/WishList'
 import UpdateProfile from '../screens/Frontend/Settings/UpdateProfile'
 import Checkout from '../screens/Frontend/Cart/Checkout'
+import SizeGuide from '../screens/Frontend/Settings/SizeGuide'
 
 export default function MainNavigator() {
     const Stack = createNativeStackNavigator()
@@ -84,6 +85,15 @@ export default function MainNavigator() {
                 <Stack.Screen
                     name='updateProfile'
                     component={UpdateProfile}
+                    options={{
+                        statusBarColor: colors.light,
+                        statusBarStyle: 'dark',
+                        headerTitle: 'Profile'
+                    }}
+                />
+                <Stack.Screen
+                    name='sizeGuide'
+                    component={SizeGuide}
                     options={{
                         statusBarColor: colors.light,
                         statusBarStyle: 'dark',

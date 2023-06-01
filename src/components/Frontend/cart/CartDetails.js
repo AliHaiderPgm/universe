@@ -32,30 +32,6 @@ export default function CartDetails({ list, resetItems }) {
         cart_total()
     }, [cartItems])
 
-    // const totalAmountData = [
-    //     {
-    //         type: 'Cart total',
-    //         amount: parseFloat((cartTotal).toFixed(2)),
-    //     },
-    //     {
-    //         type: 'Tax',
-    //         amount: parseFloat((cartTotal * 5 / 100).toFixed(2)),
-    //     },
-    //     {
-    //         type: 'Delivery charges',
-    //         amount: 5,
-    //     },
-    // ]
-
-    // let subtotal = 0
-    // totalAmountData.map(e => {
-    //     const amount = Math.round(e.amount)
-    //     subtotal += amount
-    // })
-
-
-
-
     const handleIncrement = itemId => {
         const itemIndex = cartItems.findIndex(item => item._data.id === itemId)
         const updatedItem = [...cartItems]
@@ -82,6 +58,10 @@ export default function CartDetails({ list, resetItems }) {
             })
     }
 
+    const handleNavigate = () => {
+        const data = { ...list }
+        navigation.navigate('checkout', { data })
+    }
     return <>
         <ScrollView>
 
@@ -96,24 +76,11 @@ export default function CartDetails({ list, resetItems }) {
                         <Text style={styles.type}>Cart Total</Text>
                         <Text style={styles.amount}>${cartTotal}</Text>
                     </View>
-                    {/* {totalAmountData.map((item, index) => {
-                        return <View style={styles.totalContainer} key={index}>
-                            <Text style={styles.type}>{item.type}</Text>
-                            <Text style={styles.amount}>${item.amount}</Text>
-                        </View>
-                    })}
-
-
-                    <View style={styles.totalContainer}>
-                        <Text style={styles.type}>Subtotal</Text>
-                        <Text style={{ fontSize: sizes.title, fontWeight: 700, color: colors.black, }}>${subtotal}</Text>
-                    </View> */}
-
                 </View>
             </View>
         </ScrollView>
 
-        <TouchableOpacity style={styles.button} activeOpacity={0.6} onPress={() => navigation.navigate('checkout', { orderDetail: cartItems, cartTotal: cartTotal })}>
+        <TouchableOpacity style={styles.button} activeOpacity={0.6} onPress={handleNavigate}>
             <Text style={styles.buttonText} >Procced to checkout</Text>
         </TouchableOpacity>
     </>

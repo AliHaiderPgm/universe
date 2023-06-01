@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { colors, sizes, spacing } from '../../../components/constants/theme'
 import { Button, Divider, TextInput } from 'react-native-paper'
 import { useToast } from 'native-base'
+import firestore from '@react-native-firebase/firestore';
+import { useAuth } from '../../../Context/AuthContext'
 
 const CustomTextInput = ({ label, onChange, keyboard }) => {
     return <TextInput
@@ -13,11 +15,12 @@ const CustomTextInput = ({ label, onChange, keyboard }) => {
         onChangeText={onChange}
     />
 }
-const CustomButton = ({ label, onPress }) => {
+const CustomButton = ({ label, onPress, loading }) => {
     return <Button
         mode="contained" buttonColor={colors.black} textColor={colors.white} uppercase={true} labelStyle={{ fontSize: sizes.h3 - 2, fontWeight: 700 }}
         style={styles.btn}
         onPress={onPress}
+        loading={loading}
     >
         {label}
     </Button>
@@ -32,15 +35,31 @@ const initialState = {
 const TAX = 2
 
 export default function Checkout({ route }) {
-    const [orderDetails] = route.params.orderDetail
-    const cartTotal = route.params.cartTotal
+    const orderDetails = route.params.data.orderDetail
     const [state, setState] = useState(initialState)
+    const [cartTotal, setCartTotal] = useState()
     const [subTotal, setSubTotal] = useState()
+    const [items, setItems] = useState([])
     const toast = useToast()
+    const { user } = useAuth()
+    const [loading, setLoading] = useState(false)
 
     const notify = (msg, color) => toast.show({ title: msg, placement: 'top', duration: 2000, backgroundColor: `${color}.700`, shadow: '9' })
     const handleChange = (name, value) => setState(s => ({ ...s, [name]: value }))
+    //We can not pass array or function in react native navigation or we'll get non-serializable warning
+    //Cart-Total
+    useEffect(() => {
+        let sum = 0;
+        orderDetails.map(item => {
+            const qty = item._data.quantity;
+            const price = item._data.price;
+            let total = parseFloat((qty * price).toFixed(2));
+            sum += total;
+        });
+        setCartTotal(sum);
+    }, [orderDetails])
 
+    //Sub-Total  
     const orderDetail = [
         {
             title: "Cart total",
@@ -64,16 +83,54 @@ export default function Checkout({ route }) {
     }
     useEffect(() => {
         calSubTotal()
+        setItems([])
+        orderDetails.map(order => setItems(items => [...items, order._data]))
     }, [])
 
-    const handlePlaceOrder = () => {
-        const { name, phoneNumber, address } = state
-        const recieverName = name.trim()
-        const recieverPhoneNumber = phoneNumber.trim()
-        const recieverAddress = address.trim()
-        if (recieverName.length <= 2 || recieverPhoneNumber.trim().length < 11 || recieverAddress.trim().length <= 10) {
-            notify('Please provide valid information!', 'error')
-            return
+    //Adding to firebase
+    const handlePlaceOrder = async () => {
+        setLoading(true)
+        try {
+            const { name, phoneNumber, address } = state
+            const recieverName = name.trim()
+            const recieverPhoneNumber = phoneNumber.trim()
+            const recieverAddress = address.trim()
+            if (recieverName.length <= 2 || recieverPhoneNumber.trim().length < 11 || recieverAddress.trim().length <= 10) {
+                notify('Please provide valid information!', 'error')
+                return
+            }
+            const data = {
+                recieverName,
+                recieverPhoneNumber,
+                recieverAddress,
+                orderDetails: items, //All Items placed in order by reciever
+            }
+            const timeStampFeild = {
+                userTimeStamp: new Date(),
+                // serverTimeStamp: firestore.FieldValue.serverTimestamp,
+                // orderPlacedOn: firestore.FieldValue.serverTimestamp,
+            }
+            const userData = {
+                userName: user.displayName,
+                userEmail: user.email,
+                userProfileImage: user.photoURL,
+                userUID: user.uid
+            }
+            const dataObj = { ...data, ...timeStampFeild, ...userData }
+            //Adding to firebase
+            setLoading(true)
+            firestore().collection('orders').add(dataObj)
+                .then(doc => {
+                    console.log(doc)
+                    doc.update({ docRefId: doc.id })
+                    console.log('Added order!')
+                })
+        }
+        catch {
+            console.log('Error adding order!')
+        }
+        finally {
+            setLoading(false)
         }
     }
     return (
@@ -103,7 +160,7 @@ export default function Checkout({ route }) {
                 <CustomTextInput label="Name" onChange={(val) => handleChange('name', val)} value={state.name} />
                 <CustomTextInput label="Address" onChange={(val) => handleChange('address', val)} value={state.address} />
                 <CustomTextInput label="Mobile No." onChange={(val) => handleChange('phoneNumber', val)} value={state.phoneNumber} keyboard="phone-pad" />
-                <CustomButton label="Place Order" onPress={() => handlePlaceOrder()} />
+                <CustomButton label="Place Order" onPress={() => handlePlaceOrder()} loading={loading} />
             </View>
         </ScrollView>
     )
@@ -132,7 +189,8 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white,
         borderRadius: sizes.radius,
         marginHorizontal: spacing.m,
-        gap: spacing.s
+        gap: spacing.s,
+        elevation: 3
     },
     text: {
         fontSize: sizes.h2 - 2,

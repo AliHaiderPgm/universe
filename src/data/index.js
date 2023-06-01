@@ -519,7 +519,8 @@ export const SETTING_OPTIONS = [
   },
   {
     icon: "ruler",
-    title: "Size Guide"
+    title: "Size Guide",
+    path: "sizeGuide"
   },
   {
     icon: "heart",
