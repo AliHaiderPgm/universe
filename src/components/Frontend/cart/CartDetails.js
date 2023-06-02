@@ -19,15 +19,19 @@ export default function CartDetails({ list, resetItems }) {
     }, [])
 
     const cart_total = () => {
-        let sum = 0
-        cartItems.map(item => {
-            const qty = item._data.quantity
-            const price = item._data.price
-            let total = parseFloat((qty * price).toFixed(2))
-            sum += total
-            setCartTotal(sum)
-        })
-    }
+        let sum = 0;
+
+        cartItems.forEach(item => {
+            const qty = item._data.quantity;
+            const price = item._data.price;
+            const multiple = qty * price;
+            const total = Math.round(multiple * 100) / 100;
+            sum += total;
+        });
+
+        setCartTotal(sum.toFixed(2));
+    };
+
     useEffect(() => {
         cart_total()
     }, [cartItems])
@@ -46,7 +50,7 @@ export default function CartDetails({ list, resetItems }) {
         setCartItems(updatedItem)
     }
 
-    const handleDelete = (docRefId) => {
+    const handleDelete = docRefId => {
         firestore()
             .collection('cartItems')
             .doc(docRefId)
@@ -59,7 +63,7 @@ export default function CartDetails({ list, resetItems }) {
     }
 
     const handleNavigate = () => {
-        const data = { ...list }
+        const data = cartItems
         navigation.navigate('checkout', { data })
     }
     return <>

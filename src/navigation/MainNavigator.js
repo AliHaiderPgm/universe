@@ -13,6 +13,7 @@ import WishList from '../screens/Frontend/Settings/WishList'
 import UpdateProfile from '../screens/Frontend/Settings/UpdateProfile'
 import Checkout from '../screens/Frontend/Cart/Checkout'
 import SizeGuide from '../screens/Frontend/Settings/SizeGuide'
+import ThankYou from '../screens/Frontend/Cart/ThankYou'
 
 export default function MainNavigator() {
     const Stack = createNativeStackNavigator()
@@ -53,6 +54,16 @@ export default function MainNavigator() {
                     component={Checkout}
                     options={{
                         headerTitle: 'Check out',
+                        statusBarColor: colors.white,
+                        statusBarStyle: 'dark',
+                    }}
+                />
+                <Stack.Screen
+                    name='thanks'
+                    component={ThankYou}
+                    options={{
+                        headerTitle: '',
+                        headerTransparent: true,
                         statusBarColor: colors.white,
                         statusBarStyle: 'dark',
                     }}

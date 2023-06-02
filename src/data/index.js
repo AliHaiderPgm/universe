@@ -515,7 +515,8 @@ export const SETTING_OPTIONS = [
   },
   {
     icon: "shoppingBag",
-    title: "My Orders"
+    title: "My Orders",
+    path: "thanks"
   },
   {
     icon: "ruler",

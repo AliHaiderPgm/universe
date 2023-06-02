@@ -1,12 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  TextInput,
-  Text,
-  ScrollView,
-  Keyboard,
-} from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, TextInput, Text, ScrollView, Keyboard, } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import firestore from '@react-native-firebase/firestore';
@@ -32,17 +25,8 @@ const SearchBar = () => {
   const [searchedProduct, setSearchedProduct] = useState();
   const [selectedOption, setSelectedOption] = useState();
 
-  const notify = (msg, color) => {
-    toast.show({
-      title: msg,
-      backgroundColor: `${color}.700`,
-      placement: 'top',
-      duration: 2000,
-    });
-  };
-  const capitlize = str => {
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-  };
+  const notify = (msg, color) => toast.show({ title: msg, backgroundColor: `${color}.700`, placement: 'top', duration: 2000 });
+  const capitlize = str => { return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() }
 
   const handleSearch = async () => {
     if (text.length === 0) {
@@ -69,7 +53,7 @@ const SearchBar = () => {
       setLoading(false);
       setIsKeyBoard(true);
     }
-  };
+  }
   const getData = async collectionName => {
     const newText = capitlize(text).trim();
     const products = [];
@@ -86,12 +70,12 @@ const SearchBar = () => {
         }
       });
     return products;
-  };
+  }
 
   const handleSelect = e => {
     setSelectedOption(e);
     sortData(searchedProduct, e);
-  };
+  }
 
   return (
     <>
@@ -116,16 +100,7 @@ const SearchBar = () => {
               onBlur={Keyboard.dismiss}
               editable={isKeyboard}
             />
-            {text && (
-              <Icon
-                icon="close"
-                size={15}
-                onPress={() => {
-                  setText('');
-                }}
-                style={styles.image}
-              />
-            )}
+            {text && <Icon icon="close" size={15} onPress={() => setText('')} style={styles.image} />}
           </View>
         </View>
         <Icon icon="search" size={25} onPress={() => handleSearch()} />
@@ -134,24 +109,12 @@ const SearchBar = () => {
       {state && (
         <>
           {loading ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: colors.light,
-              }}>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.light, }}>
               <ActivityIndicator size="large" color={colors.gold} />
             </View>
           ) : searchedProduct.length === 0 ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: spacing.s,
-                backgroundColor: colors.light,
-              }}>
+            //No Product found
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: spacing.s, backgroundColor: colors.light, }}>
               <Icon icon="emptyBox" size={80} />
               <Text style={{ color: colors.gray }}>
                 No product found for{' '}
@@ -163,12 +126,7 @@ const SearchBar = () => {
             </View>
           ) : (
             <View style={styles.products}>
-              <Dropdown
-                defaultText="Sort"
-                list={SORT}
-                onSelect={handleSelect}
-                style={{ marginVertical: spacing.s }}
-              />
+              <Dropdown defaultText="Sort" list={SORT} onSelect={handleSelect} style={{ marginVertical: spacing.s }} />
               <ScrollView style={{ paddingBottom: spacing.m }}>
                 <ProductList list={searchedProduct} />
               </ScrollView>
