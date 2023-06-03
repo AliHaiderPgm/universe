@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, FlatList ,Image, StyleSheet, TouchableHighlight } from 'react-native'
+import { View, Text, FlatList, Image, StyleSheet, TouchableHighlight } from 'react-native'
 //components
 import { colors, shadow, sizes, spacing } from '../constants/theme'
 import ProductCard from '../shared/ProductCard';
@@ -20,27 +20,27 @@ export default function ProductsCarousel({ list, inProductCard }) {
             renderItem={
                 !inProductCard ? ({ item, index }) => {
                     return (
-                        <TouchableHighlight 
-                        style={{
-                            marginLeft: spacing.l,
-                            marginRight: index === list.length - 1 ? spacing.l : 0
-                        }}>
-                            <View style={[{width: CARD_WIDTH},styles.card, shadow.dark]}>
-                                <View style={[{width: CARD_WIDTH},styles.imageConatiner]}>
-                                    <Image source={item.image} style={[{width: CARD_WIDTH},styles.image]} />
+                        <TouchableHighlight
+                            style={{
+                                marginLeft: spacing.l,
+                                marginRight: index === list.length - 1 ? spacing.l : 0
+                            }}>
+                            <View style={[{ width: CARD_WIDTH }, styles.card, shadow.dark]}>
+                                <View style={[{ width: CARD_WIDTH }, styles.imageConatiner]}>
+                                    <Image source={item.image} style={[{ width: CARD_WIDTH }, styles.image]} />
                                 </View>
                                 <View style={styles.textContainer}>
                                     <Text style={styles.title}>{item.title}</Text>
-                                    <Text style={styles.price}>${item.price}</Text>
+                                    {/* <Text style={styles.price}>${item.price}</Text> */}
                                 </View>
                             </View>
                         </TouchableHighlight>
                     )
                 }
-                : 
-                ({item, index}) => {
-                    return <ProductCard cardData={item} key={index} carousel={true}/>
-                } 
+                    :
+                    ({ item, index }) => {
+                        return <ProductCard cardData={item} key={index} carousel={true} />
+                    }
             } />
     )
 }
@@ -61,17 +61,17 @@ const styles = StyleSheet.create({
         height: CARD_HEIGHT,
         resizeMode: 'cover'
     },
-    textContainer:{
+    textContainer: {
         position: 'absolute',
-        top: CARD_HEIGHT - 70,
+        top: CARD_HEIGHT - 40,
         left: 16
     },
-    title:{
+    title: {
         fontSize: sizes.h2,
         fontWeight: 'bold',
         color: colors.white,
     },
-    price:{
+    price: {
         fontSize: sizes.h2,
         color: colors.white
     },

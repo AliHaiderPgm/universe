@@ -4,26 +4,53 @@ import { View, Image, ScrollView, StyleSheet, Dimensions } from 'react-native'
 
 const { width } = Dimensions.get('window')
 const height = width * 0.30
-export default function ImageCarousel(props) {
-    const data = props.data;
+export default function ImageCarousel() {
+    const initialState = [
+        "https://source.unsplash.com/random/1024x768/?fashion-products",
+        "https://source.unsplash.com/random/1024x768/?model",
+        "https://source.unsplash.com/random/1024x768/?hoodie",
+        "https://source.unsplash.com/random/1024x768/?watches",
+        "https://source.unsplash.com/random/1024x768/?kids",
+    ]
+    const [data, setData] = useState(initialState)
     const [isActive, setIsActive] = useState(0)
     const scrollRef = useRef(null)
-    
 
     useEffect(() => {
         const interval = setInterval(() => {
-          const nextIndex = (isActive + 1) % data.length;
-          scrollRef.current.scrollTo({
-            x: nextIndex * width,
-            animated: false,
-          });
-          setIsActive(nextIndex);
+            const nextIndex = (isActive + 1) % data.length;
+            scrollRef.current.scrollTo({
+                x: nextIndex * width,
+                animated: false,
+            });
+            setIsActive(nextIndex);
         }, 5000)
-    
+
         return () => {
-          clearInterval(interval);
+            clearInterval(interval);
         };
-      }, [isActive, data.length]);
+    }, [isActive, data.length]);
+
+    //to get new images
+    // const fetchData = () => {
+    //     return new Promise((resolve) => {
+    //         setTimeout(() => {
+    //             const newData = [
+    //                 `https://source.unsplash.com/random/1280x720/?fashion&t=${Date.now()}`,
+    //                 `https://source.unsplash.com/random/1280x720/?model&t=${Date.now()}`,
+    //                 `https://source.unsplash.com/random/1280x720/?hoodie&t=${Date.now()}`,
+    //                 `https://source.unsplash.com/random/1280x720/?watches&t=${Date.now()}`,
+    //                 `https://source.unsplash.com/random/1280x720/?kids&t=${Date.now()}`,
+    //             ];
+    //             resolve(newData);
+    //         }, 1000);
+    //     });
+    // }
+    // useEffect(() => {
+    //     fetchData().then((newData) => {
+    //         setData(newData);
+    //     })
+    // }, [])
 
     const change = ({ nativeEvent }) => {
         const slide = Math.ceil(nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width);
@@ -42,7 +69,7 @@ export default function ImageCarousel(props) {
                 style={styles.scroll}
                 scrollEventThrottle={16}
                 scrollToOverflowEnabled
-                >
+            >
 
                 {data.map((doc, i) => { return (<Image key={i} style={styles.image} source={{ uri: doc }} />) })}
 
