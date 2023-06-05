@@ -1,14 +1,15 @@
-import { ScrollView, Image, StyleSheet, Text, View, LogBox } from 'react-native'
+import { ScrollView, Image, StyleSheet, Text, View, LogBox, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { colors, sizes, spacing } from '../../../components/constants/theme'
 import { ActivityIndicator, Button, Divider, TextInput } from 'react-native-paper'
 import { useToast } from 'native-base'
 import firestore from '@react-native-firebase/firestore';
 import firebase from '@react-native-firebase/app';
+import auth from '@react-native-firebase/auth'
 import { useAuth } from '../../../Context/AuthContext'
 import { useNavigation } from '@react-navigation/native'
 
-const CustomTextInput = ({ label, onChange, keyboard, value }) => {
+const CustomTextInput = ({ label, onChange, keyboard, value, disable, placeholder }) => {
     return <TextInput
         label={label}
         mode='outlined' activeOutlineColor={colors.black} outlineColor={colors.black} textColor='black'
@@ -16,6 +17,8 @@ const CustomTextInput = ({ label, onChange, keyboard, value }) => {
         keyboardType={keyboard ? keyboard : 'default'}
         onChangeText={onChange}
         value={value}
+        disabled={disable}
+        placeholder={placeholder}
     />
 }
 const CustomButton = ({ label, onPress, loading }) => {
@@ -33,6 +36,7 @@ const initialState = {
     name: '',
     phoneNumber: '',
     address: '',
+    OTP: ''
 }
 //Set TAX HERE %
 const TAX = 2
@@ -48,6 +52,9 @@ export default function Checkout({ route }) {
     const [loading, setLoading] = useState(false)
     const navigation = useNavigation()
     const [calculating, setCalculating] = useState(false)
+    const [optLoading, setOTPLoading] = useState(false)
+    const [confirmationData, setConfirmationData] = useState()
+    const [otpConfirmation, setOTPConfirmation] = useState(false)
 
     const notify = (msg, color) => toast.show({ title: msg, placement: 'top', duration: 2000, backgroundColor: `${color}.700`, shadow: '9' })
     const handleChange = (name, value) => setState(s => ({ ...s, [name]: value }))
@@ -104,6 +111,38 @@ export default function Checkout({ route }) {
     useEffect(() => {
         calSubTotal()
     }, [cartTotal])
+
+    const handleSendOTP = async () => {
+        if (state.phoneNumber.length < 13) {
+            notify('Please enter vlaid phone number!', 'error')
+            return
+        }
+        setOTPLoading(true)
+        try {
+            const confirmation = await auth().signInWithPhoneNumber(state.phoneNumber);
+            setConfirmationData(confirmation)
+            notify('OTP sent successfully!', 'success');
+        } catch (error) {
+            if (error.message === "[auth/too-many-requests] We have blocked all requests from this device due to unusual activity. Try again later.") {
+                notify('Too many requests. Try again later!', 'error');
+            } else {
+                notify('Error sending OTP!', 'error');
+            }
+            console.log('Error======>>>>>>>>>', error.message)
+        } finally {
+            setOTPLoading(false)
+        }
+    }
+    const handleConfirmOTP = () => {
+        setOTPConfirmation(false)
+        const otpCode = state.OTP
+        confirmationData.confirm(otpCode)
+            .then((userCredential) => {
+                notify('OTP verification successful!', 'success')
+                setOTPConfirmation(true)
+            })
+            .catch((error) => notify('OTP verification failed!', 'error'))
+    }
     //Firebase
     const handlePlaceOrder = async () => {
         setLoading(true)
@@ -112,7 +151,7 @@ export default function Checkout({ route }) {
             const recieverName = name.trim()
             const recieverPhoneNumber = phoneNumber.trim()
             const recieverAddress = address.trim()
-            if (recieverName.length <= 2 || recieverPhoneNumber.trim().length < 11 || recieverAddress.trim().length <= 10) {
+            if (recieverName.length <= 2 || recieverPhoneNumber.trim().length < 11 || recieverAddress.trim().length <= 13 || !otpConfirmation) {
                 notify('Please provide valid information!', 'error')
                 return
             }
@@ -189,7 +228,13 @@ export default function Checkout({ route }) {
                 <Text style={styles.text}>Receiver Information</Text>
                 <CustomTextInput label="Name" onChange={(val) => handleChange('name', val)} value={state.name} />
                 <CustomTextInput label="Address" onChange={(val) => handleChange('address', val)} value={state.address} />
-                <CustomTextInput label="Mobile No." onChange={(val) => handleChange('phoneNumber', val)} value={state.phoneNumber} keyboard="phone-pad" />
+
+                <CustomTextInput label="Mobile No." onChange={(val) => handleChange('phoneNumber', val)} value={state.phoneNumber} keyboard="phone-pad" placeholder="+92 000 0000000" />
+                <Button mode="contained" style={styles.otpBtn} textColor='white' buttonColor={colors.black} onPress={handleSendOTP} loading={optLoading}>Send OTP</Button>
+
+                <CustomTextInput label="OTP Code" onChange={(val) => handleChange('OTP', val)} value={state.OTP} keyboard="phone-pad" disable={otpConfirmation} />
+                <Button mode="contained" style={styles.otpBtn} textColor='white' buttonColor={colors.black} onPress={handleConfirmOTP}>{otpConfirmation ? 'Confirmed' : 'Confirm OTP'}</Button>
+
                 <CustomButton label="Place Order" onPress={() => handlePlaceOrder()} loading={loading} />
             </View>
         </ScrollView>
@@ -228,6 +273,11 @@ const styles = StyleSheet.create({
         fontWeight: 700,
         alignSelf: 'center'
     },
+    otpBtn: {
+        alignSelf: 'flex-start',
+        borderRadius: 8,
+        borderTopRightRadius: 1,
+    },
     orderDetails: {
         paddingHorizontal: spacing.l,
         flexDirection: 'row',
@@ -248,9 +298,8 @@ const styles = StyleSheet.create({
         resizeMode: 'contain'
     },
     detailsContainer: {
-        marginTop: spacing.m,
-        marginHorizontal: spacing.m,
-        gap: spacing.s
+        margin: spacing.m,
+        gap: spacing.s,
     },
     loader: {
         justifyContent: 'center',
