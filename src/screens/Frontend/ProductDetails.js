@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Image, ScrollView, Text, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useToast } from 'native-base'
-import firestore, { firebase } from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
+import { ActivityIndicator } from 'react-native-paper';
 //context
 import { useAuth } from '../../Context/AuthContext'
 //components
 import { colors, sizes, spacing } from '../../components/constants/theme'
 import Icon from '../../components/shared/Icon'
 import Counter from '../../components/shared/Counter'
-import { ActivityIndicator } from 'react-native-paper';
 
 export default function ProductDetails({ navgation, route }) {
   const { product } = route.params

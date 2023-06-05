@@ -45,26 +45,26 @@ export default function Login() {
       .catch(error => {
         if (error.code === 'auth/user-not-found') {
           notify('Email or password is incorrect!', 'error')
-        }else if (error.code === 'auth/wrong-password') {
+        } else if (error.code === 'auth/wrong-password') {
           notify('Email or password is incorrect!', 'error')
-        }else if (error.code === 'auth/network-request-failed') {
+        } else if (error.code === 'auth/network-request-failed') {
           notify('Check your network!', 'error')
-        }else{
+        } else {
           notify('Something went wrong!', 'error')
         }
-      }).finally(()=>{
+      }).finally(() => {
         setLoading(false)
       })
   }
-  const notify = (message,color) => {
-    toast.show({ description: message, placement: 'top', duration: 2000, backgroundColor: `${color}.700`,shadow:'9' })
+  const notify = (message, color) => {
+    toast.show({ description: message, placement: 'top', duration: 2000, backgroundColor: `${color}.700`, shadow: '9' })
   }
   return (
     <KeyboardAvoidingView behavior={"height"} enabled={true} style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.inner}>
           <View style={styles.imageContainer}>
-            <Image source={require('../../assets/universe.png')} style={styles.image} />
+            <Image source={require('../../assets/universe.gif')} style={styles.image} />
           </View>
           <View style={styles.formContainer}>
 
@@ -80,7 +80,7 @@ export default function Login() {
               error={!emailValid}
             />
             {
-              !emailValid && <HelperText type="error" visible={true} style={{ marginTop: -20, color:'red' }}>
+              !emailValid && <HelperText type="error" visible={true} style={{ marginTop: -20, color: 'red' }}>
                 Invalid email address!
               </HelperText>
             }
@@ -95,7 +95,7 @@ export default function Login() {
               error={!passwordValid}
             />
             {
-              !passwordValid && <HelperText type="error" visible={true} style={{ marginTop: -20, color:'red' }}>
+              !passwordValid && <HelperText type="error" visible={true} style={{ marginTop: -20, color: 'red' }}>
                 Invalid password!
               </HelperText>
             }
@@ -137,7 +137,7 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.black,
+    backgroundColor: '#000',
   },
   inner: {
     flex: 1,
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    height:30,
+    height: 200,
     resizeMode: 'contain',
   },
   label: {

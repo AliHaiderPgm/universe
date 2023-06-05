@@ -8,7 +8,6 @@ import { useAuth } from '../../../Context/AuthContext'
 //data
 import { SETTING_OPTIONS, USERS } from '../../../data'
 //components
-import ScreenHeader from '../../../components/shared/ScreenHeader'
 import UserHeader from '../../../components/Frontend/Settings/UserHeader'
 import Options from '../../../components/Frontend/Settings/Options'
 import UserNotFound from '../../../components/Frontend/Settings/UserNotFound'

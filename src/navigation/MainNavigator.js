@@ -108,7 +108,7 @@ export default function MainNavigator() {
                     options={{
                         statusBarColor: colors.light,
                         statusBarStyle: 'dark',
-                        headerTitle: 'Profile'
+                        headerTitle: 'Size Guide',
                     }}
                 />
             </Stack.Navigator>
