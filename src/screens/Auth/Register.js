@@ -5,7 +5,7 @@ import { colors, sizes, spacing } from '../../components/constants/theme'
 import { Button, HelperText, TextInput } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import { validEmail, validPassword } from '../../components/Global'
-import auth, { firebase } from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
 import { useToast } from 'native-base'
 import { useAuth } from '../../Context/AuthContext'
 
@@ -69,7 +69,7 @@ export default function Register() {
       };
       await user.updateProfile(userData);
       const updatedUser = auth().currentUser
-      dispatch({type:'LOGIN',payload:{user:updatedUser}})
+      dispatch({ type: 'LOGIN', payload: { user: updatedUser } })
       setState(initialState)
       notify('Account created!', 'success')
       navigation.navigate('Profile')
@@ -79,7 +79,7 @@ export default function Register() {
       }
       if (error.code === 'auth/network-request-failed') {
         notify('Check your network!', 'error')
-      }else{
+      } else {
         notify('Something went wrong!', 'error')
       }
     } finally {

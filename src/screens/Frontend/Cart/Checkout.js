@@ -119,8 +119,12 @@ export default function Checkout({ route }) {
         }
         setOTPLoading(true)
         try {
-            const confirmation = await auth().signInWithPhoneNumber(state.phoneNumber);
+            const confirmation = await firebase.auth().phoneAuthProvider().signInWithPhoneNumberAndProvider(state.phoneNumber, "phoneAuthProvider");
             setConfirmationData(confirmation)
+            if (confirmation.user.isVerified) {
+                notify('Phone number already verified!', 'info');
+                return;
+            }
             notify('OTP sent successfully!', 'success');
         } catch (error) {
             if (error.message === "[auth/too-many-requests] We have blocked all requests from this device due to unusual activity. Try again later.") {
