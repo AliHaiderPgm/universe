@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Image, ScrollView, Text, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { useColorMode, useToast } from 'native-base'
-import firestore from '@react-native-firebase/firestore';
-import { ActivityIndicator, Button, TextInput } from 'react-native-paper';
+import { useToast } from 'native-base'
+import firebase from '@react-native-firebase/app'
+import firestore from '@react-native-firebase/firestore'
+import { ActivityIndicator, Button, TextInput } from 'react-native-paper'
 //context
 import { useAuth } from '../../Context/AuthContext'
 //components
@@ -25,12 +26,9 @@ export default function ProductDetails({ navgation, route }) {
   const toast = useToast()
   const [wished, setWished] = useState(false)
   const [state, setState] = useState({ review: '' })
+  const [productReviews, setProductReviews] = useState([])
+  const [productReviewLoadings, setProductReviewLoadings] = useState(false)
 
-
-  useEffect(() => {
-    navigation.setOptions({ title: product.name, })
-    isAuthenticated && isWished()
-  }, [])
   const handleSizeSelection = (size) => setSelectedSize(size);
   const handleColorSelection = (color) => setSelectedColor(color);
   const fromChild = (data) => {
@@ -153,30 +151,64 @@ export default function ProductDetails({ navgation, route }) {
   }
 
   ////////////////////////////////////////REVIEW
-  const handleChange = (name, value) => {
-    setState(s => ({ ...s, [name]: value }))
+  const handleGetReviews = async () => {
+    setProductReviews([])
+    setProductReviewLoadings(true)
+    const collectionName = await findProduct()
+    await firestore().collection(collectionName).where('id', '==', product.id).get()
+      .then(querySnapShot => {
+        querySnapShot.forEach(docSnapshot => {
+          const doc = docSnapshot.data()
+          setProductReviews(s => [...s, doc])
+        })
+      })
+      .catch(() => {
+        notify('Error while fetching product reviews!', 'error')
+      })
+      .finally(() => {
+        setProductReviewLoadings(false)
+      })
   }
-
+  const handleChange = (name, value) => setState(s => ({ ...s, [name]: value }))
   const handleAddReview = async () => {
     let { review } = state
     review = review.trim()
     if (review.length <= 4) {
-      notify('Review length is to short', 'error')
+      notify('Review length is too short', 'error');
       return
+    }
+    setAddReviewLoading(true)
+    const userData = {
+      userName: user.displayName,
+      userEmail: user.email,
+      userUID: user.uid,
+      userPhotoURL: user.photoURL,
+      userTimeStamp: new Date(),
+    }
+    const reviewObj = {
+      user: userData,
+      message: review,
     }
     const collectionName = await findProduct()
     const querySnapshot = await firestore().collection(collectionName).where('id', '==', product.id).get()
     querySnapshot.forEach((docSnapshot) => {
+      const serverTimestamp = firebase.firestore.FieldValue.serverTimestamp()
       const docRef = firestore().collection(collectionName).doc(docSnapshot.id)
-      docRef.update({ reviews: review })
+      docRef.update({ reviews: firebase.firestore.FieldValue.arrayUnion(reviewObj), serverTimestamp })
         .then(() => {
-          console.log('Review updated successfully!')
+          notify('Review added successfully!', 'success')
+          handleGetReviews()
         })
         .catch((error) => {
-          console.error('Error updating review:', error)
+          notify('Error adding review!', 'error')
+        })
+        .finally(() => {
+          setAddReviewLoading(false)
+          setState({ review: '' })
         })
     })
   }
+
   const findProduct = async () => {
     let collectionName
     const maleCollectionRef = await firestore().collection('maleProducts').where('id', '==', product.id).get()
@@ -189,6 +221,12 @@ export default function ProductDetails({ navgation, route }) {
     else { console.log('Product not found in any collection') }
     return collectionName;
   }
+
+  useEffect(() => {
+    navigation.setOptions({ title: product.name, })
+    isAuthenticated && isWished()
+    handleGetReviews()
+  }, [])
 
   const sizes = ['S', 'M', 'L', 'XL',]
   const avalibleColors = ['#ef233c', '#2ec4b6', '#a2d2ff', '#6c757d', '#001233']
@@ -252,13 +290,26 @@ export default function ProductDetails({ navgation, route }) {
           {/* ////////////PREVIOUS REVIEWS */}
           <View>
             <Text style={styles.label}>Reviews:</Text>
-            <View style={styles.reviewsContainer}>
-              <View style={styles.userInfoContainer}>
-                <Image source={require('../../assets/appLogo.png')} resizeMode="contain" style={styles.profile} />
-                <Text style={styles.userName}>Ali Haider</Text>
+            {
+              productReviewLoadings ? <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: spacing.xl, }}>
+                <ActivityIndicator color={colors.gold} />
               </View>
-              <Text style={styles.desc}>This is a very good product.</Text>
-            </View>
+                :
+                productReviews[0]?.reviews === undefined ?
+                  <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: spacing.xl, }}>
+                    <Text style={styles.desc}>No reviews yet.</Text>
+                  </View>
+                  :
+                  productReviews[0].reviews.map((review, index) => {
+                    return <View style={styles.reviewsContainer} key={index}>
+                      <Image source={{ uri: review.user.userPhotoURL }} resizeMode="contain" style={styles.profile} />
+                      <View style={styles.userInfoContainer}>
+                        <Text style={styles.userName}>{review.user.userName}</Text>
+                        <Text style={styles.desc}>{review.message}</Text>
+                      </View>
+                    </View>
+                  })
+            }
           </View>
           {/* /////////////ADD NEW REVIEW */}
           <View>
@@ -271,7 +322,7 @@ export default function ProductDetails({ navgation, route }) {
               value={state.review}
               style={styles.inputField}
             />
-            <Button mode="elevated" buttonColor={colors.black} textColor={colors.white} uppercase style={styles.btn} onPress={handleAddReview}>
+            <Button mode="elevated" buttonColor={colors.black} textColor={colors.white} uppercase style={styles.btn} onPress={handleAddReview} loading={addReviewLoading}>
               Add Review
             </Button>
 
@@ -291,7 +342,7 @@ export default function ProductDetails({ navgation, route }) {
             <ActivityIndicator color='gold' />
           </View>
             : <TouchableOpacity activeOpacity={0.8} style={styles.button} onPress={() => handleAdd(CheckInCart)}>
-              <Text style={styles.price}>${price}</Text>
+              <Text style={styles.price}>Rs.{price}</Text>
               <View style={styles.addToCartWrapper}>
                 <Icon icon="cart" size={23} />
                 <Text style={styles.addToCartText}>Add to cart</Text>
@@ -435,16 +486,14 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 3,
   },
   reviewsContainer: {
-    gap: spacing.s,
+    gap: spacing.s - 1,
     marginHorizontal: spacing.s,
-  },
-  userInfoContainer: {
-    flexDirection: 'row',
-    gap: spacing.m,
+    marginBottom: spacing.m,
+    flexDirection: 'row'
   },
   profile: {
-    height: 25,
-    width: 25,
+    height: 40,
+    width: 40,
     borderRadius: 50
   },
   userName: {

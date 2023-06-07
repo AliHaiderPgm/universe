@@ -1,7 +1,7 @@
 export const validEmail = new RegExp(/^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/);
 export const validPassword = new RegExp('^(?=.*?[A-Za-z])(?=.*?[0-9]).{6,}$')
 
-export const sortData =(collection,type)=>{
+export const sortData = (collection, type) => {
     if (type === 'Price Low to High') {
         collection.sort((a, b) => a.price - b.price)
     }
@@ -12,4 +12,11 @@ export const sortData =(collection,type)=>{
         collection.sort((a, b) => b.brand.localeCompare(a.brand))
     }
     return collection
+}
+
+export const generateRandomNumber = () => {
+    // Generate a random number between 1000 and 9999
+    const randomNumber = Math.floor(Math.random() * 9000) + 1000;
+
+    return randomNumber;
 }

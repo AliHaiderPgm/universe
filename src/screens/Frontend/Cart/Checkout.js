@@ -1,13 +1,15 @@
-import { ScrollView, Image, StyleSheet, Text, View, LogBox, Alert } from 'react-native'
+import { ScrollView, Image, StyleSheet, Text, View, LogBox } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { colors, sizes, spacing } from '../../../components/constants/theme'
 import { ActivityIndicator, Button, Divider, TextInput } from 'react-native-paper'
 import { useToast } from 'native-base'
-import firestore from '@react-native-firebase/firestore';
-import firebase from '@react-native-firebase/app';
-import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
+import firebase from '@react-native-firebase/app'
 import { useAuth } from '../../../Context/AuthContext'
 import { useNavigation } from '@react-navigation/native'
+import messaging from '@react-native-firebase/messaging'
+import { requestUserPermission } from '../../../components/shared/Messaging'
+import { generateRandomNumber } from '../../../components/Global'
 
 const CustomTextInput = ({ label, onChange, keyboard, value, disable, placeholder }) => {
     return <TextInput
@@ -111,28 +113,22 @@ export default function Checkout({ route }) {
     useEffect(() => {
         calSubTotal()
     }, [cartTotal])
-
+    //////////////////////OTP///////////////
+    useEffect(() => {
+        requestUserPermission()
+    }, [])
     const handleSendOTP = async () => {
-        if (state.phoneNumber.length < 13) {
-            notify('Please enter vlaid phone number!', 'error')
-            return
-        }
         setOTPLoading(true)
         try {
-            const confirmation = await firebase.auth().phoneAuthProvider().signInWithPhoneNumberAndProvider(state.phoneNumber, "phoneAuthProvider");
-            setConfirmationData(confirmation)
-            if (confirmation.user.isVerified) {
-                notify('Phone number already verified!', 'info');
-                return;
+            const message = {
+                to: "+923451033611",
+                body: "This is a custom message sent via SMS.",
+                type: "SMS",
             }
-            notify('OTP sent successfully!', 'success');
+            firebase.messaging().send(message);
+            console.log('SMS sent successfully!');
         } catch (error) {
-            if (error.message === "[auth/too-many-requests] We have blocked all requests from this device due to unusual activity. Try again later.") {
-                notify('Too many requests. Try again later!', 'error');
-            } else {
-                notify('Error sending OTP!', 'error');
-            }
-            console.log('Error======>>>>>>>>>', error.message)
+            console.log('Error sending SMS:', error.message);
         } finally {
             setOTPLoading(false)
         }
@@ -155,7 +151,7 @@ export default function Checkout({ route }) {
             const recieverName = name.trim()
             const recieverPhoneNumber = phoneNumber.trim()
             const recieverAddress = address.trim()
-            if (recieverName.length <= 2 || recieverPhoneNumber.trim().length < 11 || recieverAddress.trim().length <= 13 || !otpConfirmation) {
+            if (recieverName.length <= 2 || recieverPhoneNumber.trim().length < 11 || recieverAddress.trim().length <= 13) {
                 notify('Please provide valid information!', 'error')
                 return
             }
@@ -172,7 +168,8 @@ export default function Checkout({ route }) {
                 userEmail: user.email,
                 userUID: user.uid,
             }
-            const dataObj = { ...data, ...timeStampFeild, ...userData }
+            const orderID = generateRandomNumber()
+            const dataObj = { ...data, ...timeStampFeild, ...userData, orderID }
             //Adding to firebase
             await firestore().collection('ordersList').add(dataObj)
                 .then(async docRef => {
@@ -189,7 +186,7 @@ export default function Checkout({ route }) {
                     })
                 })
             setState(initialState)
-            navigation.navigate('thanks')
+            navigation.navigate('thanks', { orderId: orderID })
         }
         catch {
             notify('Something went wrong!', 'error')
@@ -234,10 +231,10 @@ export default function Checkout({ route }) {
                 <CustomTextInput label="Address" onChange={(val) => handleChange('address', val)} value={state.address} />
 
                 <CustomTextInput label="Mobile No." onChange={(val) => handleChange('phoneNumber', val)} value={state.phoneNumber} keyboard="phone-pad" placeholder="+92 000 0000000" />
-                <Button mode="contained" style={styles.otpBtn} textColor='white' buttonColor={colors.black} onPress={handleSendOTP} loading={optLoading}>Send OTP</Button>
+                {/* <Button mode="contained" style={styles.otpBtn} textColor='white' buttonColor={colors.black} onPress={handleSendOTP} loading={optLoading}>Send OTP</Button>
 
                 <CustomTextInput label="OTP Code" onChange={(val) => handleChange('OTP', val)} value={state.OTP} keyboard="phone-pad" disable={otpConfirmation} />
-                <Button mode="contained" style={styles.otpBtn} textColor='white' buttonColor={colors.black} onPress={handleConfirmOTP}>{otpConfirmation ? 'Confirmed' : 'Confirm OTP'}</Button>
+                <Button mode="contained" style={styles.otpBtn} textColor='white' buttonColor={colors.black} onPress={handleConfirmOTP}>{otpConfirmation ? 'Confirmed' : 'Confirm OTP'}</Button> */}
 
                 <CustomButton label="Place Order" onPress={() => handlePlaceOrder()} loading={loading} />
             </View>

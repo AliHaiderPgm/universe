@@ -14,6 +14,7 @@ import UpdateProfile from '../screens/Frontend/Settings/UpdateProfile'
 import Checkout from '../screens/Frontend/Cart/Checkout'
 import SizeGuide from '../screens/Frontend/Settings/SizeGuide'
 import ThankYou from '../screens/Frontend/Cart/ThankYou'
+import OrderHistory from '../screens/Frontend/Settings/OrderHistory'
 
 export default function MainNavigator() {
     const Stack = createNativeStackNavigator()
@@ -91,6 +92,15 @@ export default function MainNavigator() {
                         statusBarColor: colors.light,
                         statusBarStyle: 'dark',
                         headerTitle: 'Wish List'
+                    }}
+                />
+                <Stack.Screen
+                    name='orderHistory'
+                    component={OrderHistory}
+                    options={{
+                        statusBarColor: colors.light,
+                        statusBarStyle: 'dark',
+                        headerTitle: 'Order History'
                     }}
                 />
                 <Stack.Screen

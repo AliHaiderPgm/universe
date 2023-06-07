@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { BackHandler, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect } from 'react'
 import { colors, sizes, spacing } from '../../../components/constants/theme'
 import { Button } from 'react-native-paper';
@@ -7,7 +7,8 @@ import Icon from '../../../components/shared/Icon';
 
 const IMAGE_HEIGHT = 170;
 const IMAGE_WIDTH = 170;
-export default function ThankYou() {
+export default function ThankYou({ route }) {
+    const { orderId } = route.params
     const navigation = useNavigation()
     useEffect(() => {
         navigation.setOptions({
@@ -17,7 +18,19 @@ export default function ThankYou() {
                 </TouchableOpacity>
             ),
         })
+        ////////////////////////////////CONTROL BACK BUTTON BEHAVIOUR
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+        return () => {
+            backHandler.remove()
+        }
     }, [])
+    const handleBackButton = () => {
+        // Custom logic for back button behavior
+        navigation.navigate('Home');
+
+        // Return 'true' to prevent the default behavior
+        return true
+    }
     return (
         <View style={styles.mainContainer}>
             <View style={styles.imageContainer}>
@@ -25,7 +38,7 @@ export default function ThankYou() {
             </View>
             <View style={styles.contentContainer}>
                 <Text style={styles.mainHeading}>Thank you!</Text>
-                <Text style={[styles.paragraph, { marginTop: spacing.m }]}>Your order is placed.</Text>
+                <Text style={[styles.paragraph, { marginTop: spacing.m }]}>Your order<Text style={styles.span}> #{orderId}</Text> is placed.</Text>
                 <Text style={styles.paragraph}>Please check the delivery status at <Text style={styles.span}>My Orders</Text> page.</Text>
             </View>
             <View style={styles.callToAction}>
