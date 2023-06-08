@@ -40,7 +40,7 @@ const Card = ({ data, items, setItems, user, notify }) => {
                 <Image source={{ uri: data.imageUrl }} style={styles.image} />
                 <View style={styles.textContainer}>
                     <Text style={styles.h2}>{data.name}</Text>
-                    <Text style={styles.price}>${data.price}</Text>
+                    <Text style={styles.price}>Rs.{(data.price).toFixed(0)}</Text>
                 </View>
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity onPress={handleDelete}>

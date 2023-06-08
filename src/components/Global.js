@@ -11,6 +11,12 @@ export const sortData = (collection, type) => {
     if (type === 'Recommended') {
         collection.sort((a, b) => b.brand.localeCompare(a.brand))
     }
+    if (type === 'New Arrival') {
+        collection.sort((a, b) => a.releaseDate < b.releaseDate ? -1 : 1)
+    }
+    if (type === 'Top Rated') {
+        collection.sort((a, b) => b.rating - a.rating)
+    }
     return collection
 }
 

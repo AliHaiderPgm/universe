@@ -1,62 +1,62 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, Text, ScrollView, Keyboard, } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import firestore from '@react-native-firebase/firestore';
-import { useToast } from 'native-base';
-import { ActivityIndicator } from 'react-native-paper';
+import React, { useState } from 'react'
+import { View, StyleSheet, TextInput, Text, ScrollView, Keyboard, } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import firestore from '@react-native-firebase/firestore'
+import { useToast } from 'native-base'
+import { ActivityIndicator } from 'react-native-paper'
 //components
-import { colors, sizes, spacing } from '../../components/constants/theme';
-import Icon from '../../components/shared/Icon';
-import ProductList from '../../components/Frontend/ProductList';
-import Dropdown from '../../components/shared/Dropdown';
-import { SORT } from '../../data';
-import { sortData } from '../../components/Global';
+import { colors, sizes, spacing } from '../../components/constants/theme'
+import Icon from '../../components/shared/Icon'
+import ProductList from '../../components/Frontend/ProductList'
+import Dropdown from '../../components/shared/Dropdown'
+import { SORT } from '../../data'
+import { sortData } from '../../components/Global'
 
 const SearchBar = () => {
-  const [text, setText] = useState('');
-  const [isKeyboard, setIsKeyBoard] = useState(true);
-  const [searchedText, setSearchedText] = useState('');
-  const inset = useSafeAreaInsets();
-  const navigation = useNavigation();
-  const toast = useToast();
-  const [loading, setLoading] = useState(false);
-  const [state, setState] = useState(false);
-  const [searchedProduct, setSearchedProduct] = useState();
-  const [selectedOption, setSelectedOption] = useState();
+  const [text, setText] = useState('')
+  const [isKeyboard, setIsKeyBoard] = useState(true)
+  const [searchedText, setSearchedText] = useState('')
+  const inset = useSafeAreaInsets()
+  const navigation = useNavigation()
+  const toast = useToast()
+  const [loading, setLoading] = useState(false)
+  const [state, setState] = useState(false)
+  const [searchedProduct, setSearchedProduct] = useState()
+  const [selectedOption, setSelectedOption] = useState()
 
-  const notify = (msg, color) => toast.show({ title: msg, backgroundColor: `${color}.700`, placement: 'top', duration: 2000 });
+  const notify = (msg, color) => toast.show({ title: msg, backgroundColor: `${color}.700`, placement: 'top', duration: 2000 })
   const capitlize = str => { return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() }
 
   const handleSearch = async () => {
     if (text.length === 0) {
-      notify('Enter product name!', 'error');
-      return;
+      notify('Enter product name!', 'error')
+      return
     }
-    setIsKeyBoard(false);
-    setSearchedText(text);
-    setSearchedProduct([]);
-    setState(true);
-    setLoading(true);
+    setIsKeyBoard(false)
+    setSearchedText(text)
+    setSearchedProduct([])
+    setState(true)
+    setLoading(true)
     try {
-      const maleProducts = await getData('maleProducts');
-      const femaleProducts = await getData('femaleProducts');
-      const childrenProducts = await getData('childrenProducts');
+      const maleProducts = await getData('maleProducts')
+      const femaleProducts = await getData('femaleProducts')
+      const childrenProducts = await getData('childrenProducts')
       setSearchedProduct([
         ...maleProducts,
         ...femaleProducts,
         ...childrenProducts,
-      ]);
+      ])
     } catch (err) {
-      notify('Something went wrong!', 'error');
+      notify('Something went wrong!', 'error')
     } finally {
-      setLoading(false);
-      setIsKeyBoard(true);
+      setLoading(false)
+      setIsKeyBoard(true)
     }
   }
   const getData = async collectionName => {
-    const newText = capitlize(text).trim();
-    const products = [];
+    const newText = capitlize(text).trim()
+    const products = []
     await firestore()
       .collection(collectionName)
       .where('name', '>=', newText)
@@ -65,22 +65,23 @@ const SearchBar = () => {
       .then(querySnapShot => {
         if (!querySnapShot.empty) {
           querySnapShot.forEach(snapShot => {
-            products.push(snapShot.data());
-          });
+            products.push(snapShot.data())
+          })
         }
-      });
-    return products;
+      })
+    return products
   }
 
   const handleSelect = e => {
-    setSelectedOption(e);
-    sortData(searchedProduct, e);
+    sortData(searchedProduct, e)
+    setSelectedOption(e)
   }
 
   return (
     <>
       <View style={[styles.mainContainer, { marginTop: inset.top }]}>
         <Icon size={28} icon="leftArrow" onPress={() => navigation.goBack()} />
+        {/* //////////SEARCH_BAR */}
         <View style={styles.searchContainer}>
           <View style={styles.inputContainer}>
             <TextInput
@@ -94,7 +95,7 @@ const SearchBar = () => {
               selectionColor="skyblue"
               value={text}
               onChangeText={s => {
-                setText(s);
+                setText(s)
               }}
               onSubmitEditing={() => handleSearch()}
               onBlur={Keyboard.dismiss}
@@ -125,8 +126,9 @@ const SearchBar = () => {
               </Text>
             </View>
           ) : (
+            ////PRODUCTS FOUND
             <View style={styles.products}>
-              <Dropdown defaultText="Sort" list={SORT} onSelect={handleSelect} style={{ marginVertical: spacing.s }} />
+              <Dropdown defaultText="Recommended" list={SORT} onSelect={handleSelect} style={{ marginVertical: spacing.s }} />
               <ScrollView style={{ paddingBottom: spacing.m }}>
                 <ProductList list={searchedProduct} />
               </ScrollView>
@@ -135,10 +137,10 @@ const SearchBar = () => {
         </>
       )}
     </>
-  );
-};
+  )
+}
 
-export default SearchBar;
+export default SearchBar
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -181,4 +183,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+})

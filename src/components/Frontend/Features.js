@@ -3,18 +3,19 @@ import { View, StyleSheet, Image } from 'react-native'
 //components
 import { colors, spacing } from '../constants/theme'
 
-export default function Features({icons,size}) {
-  return (
-    <View style={styles.imageBox}>
-        {
-            icons.map((icon,index)=>{
-                return(
-                    <Image source={icon} key={index} style={[{height: size, width: size},styles.icon]}/>
-                )
-            })
-        }
-    </View>
-  )
+export default function Features({ icons, size }) {
+
+    return (
+        <View style={styles.imageBox}>
+            {
+                icons.map((icon, index) => {
+                    return (
+                        <Image source={icon} key={index} style={[{ height: size, width: size }, styles.icon]} />
+                    )
+                })
+            }
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
@@ -24,9 +25,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: spacing.l,
         paddingVertical: spacing.m,
         backgroundColor: colors.white,
+        elevation: 9
     },
     icon: {
         resizeMode: 'contain',
-        aspectRatio: 3/2
+        aspectRatio: 3 / 2
     },
 })

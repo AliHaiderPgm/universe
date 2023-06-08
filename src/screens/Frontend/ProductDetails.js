@@ -32,7 +32,7 @@ export default function ProductDetails({ navgation, route }) {
   const handleSizeSelection = (size) => setSelectedSize(size);
   const handleColorSelection = (color) => setSelectedColor(color);
   const fromChild = (data) => {
-    setPrice(data.number)
+    setPrice((data.number).toFixed(0))
     setQuantity(data.count)
   }
 

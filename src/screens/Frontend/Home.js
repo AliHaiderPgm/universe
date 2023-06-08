@@ -11,13 +11,14 @@ import ProductsCarousel from '../../components/Frontend/ProductsCarousel'
 import Features from '../../components/Frontend/Features'
 import firestore from '@react-native-firebase/firestore'
 import CardLoader from '../../components/shared/CardLoader'
-import { CHILD_FEATURED_PRODUCTS, MENS_FEATURED_PRODUCTS, PRODUCTS, TOP_PRODUCTS, WOMENS_FEATURED_PRODUCTS, brands } from '../../data'
+import { featuredBrands } from '../../data'
 
 export default Home = () => {
     const [popularProducts, setPopularProducts] = useState([])
+    const [mostSoldProduct, setMostSoldProduct] = useState([])
     const [isLoading, setIsLoading] = useState(false)
 
-    const getDataFromCollections = async (collection, limit) => {
+    const getDataByRating = async (collection, limit) => {
         await firestore().collection(collection)
             .where('rating', '>=', 4)
             .limit(limit)
@@ -29,13 +30,31 @@ export default Home = () => {
                 })
             })
     }
+    const getDataBySold = async (collection) => {
+        await firestore().collection(collection)
+            .orderBy('sold', 'desc')
+            .limit(1)
+            .get()
+            .then(docs => {
+                docs.forEach(doc => {
+                    const data = doc.data()
+                    setMostSoldProduct(s => [...s, data])
+                })
+            })
+    }
     const getAllData = async () => {
         setIsLoading(true)
+        setMostSoldProduct([])
         setPopularProducts([])
         try {
-            await getDataFromCollections('maleProducts', 2)
-            await getDataFromCollections('childrenProducts', 1)
-            await getDataFromCollections('femaleProducts', 1)
+            //NUMBER OF TIMES PRODUCT SOLD
+            await getDataBySold('maleProducts')
+            await getDataBySold('childrenProducts')
+            await getDataBySold('femaleProducts')
+            //RATING
+            await getDataByRating('maleProducts', 2)
+            await getDataByRating('childrenProducts', 1)
+            await getDataByRating('femaleProducts', 1)
         } catch (err) {
             console.log('Something went wrong!', err)
         } finally {
@@ -46,10 +65,10 @@ export default Home = () => {
         getAllData()
     }, [])
 
-    const renderCardLoader = (times) => {
+    const renderCardLoader = (times, cardWidth) => {
         const components = [];
         for (let i = 0; i < times; i++) {
-            components.push(<CardLoader key={i} width={48} />);
+            components.push(<CardLoader key={i} width={cardWidth} />);
         }
         return components;
     }
@@ -60,16 +79,20 @@ export default Home = () => {
                 <ImageCarousel />
 
                 <ScreenHeader mainHeading="Find Your" secondTitle="Dream Style" />
-                <ProductsCarousel list={TOP_PRODUCTS} inProductCard={false} />
+                {
+                    isLoading ? <View style={styles.mostSoldProducts}>{renderCardLoader(3, 90)}</View>
+                        :
+                        <ProductsCarousel list={mostSoldProduct} inProductCard={false} />
+                }
 
                 <SectionHeader title="Popular Products" showArrow={false} />
                 {
-                    isLoading ? <View style={styles.cardLoader}>{renderCardLoader(4)}</View>
+                    isLoading ? <View style={styles.cardLoader}>{renderCardLoader(4, 48)}</View>
                         : <ProductList list={popularProducts} />
                 }
 
                 <SectionHeader title="Featured Brands" showArrow={false} />
-                <Features icons={brands} size={60} />
+                <Features icons={featuredBrands} size={60} />
 
                 {/* <SectionHeader title="For Men" />  */}
 
@@ -87,6 +110,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.light,
+    },
+    mostSoldProducts: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: spacing.s,
+        marginRight: spacing.xl
     },
     cardLoader: {
         flexDirection: 'row',

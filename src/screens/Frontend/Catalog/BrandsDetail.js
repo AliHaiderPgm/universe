@@ -79,7 +79,15 @@ export default TabViewExample = ({ route }) => {
     first: () => (<DetailRoute data={menProducts} />),
     second: () => (<DetailRoute data={childrenProducts} />),
     third: () => (<DetailRoute data={womenProducts} />),
-  });
+  })
+
+  const renderNoProduct = () => {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ color: colors.black, fontSize: sizes.h3 + 1, fontWeight: '600', textAlign: 'center' }}>No product found</Text>
+      </View>
+    )
+  }
 
   return (
     <>{loading ? <View style={{ height: sizes.height, alignItems: 'center', justifyContent: 'center' }}>
@@ -89,13 +97,17 @@ export default TabViewExample = ({ route }) => {
           <Image source={{ uri: brandData.logoImage }} style={styles.image} />
           <Text style={styles.text}>{brandData.name}</Text>
         </View>
-        <TabView
-          renderTabBar={renderTabBar}
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          initialLayout={{ width: layout.width }}
-        />
+        {
+          routes.length === 0 ? renderNoProduct()
+            :
+            <TabView
+              renderTabBar={renderTabBar}
+              navigationState={{ index, routes }}
+              renderScene={renderScene}
+              onIndexChange={setIndex}
+              initialLayout={{ width: layout.width }}
+            />
+        }
       </>
     }</>);
 }

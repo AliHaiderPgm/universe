@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import firestore from '@react-native-firebase/firestore'
 import { ActivityIndicator, Divider } from 'react-native-paper'
@@ -7,10 +7,10 @@ import { List } from 'react-native-paper'
 import { useAuth } from '../../../Context/AuthContext'
 
 const renderListHeading = () => {
-    return <View style={styles.row}>
+    return <View style={[styles.row, styles.listHeading]}>
         <Text style={[styles.heading, { paddingRight: spacing.xl + spacing.s }]}>Name</Text>
         <Text style={[styles.heading, { paddingHorizontal: spacing.l }]}>Quantity</Text>
-        <Text style={[styles.heading, { paddingLeft: spacing.xl + spacing.xl - 2 }]}>Price</Text>
+        <Text style={[styles.heading, { paddingLeft: spacing.xl + spacing.xl - 15 }]}>Total Price</Text>
         <Divider />
     </View>
 }
@@ -24,7 +24,7 @@ const renderList = (order) => {
             <Text style={styles.subHeading}>{productName}</Text>
         </View>
         <Text style={[styles.subHeading, { paddingHorizontal: spacing.xl }]}>{order.quantity}</Text>
-        <Text style={[styles.subHeading, { paddingLeft: spacing.xl + spacing.xl }]}>Rs.{order.price}</Text>
+        <Text style={[styles.subHeading, { paddingLeft: spacing.xl + spacing.xl + 10 }]}>Rs.{order.totalPrice}</Text>
         <Divider />
     </View>
 }
@@ -75,36 +75,43 @@ export default function OrderHistory() {
         handleGetOrders()
     }, [])
     return (
-        <View style={styles.mainContainer}>
-            <View style={styles.row}>
-                <Text style={styles.heading}>Order ID</Text>
-                <Text style={[styles.heading, { paddingLeft: spacing.m }]}>Customer Name</Text>
-                <Text style={[styles.heading, { paddingLeft: spacing.xl }]}>Status</Text>
-                <Divider />
-            </View>
-
+        <View style={[styles.mainContainer, { paddingHorizontal: state.length === 0 ? 0 : spacing.m }]}>
             {
+                ////////LOADING
                 loading ? <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                     <ActivityIndicator color={colors.black} size="large" />
                 </View>
-                    :
-                    <List.Section style={{ gap: spacing.s }}>
-                        {/* /////////////////PENDING ORDERS */}
-                        {state.map((order, index) => {
-                            if (order.status === 'Completed' || order.status === 'Cancelled') return
-                            return renderAccordionList(order, index, 'orange')
-                        })}
-                        {/* /////////////////COMPLETED ORDERS */}
-                        {state.map((order, index) => {
-                            if (order.status === 'Pending' || order.status === 'Cancelled') return
-                            return renderAccordionList(order, index, 'green')
-                        })}
-                        {/* /////////////////CANCELLED ORDERS */}
-                        {state.map((order, index) => {
-                            if (order.status === 'Completed' || order.status === 'Pending') return
-                            return renderAccordionList(order, index, 'red')
-                        })}
-                    </List.Section>
+                    :  ////////NO HISTORY
+                    state.length === 0 ? <View style={styles.emptyHistoryContainer}>
+                        <Image source={require('../../../assets/emptyHistory.gif')} style={styles.image} />
+                    </View>
+                        :
+                        /////////HISTORY FOUND
+                        <>
+                            <View style={styles.row}>
+                                <Text style={styles.heading}>Order ID</Text>
+                                <Text style={[styles.heading, { paddingLeft: spacing.m }]}>Customer Name</Text>
+                                <Text style={[styles.heading, { paddingLeft: spacing.xl }]}>Status</Text>
+                                <Divider />
+                            </View>
+                            <List.Section style={{ gap: spacing.s }}>
+                                {/* /////////////////PENDING ORDERS */}
+                                {state.map((order, index) => {
+                                    if (order.status === 'Pending') return renderAccordionList(order, index, 'orange')
+                                    return
+                                })}
+                                {/* /////////////////COMPLETED ORDERS */}
+                                {state.map((order, index) => {
+                                    if (order.status === 'Completed') return renderAccordionList(order, index, 'green')
+                                    return
+                                })}
+                                {/* /////////////////CANCELLED ORDERS */}
+                                {state.map((order, index) => {
+                                    if (order.status === 'Cancelled') return renderAccordionList(order, index, 'red')
+                                    return
+                                })}
+                            </List.Section>
+                        </>
             }
         </View>
     )
@@ -112,7 +119,6 @@ export default function OrderHistory() {
 
 const styles = StyleSheet.create({
     mainContainer: {
-        paddingHorizontal: spacing.m,
         height: sizes.height,
     },
     row: {
@@ -136,5 +142,19 @@ const styles = StyleSheet.create({
         borderBottomColor: colors.black,
         borderBottomWidth: 1,
         elevation: 4
+    },
+    emptyHistoryContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: colors.white
+    },
+    image: {
+        resizeMode: 'contain',
+        height: 200,
+    },
+    listHeading: {
+        borderRightWidth: 1,
+        borderLeftWidth: 1,
     }
 })

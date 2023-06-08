@@ -66,10 +66,10 @@ export default function Checkout({ route }) {
         orderDetails.map(item => {
             const qty = item._data.quantity;
             const price = item._data.price;
-            let total = parseFloat((qty * price).toFixed(2));
+            let total = parseFloat((qty * price));
             sum += total;
         });
-        setCartTotal(sum.toFixed(2));
+        setCartTotal(sum.toFixed(0));
     }
     //Sub-Total  
     const calSubTotal = () => {
@@ -78,7 +78,7 @@ export default function Checkout({ route }) {
             const amount = parseFloat(order.amount);
             sum += amount;
         })
-        setSubTotal(sum.toFixed(2));
+        setSubTotal(sum.toFixed(0));
     }
     const orderDetail = [
         {
@@ -114,35 +114,35 @@ export default function Checkout({ route }) {
         calSubTotal()
     }, [cartTotal])
     //////////////////////OTP///////////////
-    useEffect(() => {
-        requestUserPermission()
-    }, [])
-    const handleSendOTP = async () => {
-        setOTPLoading(true)
-        try {
-            const message = {
-                to: "+923451033611",
-                body: "This is a custom message sent via SMS.",
-                type: "SMS",
-            }
-            firebase.messaging().send(message);
-            console.log('SMS sent successfully!');
-        } catch (error) {
-            console.log('Error sending SMS:', error.message);
-        } finally {
-            setOTPLoading(false)
-        }
-    }
-    const handleConfirmOTP = () => {
-        setOTPConfirmation(false)
-        const otpCode = state.OTP
-        confirmationData.confirm(otpCode)
-            .then((userCredential) => {
-                notify('OTP verification successful!', 'success')
-                setOTPConfirmation(true)
-            })
-            .catch((error) => notify('OTP verification failed!', 'error'))
-    }
+    // useEffect(() => {
+    //     requestUserPermission()
+    // }, [])
+    // const handleSendOTP = async () => {
+    //     setOTPLoading(true)
+    //     try {
+    //         const message = {
+    //             to: "+923451033611",
+    //             body: "This is a custom message sent via SMS.",
+    //             type: "SMS",
+    //         }
+    //         firebase.messaging().send(message);
+    //         console.log('SMS sent successfully!');
+    //     } catch (error) {
+    //         console.log('Error sending SMS:', error.message);
+    //     } finally {
+    //         setOTPLoading(false)
+    //     }
+    // }
+    // const handleConfirmOTP = () => {
+    //     setOTPConfirmation(false)
+    //     const otpCode = state.OTP
+    //     confirmationData.confirm(otpCode)
+    //         .then((userCredential) => {
+    //             notify('OTP verification successful!', 'success')
+    //             setOTPConfirmation(true)
+    //         })
+    //         .catch((error) => notify('OTP verification failed!', 'error'))
+    // }
     //Firebase
     const handlePlaceOrder = async () => {
         setLoading(true)
@@ -213,14 +213,14 @@ export default function Checkout({ route }) {
                             orderDetail.map((order, index) => {
                                 return <View style={styles.orderDetails} key={index}>
                                     <Text style={styles.title}>{order.title}</Text>
-                                    <Text style={styles.amount}>${order.amount}</Text>
+                                    <Text style={styles.amount}>Rs.{order.amount}</Text>
                                 </View>
                             })
                         }
                         <Divider style={{ marginHorizontal: spacing.m }} />
                         <View style={styles.orderDetails}>
                             <Text style={styles.text}>Sub-Total</Text>
-                            <Text style={styles.text}>${subTotal}</Text>
+                            <Text style={styles.text}>Rs.{subTotal}</Text>
                         </View>
                     </View>
             }

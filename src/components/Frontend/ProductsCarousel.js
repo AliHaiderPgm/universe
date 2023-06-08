@@ -1,14 +1,16 @@
 import React from 'react'
-import { View, Text, FlatList, Image, StyleSheet, TouchableHighlight } from 'react-native'
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native'
 //components
 import { colors, shadow, sizes, spacing } from '../constants/theme'
 import ProductCard from '../shared/ProductCard';
+import { useNavigation } from '@react-navigation/native';
 
 
 const CARD_HEIGHT = 180;
 export default function ProductsCarousel({ list, inProductCard }) {
     const CARD_WIDTH = sizes.width - 100;
     const CARD_WIDTH_SPACING = CARD_WIDTH + spacing.l;
+    const navigation = useNavigation()
     return (
         <FlatList
             data={list}
@@ -20,21 +22,24 @@ export default function ProductsCarousel({ list, inProductCard }) {
             renderItem={
                 !inProductCard ? ({ item, index }) => {
                     return (
-                        <TouchableHighlight
+                        <TouchableOpacity
                             style={{
                                 marginLeft: spacing.l,
-                                marginRight: index === list.length - 1 ? spacing.l : 0
-                            }}>
+                                marginRight: index === list.length - 1 ? spacing.l : 0,
+                                backgroundColor: colors.white,
+                            }}
+                            activeOpacity={0.8}
+                            onPress={() => navigation.navigate('productDetail', { product: item })}
+                        >
                             <View style={[{ width: CARD_WIDTH }, styles.card, shadow.dark]}>
                                 <View style={[{ width: CARD_WIDTH }, styles.imageConatiner]}>
-                                    <Image source={item.image} style={[{ width: CARD_WIDTH }, styles.image]} />
+                                    <Image source={{ uri: item.imageUrl }} style={[{ width: CARD_WIDTH }, styles.image]} />
                                 </View>
                                 <View style={styles.textContainer}>
-                                    <Text style={styles.title}>{item.title}</Text>
-                                    {/* <Text style={styles.price}>${item.price}</Text> */}
+                                    <Text style={styles.title}>{item.name}</Text>
                                 </View>
                             </View>
-                        </TouchableHighlight>
+                        </TouchableOpacity>
                     )
                 }
                     :

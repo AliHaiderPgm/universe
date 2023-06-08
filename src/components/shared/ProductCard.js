@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import { colors, shadow, sizes, spacing } from '../constants/theme'
 
 
-const CARD_WIDTH = sizes.width / 2 - (spacing.l + spacing.l / 2); 
+const CARD_WIDTH = sizes.width / 2 - (spacing.l + spacing.l / 2);
 const CARD_HEIGHT = 220;
 export default function ProductCard({ cardData, carousel }) {
     const navigation = useNavigation()
@@ -20,15 +20,15 @@ export default function ProductCard({ cardData, carousel }) {
                     }
                 ]
             }
-            onPress={()=>navigation.navigate('productDetail',{product: cardData})}>
+                onPress={() => navigation.navigate('productDetail', { product: cardData })}>
                 <View style={[styles.card, shadow.light]}>
                     <View style={styles.imageContainer}>
-                        <Image source={{uri:cardData.imageUrl}} style={styles.image} />
+                        <Image source={{ uri: cardData.imageUrl }} style={styles.image} />
                     </View>
                     <View style={styles.footer}>
                         <View>
                             <Text style={styles.title}>{cardData.name}</Text>
-                            <Text style={styles.price}>${cardData.price}</Text>
+                            <Text style={styles.price}>Rs.{(cardData.price).toFixed(0)}</Text>
                         </View>
                     </View>
                 </View>

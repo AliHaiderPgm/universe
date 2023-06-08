@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import auth from '@react-native-firebase/auth';
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { useToast } from 'native-base'
@@ -14,11 +14,13 @@ import UserNotFound from '../../../components/Frontend/Settings/UserNotFound'
 import { colors, spacing } from '../../../components/constants/theme'
 import { useNavigation } from '@react-navigation/native';
 import Icon from '../../../components/shared/Icon';
+import CustomDialog from '../../../components/shared/CustomDialog';
 
 export default function Settings() {
   const toast = useToast()
   const { isAuthenticated, dispatch } = useAuth()
   const navigation = useNavigation()
+  const [modal, setModal] = useState(false)
   useEffect(() => {
     navigation.setOptions({ headerRight: () => (<Icon icon="cart" size={25} onPress={() => navigation.navigate('cart')} />), })
   }, [])
@@ -28,6 +30,7 @@ export default function Settings() {
       .then(() => {
         notify('Logged out!', 'success')
         dispatch({ type: 'LOGOUT' })
+        setModal(false)
       });
   }
   const notify = (message, color) => {
@@ -42,10 +45,11 @@ export default function Settings() {
       <View style={styles.btnContainer}>
         <Button mode="contained" buttonColor={colors.black} textColor={colors.white}
           style={styles.btn}
-          onPress={() => handleLogout()}
+          onPress={() => setModal(true)}
         >
           Logout
         </Button>
+        <CustomDialog onPress={handleLogout} state={modal} setState={setModal} />
       </View>
     </ScrollView>
   )

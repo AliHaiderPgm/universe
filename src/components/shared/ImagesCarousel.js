@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
         width,
         height,
         marginTop: -10,
+        zIndex: 1
     },
     scroll: {
         width: width + 0.19,
