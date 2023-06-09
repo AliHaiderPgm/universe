@@ -6,7 +6,7 @@ import { Button } from 'react-native-paper'
 //context
 import { useAuth } from '../../../Context/AuthContext'
 //data
-import { SETTING_OPTIONS, USERS } from '../../../data'
+import { SETTING_OPTIONS } from '../../../data'
 //components
 import UserHeader from '../../../components/Frontend/Settings/UserHeader'
 import Options from '../../../components/Frontend/Settings/Options'

@@ -103,7 +103,7 @@ export default function Login() {
             <Button
               mode="contained" buttonColor={colors.black} textColor={colors.white}
               style={styles.btn}
-              onPress={() => handleLogin()}
+              onPress={loading ? null : () => handleLogin()}
               loading={loading}
             >
               Login
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   btn: {
-    paddingVertical: spacing.s - 5,
+    paddingVertical: spacing.s,
     borderRadius: 8,
     borderTopRightRadius: 1,
   }

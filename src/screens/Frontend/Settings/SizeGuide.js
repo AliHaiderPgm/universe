@@ -20,6 +20,7 @@ const SizeGuide = () => {
                             backgroundColor={colors.light}
                             renderIndicator={() => null}
                             onLongPress={() => null}
+                            useNativeDriver={() => { }}
                         />
                         <Divider />
                         <Text style={styles.text}>Pants</Text>
