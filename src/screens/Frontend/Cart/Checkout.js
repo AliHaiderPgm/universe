@@ -159,6 +159,7 @@ export default function Checkout({ route }) {
                 recieverName,
                 recieverPhoneNumber,
                 recieverAddress,
+                cartTotalPrice: Number(subTotal),
                 orderDetails: items, //All Items placed in order by reciever
                 status: 'Pending'
             }

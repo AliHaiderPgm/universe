@@ -9,7 +9,6 @@ import { ActivityIndicator } from 'react-native-paper'
 const CARD_HEIGHT = 180
 const CARD_WIDTH = 150
 export const BrandCards = ({ data, onPress }) => {
-    console.log(data)
     return (
         <TouchableOpacity style={styles.cardContainer} activeOpacity={0.8} onPress={onPress}>
             <Image source={{ uri: data.logoImage }} style={styles.logo} />

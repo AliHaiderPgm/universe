@@ -29,7 +29,7 @@ export default function CartDetails({ list, resetItems }) {
             sum += total;
         });
 
-        setCartTotal(sum.toFixed(2));
+        setCartTotal(sum.toFixed(0))
     };
 
     useEffect(() => {
@@ -78,7 +78,7 @@ export default function CartDetails({ list, resetItems }) {
                 <View style={{ marginTop: spacing.s, gap: spacing.s }}>
                     <View style={styles.totalContainer}>
                         <Text style={styles.type}>Cart Total</Text>
-                        <Text style={styles.amount}>${cartTotal}</Text>
+                        <Text style={styles.amount}>Rs.{cartTotal}</Text>
                     </View>
                 </View>
             </View>

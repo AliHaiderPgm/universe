@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { View, StyleSheet, Image, ScrollView, Text, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Image, ScrollView, Text, TouchableOpacity, Share } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useToast } from 'native-base'
 import firebase from '@react-native-firebase/app'
 import firestore from '@react-native-firebase/firestore'
 import { ActivityIndicator, Button, TextInput } from 'react-native-paper'
+import dynamicLinks from '@react-native-firebase/dynamic-links'
 //context
 import { useAuth } from '../../Context/AuthContext'
 //components
@@ -13,7 +14,7 @@ import Icon from '../../components/shared/Icon'
 import Counter from '../../components/shared/Counter'
 
 export default function ProductDetails({ navgation, route }) {
-  const { product } = route.params
+  let { product } = route.params
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [price, setPrice] = useState(null);
@@ -28,11 +29,12 @@ export default function ProductDetails({ navgation, route }) {
   const [state, setState] = useState({ review: '' })
   const [productReviews, setProductReviews] = useState([])
   const [productReviewLoadings, setProductReviewLoadings] = useState(false)
+  const [shareLoadings, setShareLoadings] = useState(false)
 
   const handleSizeSelection = (size) => setSelectedSize(size);
   const handleColorSelection = (color) => setSelectedColor(color);
   const fromChild = (data) => {
-    setPrice((data.number).toFixed(0))
+    setPrice(Number((data.number).toFixed(0)))
     setQuantity(data.count)
   }
 
@@ -222,11 +224,45 @@ export default function ProductDetails({ navgation, route }) {
     return collectionName;
   }
 
+  //////////////////////////////SHARE
+  // Function to generate the deep link for a specific product
+  const generateProductLink = async () => {
+    setShareLoadings(true)
+    try {
+      const link = await dynamicLinks().buildShortLink({
+        link: `https://universeproduct.page.link/jdF1?productId=${product.id}`,
+        domainUriPrefix: 'https://universeproduct.page.link',
+        android: {
+          packageName: 'com.universe'
+        },
+        analytics: {
+          campaign: 'banner',
+        },
+      }, dynamicLinks.ShortLinkType.DEFAULT)
+      console.log(link)
+      return link
+    } catch (error) {
+      console.log('Generate link error===>>', error)
+    } finally {
+      setShareLoadings(false)
+    }
+  }
+  const shareProduct = async () => {
+    const link = await generateProductLink()
+    try {
+      Share.share({
+        message: link
+      })
+    } catch (error) {
+      console.log('Share link error===>', error)
+    }
+  }
+
   useEffect(() => {
-    navigation.setOptions({ title: product.name, })
+    navigation.setOptions({ title: product.name, headerRight: () => (shareLoadings ? <ActivityIndicator color={colors.black} /> : <Icon icon="share" size={25} onPress={shareProduct} />) })
     isAuthenticated && isWished()
     handleGetReviews()
-  }, [])
+  }, [shareLoadings])
 
   const sizes = ['S', 'M', 'L', 'XL',]
   const avalibleColors = ['#ef233c', '#2ec4b6', '#a2d2ff', '#6c757d', '#001233']
@@ -236,7 +272,7 @@ export default function ProductDetails({ navgation, route }) {
       <ScrollView style={styles.container}>
         {/* //////////PRODUCT IMAGE */}
         <View style={styles.imageContainer}>
-          <Image source={{ uri: product.imageUrl }} style={styles.image} />
+          <Image source={{ uri: product?.imageUrl }} style={styles.image} />
         </View>
 
         <View style={styles.detailsWrapper}>

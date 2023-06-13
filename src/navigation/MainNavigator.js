@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { NavigationContainer } from '@react-navigation/native'
 import SearchBar from '../screens/Frontend/SearchBar'
@@ -15,12 +15,14 @@ import Checkout from '../screens/Frontend/Cart/Checkout'
 import SizeGuide from '../screens/Frontend/Settings/SizeGuide'
 import ThankYou from '../screens/Frontend/Cart/ThankYou'
 import OrderHistory from '../screens/Frontend/Settings/OrderHistory'
+import HandleDeepLinking from '../screens/HandleDeepLinking'
 
 export default function MainNavigator() {
     const Stack = createNativeStackNavigator()
     const { isAuthenticated } = useAuth()
     return (
         <NavigationContainer>
+            <HandleDeepLinking />
             <Stack.Navigator >
                 <Stack.Screen
                     name='Root'

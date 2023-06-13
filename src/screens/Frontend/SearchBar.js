@@ -39,6 +39,7 @@ const SearchBar = () => {
     setState(true)
     setLoading(true)
     try {
+      // handleStoreSearch()
       const maleProducts = await getData('maleProducts')
       const femaleProducts = await getData('femaleProducts')
       const childrenProducts = await getData('childrenProducts')
@@ -71,7 +72,9 @@ const SearchBar = () => {
       })
     return products
   }
-
+  const handleStoreSearch = async () => {
+    await firestore().collection('searchedKeywords').add()
+  }
   const handleSelect = e => {
     sortData(searchedProduct, e)
     setSelectedOption(e)
