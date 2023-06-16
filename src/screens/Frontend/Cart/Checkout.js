@@ -7,8 +7,6 @@ import firestore from '@react-native-firebase/firestore'
 import firebase from '@react-native-firebase/app'
 import { useAuth } from '../../../Context/AuthContext'
 import { useNavigation } from '@react-navigation/native'
-import messaging from '@react-native-firebase/messaging'
-import { requestUserPermission } from '../../../components/shared/Messaging'
 import { generateRandomNumber } from '../../../components/Global'
 
 const CustomTextInput = ({ label, onChange, keyboard, value, disable, placeholder }) => {
@@ -37,8 +35,7 @@ const CustomButton = ({ label, onPress, loading }) => {
 const initialState = {
     name: '',
     phoneNumber: '',
-    address: '',
-    OTP: ''
+    email: ''
 }
 //Set TAX HERE %
 const TAX = 2
@@ -54,9 +51,7 @@ export default function Checkout({ route }) {
     const [loading, setLoading] = useState(false)
     const navigation = useNavigation()
     const [calculating, setCalculating] = useState(false)
-    const [optLoading, setOTPLoading] = useState(false)
-    const [confirmationData, setConfirmationData] = useState()
-    const [otpConfirmation, setOTPConfirmation] = useState(false)
+    const [emailSending, setEmailSending] = useState(false)
 
     const notify = (msg, color) => toast.show({ title: msg, placement: 'top', duration: 2000, backgroundColor: `${color}.700`, shadow: '9' })
     const handleChange = (name, value) => setState(s => ({ ...s, [name]: value }))
@@ -143,6 +138,18 @@ export default function Checkout({ route }) {
     //         })
     //         .catch((error) => notify('OTP verification failed!', 'error'))
     // }
+    const handleSendCode = async () => {
+        //     const to = ['alihaider203472@gmail.com' ] // string or array of email addresses
+        //     email(to, {
+        //         // Optional additional arguments
+        //         cc: ['bazzy@moo.com', 'doooo@daaa.com'], // string or array of email addresses
+        //         bcc: 'mee@mee.com', // string or array of email addresses
+        //         subject: 'Show how to use',
+        //         body: 'Some body right here'
+        //         checkCanOpen: false // Call Linking.canOpenURL prior to Linking.openURL
+        //     }).catch(console.error)
+        // }
+    }
     //Firebase
     const handlePlaceOrder = async () => {
         setLoading(true)
@@ -231,11 +238,11 @@ export default function Checkout({ route }) {
                 <CustomTextInput label="Name" onChange={(val) => handleChange('name', val)} value={state.name} />
                 <CustomTextInput label="Address" onChange={(val) => handleChange('address', val)} value={state.address} />
 
-                <CustomTextInput label="Mobile No." onChange={(val) => handleChange('phoneNumber', val)} value={state.phoneNumber} keyboard="phone-pad" placeholder="+92 000 0000000" />
-                {/* <Button mode="contained" style={styles.otpBtn} textColor='white' buttonColor={colors.black} onPress={handleSendOTP} loading={optLoading}>Send OTP</Button>
+                <CustomTextInput label="Email." onChange={(val) => handleChange('email', val)} value={state.email} keyboard="email-address" placeholder="abc@xyz@email.com" />
+                <CustomButton label="Send Code" onPress={() => handleSendCode()} loading={emailSending} />
 
-                <CustomTextInput label="OTP Code" onChange={(val) => handleChange('OTP', val)} value={state.OTP} keyboard="phone-pad" disable={otpConfirmation} />
-                <Button mode="contained" style={styles.otpBtn} textColor='white' buttonColor={colors.black} onPress={handleConfirmOTP}>{otpConfirmation ? 'Confirmed' : 'Confirm OTP'}</Button> */}
+                <CustomTextInput label="Code" onChange={(val) => handleChange('code', val)} value={state.code} keyboard="numeric" placeholder="1234" />
+                <CustomButton label="Confirm Code" onPress={() => confirmCode()} />
 
                 <CustomButton label="Place Order" onPress={() => handlePlaceOrder()} loading={loading} />
             </View>
